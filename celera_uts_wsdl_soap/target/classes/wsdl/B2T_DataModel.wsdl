@@ -1,0 +1,1340 @@
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.Vectalis.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://www.Vectalis.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.Vectalis.com/">
+      <s:element name="GetLoginGenericZipped2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlInputString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLoginGenericZipped2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetLoginGenericZipped2Result" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLoginGenericZipped2S">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlInputString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLoginGenericZipped2SResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetLoginGenericZipped2SResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLoginGenericURL">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlInputString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLoginGenericURLResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetLoginGenericURLResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemAddedFields">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlInputString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemAddedFieldsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSystemAddedFieldsResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemTables">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlInputString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemTablesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSystemTablesResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemAddedFieldsS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlInputString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemAddedFieldsSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSystemAddedFieldsSResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemTablesS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlInputString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSystemTablesSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSystemTablesSResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="VectalisPricerQueueInitialization">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="VectalisPricerQueueInitializationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="VectalisPricerQueueInitializationResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateZ">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateZResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateZResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateZS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateZSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateZSResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateSResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Update">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SupervisionUpdateS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="inNameOfEntityCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="inNameOfClientCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="inNameOfddresseeCode" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="broadcast" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientsToBroadcast" type="tns:ArrayOfBroadcastLogicAddressee" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfBroadcastLogicAddressee">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="BroadcastLogicAddressee" nillable="true" type="tns:BroadcastLogicAddressee" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="BroadcastLogicAddressee">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="EntityCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="AddresseeCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EntityTypeCode" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SupervisionUpdateSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SupervisionUpdateSResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RecommendedVersions">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TypeClient" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RecommendedVersionsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RecommendedVersionsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="IsDoubleLoginWarningMessageDisplayed">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="entityCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="addresseeCode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="IsDoubleLoginWarningMessageDisplayedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="IsDoubleLoginWarningMessageDisplayedResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Ping">
+        <s:complexType />
+      </s:element>
+      <s:element name="PingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PingResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetServerDate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="param1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param2" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param3" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetServerDateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetServerDateResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendEmail">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="messageSerialized" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param2" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param3" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendEmailResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SendMailWithAttachment">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="messageSerialized" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="attachmentName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="attachment" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param2" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="param3" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendMailWithAttachmentResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetVectalisNews">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="param" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectalisNewsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVectalisNewsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateDirectAccess">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateDirectAccessResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateDirectAccessResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccess">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccessResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyEntityQuotesDirectAccessResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMySalesClientsDirectAccess">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMySalesClientsDirectAccessResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMySalesClientsDirectAccessResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccessFull">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccessFullResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyEntityQuotesDirectAccessFullResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccessDelta">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccessDeltaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyEntityQuotesDirectAccessDeltaResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParameters">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParametersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParametersResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyRepliesBrokerDirectAccess">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyRepliesBrokerDirectAccessResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyRepliesBrokerDirectAccessResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyRepliesDirectAccess">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyRepliesDirectAccessResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyRepliesDirectAccessResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyRepliesDirectAccessDelta">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyRepliesDirectAccessDeltaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyRepliesDirectAccessDeltaResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityPricerCodesDirectAccess">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="xmlDocumentString" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAllMyEntityPricerCodesDirectAccessResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllMyEntityPricerCodesDirectAccessResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SynchronizeServer">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="inputCommandsXML" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SynchronizeServerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SynchronizeServerResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  
+  <wsdl:message name="GetLoginGenericZipped2SoapIn">
+    <wsdl:part name="parameters" element="tns:GetLoginGenericZipped2" />
+  </wsdl:message>
+  <wsdl:message name="GetLoginGenericZipped2SoapOut">
+    <wsdl:part name="parameters" element="tns:GetLoginGenericZipped2Response" />
+  </wsdl:message>
+  <wsdl:message name="GetLoginGenericZipped2SSoapIn">
+    <wsdl:part name="parameters" element="tns:GetLoginGenericZipped2S" />
+  </wsdl:message>
+  <wsdl:message name="GetLoginGenericZipped2SSoapOut">
+    <wsdl:part name="parameters" element="tns:GetLoginGenericZipped2SResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetLoginGenericURLSoapIn">
+    <wsdl:part name="parameters" element="tns:GetLoginGenericURL" />
+  </wsdl:message>
+  <wsdl:message name="GetLoginGenericURLSoapOut">
+    <wsdl:part name="parameters" element="tns:GetLoginGenericURLResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemAddedFieldsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSystemAddedFields" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemAddedFieldsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSystemAddedFieldsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemTablesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSystemTables" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemTablesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSystemTablesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemAddedFieldsSSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSystemAddedFieldsS" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemAddedFieldsSSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSystemAddedFieldsSResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemTablesSSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSystemTablesS" />
+  </wsdl:message>
+  <wsdl:message name="GetSystemTablesSSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSystemTablesSResponse" />
+  </wsdl:message>
+  <wsdl:message name="VectalisPricerQueueInitializationSoapIn">
+    <wsdl:part name="parameters" element="tns:VectalisPricerQueueInitialization" />
+  </wsdl:message>
+  <wsdl:message name="VectalisPricerQueueInitializationSoapOut">
+    <wsdl:part name="parameters" element="tns:VectalisPricerQueueInitializationResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateZSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateZ" />
+  </wsdl:message>
+  <wsdl:message name="UpdateZSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateZResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateZSSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateZS" />
+  </wsdl:message>
+  <wsdl:message name="UpdateZSSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateZSResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateSSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateS" />
+  </wsdl:message>
+  <wsdl:message name="UpdateSSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateSResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateSoapIn">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="UpdateSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="SupervisionUpdateSSoapIn">
+    <wsdl:part name="parameters" element="tns:SupervisionUpdateS" />
+  </wsdl:message>
+  <wsdl:message name="SupervisionUpdateSSoapOut">
+    <wsdl:part name="parameters" element="tns:SupervisionUpdateSResponse" />
+  </wsdl:message>
+  <wsdl:message name="RecommendedVersionsSoapIn">
+    <wsdl:part name="parameters" element="tns:RecommendedVersions" />
+  </wsdl:message>
+  <wsdl:message name="RecommendedVersionsSoapOut">
+    <wsdl:part name="parameters" element="tns:RecommendedVersionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IsDoubleLoginWarningMessageDisplayedSoapIn">
+    <wsdl:part name="parameters" element="tns:IsDoubleLoginWarningMessageDisplayed" />
+  </wsdl:message>
+  <wsdl:message name="IsDoubleLoginWarningMessageDisplayedSoapOut">
+    <wsdl:part name="parameters" element="tns:IsDoubleLoginWarningMessageDisplayedResponse" />
+  </wsdl:message>
+  <wsdl:message name="PingSoapIn">
+    <wsdl:part name="parameters" element="tns:Ping" />
+  </wsdl:message>
+  <wsdl:message name="PingSoapOut">
+    <wsdl:part name="parameters" element="tns:PingResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetServerDateSoapIn">
+    <wsdl:part name="parameters" element="tns:GetServerDate" />
+  </wsdl:message>
+  <wsdl:message name="GetServerDateSoapOut">
+    <wsdl:part name="parameters" element="tns:GetServerDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailSoapIn">
+    <wsdl:part name="parameters" element="tns:SendEmail" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailSoapOut">
+    <wsdl:part name="parameters" element="tns:SendEmailResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendMailWithAttachmentSoapIn">
+    <wsdl:part name="parameters" element="tns:SendMailWithAttachment" />
+  </wsdl:message>
+  <wsdl:message name="SendMailWithAttachmentSoapOut">
+    <wsdl:part name="parameters" element="tns:SendMailWithAttachmentResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVectalisNewsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVectalisNews" />
+  </wsdl:message>
+  <wsdl:message name="GetVectalisNewsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVectalisNewsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateDirectAccessSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateDirectAccess" />
+  </wsdl:message>
+  <wsdl:message name="UpdateDirectAccessSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateDirectAccessResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccess" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccessResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMySalesClientsDirectAccessSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMySalesClientsDirectAccess" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMySalesClientsDirectAccessSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMySalesClientsDirectAccessResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessFullSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccessFull" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessFullSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccessFullResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessDeltaSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccessDelta" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessDeltaSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccessDeltaResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParametersSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccessDeltaWithInputParameters" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParametersSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityQuotesDirectAccessDeltaWithInputParametersResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyRepliesBrokerDirectAccessSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyRepliesBrokerDirectAccess" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyRepliesBrokerDirectAccessSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyRepliesBrokerDirectAccessResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyRepliesDirectAccessSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyRepliesDirectAccess" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyRepliesDirectAccessSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyRepliesDirectAccessResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyRepliesDirectAccessDeltaSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyRepliesDirectAccessDelta" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyRepliesDirectAccessDeltaSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyRepliesDirectAccessDeltaResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityPricerCodesDirectAccessSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityPricerCodesDirectAccess" />
+  </wsdl:message>
+  <wsdl:message name="GetAllMyEntityPricerCodesDirectAccessSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllMyEntityPricerCodesDirectAccessResponse" />
+  </wsdl:message>
+  <wsdl:message name="SynchronizeServerSoapIn">
+    <wsdl:part name="parameters" element="tns:SynchronizeServer" />
+  </wsdl:message>
+  <wsdl:message name="SynchronizeServerSoapOut">
+    <wsdl:part name="parameters" element="tns:SynchronizeServerResponse" />
+  </wsdl:message>
+  
+  <wsdl:portType name="B2T_DataModelSoap">
+    <wsdl:operation name="GetLoginGenericZipped2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get the login generic</wsdl:documentation>
+      <wsdl:input message="tns:GetLoginGenericZipped2SoapIn" />
+      <wsdl:output message="tns:GetLoginGenericZipped2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLoginGenericZipped2S">
+      <wsdl:input message="tns:GetLoginGenericZipped2SSoapIn" />
+      <wsdl:output message="tns:GetLoginGenericZipped2SSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLoginGenericURL">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gives the URL where to download the Login Generic file</wsdl:documentation>
+      <wsdl:input message="tns:GetLoginGenericURLSoapIn" />
+      <wsdl:output message="tns:GetLoginGenericURLSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAddedFields">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get SystemAddedField table</wsdl:documentation>
+      <wsdl:input message="tns:GetSystemAddedFieldsSoapIn" />
+      <wsdl:output message="tns:GetSystemAddedFieldsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemTables">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get System tables</wsdl:documentation>
+      <wsdl:input message="tns:GetSystemTablesSoapIn" />
+      <wsdl:output message="tns:GetSystemTablesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAddedFieldsS">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get SystemAddedField table Secured</wsdl:documentation>
+      <wsdl:input message="tns:GetSystemAddedFieldsSSoapIn" />
+      <wsdl:output message="tns:GetSystemAddedFieldsSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemTablesS">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get System tables Secured</wsdl:documentation>
+      <wsdl:input message="tns:GetSystemTablesSSoapIn" />
+      <wsdl:output message="tns:GetSystemTablesSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="VectalisPricerQueueInitialization">
+      <wsdl:input message="tns:VectalisPricerQueueInitializationSoapIn" />
+      <wsdl:output message="tns:VectalisPricerQueueInitializationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateZ">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Impact the data from the DataModel, Zipped output</wsdl:documentation>
+      <wsdl:input message="tns:UpdateZSoapIn" />
+      <wsdl:output message="tns:UpdateZSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateZS">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Impact the data from the DataModel Zipped Secured Stream</wsdl:documentation>
+      <wsdl:input message="tns:UpdateZSSoapIn" />
+      <wsdl:output message="tns:UpdateZSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateS">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Impact the data from the DataModel</wsdl:documentation>
+      <wsdl:input message="tns:UpdateSSoapIn" />
+      <wsdl:output message="tns:UpdateSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Impact the data from the DataModel</wsdl:documentation>
+      <wsdl:input message="tns:UpdateSoapIn" />
+      <wsdl:output message="tns:UpdateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SupervisionUpdateS">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Supervision</wsdl:documentation>
+      <wsdl:input message="tns:SupervisionUpdateSSoapIn" />
+      <wsdl:output message="tns:SupervisionUpdateSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RecommendedVersions">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"> Return a Hashtable with the minimum Autorized Version and the last version of UTS.</wsdl:documentation>
+      <wsdl:input message="tns:RecommendedVersionsSoapIn" />
+      <wsdl:output message="tns:RecommendedVersionsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="IsDoubleLoginWarningMessageDisplayed">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Send a boolean to the client to know if a warning message have to be displayed when the account used by the user is already connected.</wsdl:documentation>
+      <wsdl:input message="tns:IsDoubleLoginWarningMessageDisplayedSoapIn" />
+      <wsdl:output message="tns:IsDoubleLoginWarningMessageDisplayedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Ping Main server</wsdl:documentation>
+      <wsdl:input message="tns:PingSoapIn" />
+      <wsdl:output message="tns:PingSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetServerDate">
+      <wsdl:input message="tns:GetServerDateSoapIn" />
+      <wsdl:output message="tns:GetServerDateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendEmail">
+      <wsdl:input message="tns:SendEmailSoapIn" />
+      <wsdl:output message="tns:SendEmailSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVectalisNews">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get News about Vectalis</wsdl:documentation>
+      <wsdl:input message="tns:GetVectalisNewsSoapIn" />
+      <wsdl:output message="tns:GetVectalisNewsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDirectAccess">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Impact the data from the DataModel for DirectAccess (Login and Logout only)</wsdl:documentation>
+      <wsdl:input message="tns:UpdateDirectAccessSoapIn" />
+      <wsdl:output message="tns:UpdateDirectAccessSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccess">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all the quotes of your company - Broker Direct Access only</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyEntityQuotesDirectAccessSoapIn" />
+      <wsdl:output message="tns:GetAllMyEntityQuotesDirectAccessSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMySalesClientsDirectAccess">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all the Sales Client of the user - Sales Direct Access only</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMySalesClientsDirectAccessSoapIn" />
+      <wsdl:output message="tns:GetAllMySalesClientsDirectAccessSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessFull">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obsolete - please use GetAllMyEntityQuotesDirectAccess</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyEntityQuotesDirectAccessFullSoapIn" />
+      <wsdl:output message="tns:GetAllMyEntityQuotesDirectAccessFullSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessDelta">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all the quotes of your company since the last call - Broker Direct Access only</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyEntityQuotesDirectAccessDeltaSoapIn" />
+      <wsdl:output message="tns:GetAllMyEntityQuotesDirectAccessDeltaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParameters">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obsolete, please use GetAllMyEntityQuotesDirectAccessDelta</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyEntityQuotesDirectAccessDeltaWithInputParametersSoapIn" />
+      <wsdl:output message="tns:GetAllMyEntityQuotesDirectAccessDeltaWithInputParametersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesBrokerDirectAccess">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all the replies sent to your company - Deprecated, use GetAllMyRepliesDirectAccess</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyRepliesBrokerDirectAccessSoapIn" />
+      <wsdl:output message="tns:GetAllMyRepliesBrokerDirectAccessSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesDirectAccess">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all the replies sent to your company - Sales and Broker DirectAccess Only</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyRepliesDirectAccessSoapIn" />
+      <wsdl:output message="tns:GetAllMyRepliesDirectAccessSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesDirectAccessDelta">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all the replies sent to your company since a specific Datetime - Sales and Broker DirectAccess Only</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyRepliesDirectAccessDeltaSoapIn" />
+      <wsdl:output message="tns:GetAllMyRepliesDirectAccessDeltaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityPricerCodesDirectAccess">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all the pricer codes of your company associated to our underlyings - Direct Access only</wsdl:documentation>
+      <wsdl:input message="tns:GetAllMyEntityPricerCodesDirectAccessSoapIn" />
+      <wsdl:output message="tns:GetAllMyEntityPricerCodesDirectAccessSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SynchronizeServer">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Synchronize the server</wsdl:documentation>
+      <wsdl:input message="tns:SynchronizeServerSoapIn" />
+      <wsdl:output message="tns:SynchronizeServerSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  
+  <wsdl:binding name="B2T_DataModelSoap" type="tns:B2T_DataModelSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetLoginGenericZipped2">
+      <soap:operation soapAction="http://www.Vectalis.com/GetLoginGenericZipped2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLoginGenericZipped2S">
+      <soap:operation soapAction="http://www.Vectalis.com/GetLoginGenericZipped2S" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLoginGenericURL">
+      <soap:operation soapAction="http://www.Vectalis.com/GetLoginGenericURL" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAddedFields">
+      <soap:operation soapAction="http://www.Vectalis.com/GetSystemAddedFields" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemTables">
+      <soap:operation soapAction="http://www.Vectalis.com/GetSystemTables" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAddedFieldsS">
+      <soap:operation soapAction="http://www.Vectalis.com/GetSystemAddedFieldsS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemTablesS">
+      <soap:operation soapAction="http://www.Vectalis.com/GetSystemTablesS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VectalisPricerQueueInitialization">
+      <soap:operation soapAction="http://www.Vectalis.com/VectalisPricerQueueInitialization" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateZ">
+      <soap:operation soapAction="http://www.Vectalis.com/UpdateZ" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateZS">
+      <soap:operation soapAction="http://www.Vectalis.com/UpdateZS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateS">
+      <soap:operation soapAction="http://www.Vectalis.com/UpdateS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <soap:operation soapAction="http://www.Vectalis.com/Update" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SupervisionUpdateS">
+      <soap:operation soapAction="http://www.Vectalis.com/SupervisionUpdateS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecommendedVersions">
+      <soap:operation soapAction="http://www.Vectalis.com/RecommendedVersions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsDoubleLoginWarningMessageDisplayed">
+      <soap:operation soapAction="http://www.Vectalis.com/IsDoubleLoginWarningMessageDisplayed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+      <soap:operation soapAction="http://www.Vectalis.com/Ping" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServerDate">
+      <soap:operation soapAction="http://www.Vectalis.com/GetServerDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmail">
+      <soap:operation soapAction="http://www.Vectalis.com/SendEmail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectalisNews">
+      <soap:operation soapAction="http://www.Vectalis.com/GetVectalisNews" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDirectAccess">
+      <soap:operation soapAction="http://www.Vectalis.com/UpdateDirectAccess" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccess">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccess" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMySalesClientsDirectAccess">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMySalesClientsDirectAccess" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessFull">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccessFull" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessDelta">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccessDelta" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParameters">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccessDeltaWithInputParameters" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesBrokerDirectAccess">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyRepliesBrokerDirectAccess" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesDirectAccess">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyRepliesDirectAccess" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesDirectAccessDelta">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyRepliesDirectAccessDelta" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityPricerCodesDirectAccess">
+      <soap:operation soapAction="http://www.Vectalis.com/GetAllMyEntityPricerCodesDirectAccess" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SynchronizeServer">
+      <soap:operation soapAction="http://www.Vectalis.com/SynchronizeServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="B2T_DataModelSoap12" type="tns:B2T_DataModelSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetLoginGenericZipped2">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetLoginGenericZipped2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLoginGenericZipped2S">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetLoginGenericZipped2S" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLoginGenericURL">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetLoginGenericURL" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAddedFields">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetSystemAddedFields" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemTables">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetSystemTables" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAddedFieldsS">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetSystemAddedFieldsS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemTablesS">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetSystemTablesS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VectalisPricerQueueInitialization">
+      <soap12:operation soapAction="http://www.Vectalis.com/VectalisPricerQueueInitialization" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateZ">
+      <soap12:operation soapAction="http://www.Vectalis.com/UpdateZ" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateZS">
+      <soap12:operation soapAction="http://www.Vectalis.com/UpdateZS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateS">
+      <soap12:operation soapAction="http://www.Vectalis.com/UpdateS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <soap12:operation soapAction="http://www.Vectalis.com/Update" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SupervisionUpdateS">
+      <soap12:operation soapAction="http://www.Vectalis.com/SupervisionUpdateS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecommendedVersions">
+      <soap12:operation soapAction="http://www.Vectalis.com/RecommendedVersions" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsDoubleLoginWarningMessageDisplayed">
+      <soap12:operation soapAction="http://www.Vectalis.com/IsDoubleLoginWarningMessageDisplayed" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+      <soap12:operation soapAction="http://www.Vectalis.com/Ping" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServerDate">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetServerDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectalisNews">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetVectalisNews" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDirectAccess">
+      <soap12:operation soapAction="http://www.Vectalis.com/UpdateDirectAccess" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccess">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccess" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMySalesClientsDirectAccess">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMySalesClientsDirectAccess" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessFull">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccessFull" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessDelta">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccessDelta" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityQuotesDirectAccessDeltaWithInputParameters">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyEntityQuotesDirectAccessDeltaWithInputParameters" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesBrokerDirectAccess">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyRepliesBrokerDirectAccess" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesDirectAccess">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyRepliesDirectAccess" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyRepliesDirectAccessDelta">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyRepliesDirectAccessDelta" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMyEntityPricerCodesDirectAccess">
+      <soap12:operation soapAction="http://www.Vectalis.com/GetAllMyEntityPricerCodesDirectAccess" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SynchronizeServer">
+      <soap12:operation soapAction="http://www.Vectalis.com/SynchronizeServer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  
+  <wsdl:service name="B2T_DataModel">
+    <wsdl:port name="B2T_DataModelSoap" binding="tns:B2T_DataModelSoap">
+      <soap:address location="http://utstestserver.vectalis.com:8080/MainServer/B2T_DataModel.asmx" />
+    </wsdl:port>
+    <wsdl:port name="B2T_DataModelSoap12" binding="tns:B2T_DataModelSoap12">
+      <soap12:address location="http://utstestserver.vectalis.com:8080/MainServer/B2T_DataModel.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
