@@ -1,6 +1,8 @@
 package com.vectails.xml;
 
 public interface IXmlTag {
+	public static final String PACKAGE_XML_DATA_PREFIX = "com.vectails.xml.data.";
+	
 	public static final String Currencies = "Currencies"; 
 	public static final String Currency = "Currency"; 
 	public static final String DerivativeTypes = "DerivativeTypes"; 

@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 
-import com.vectails.data.Legs;
 import com.vectails.xml.IXmlParser;
+import com.vectails.xml.data.Legs;
 
 public class GenericTypeInfo
 {

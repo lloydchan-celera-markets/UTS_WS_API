@@ -18,8 +18,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.celera.core.common.GenericFactory;
-import com.celera.core.common.IGenericFactory;
+import com.vectails.common.GenericFactory;
+import com.vectails.common.IGenericFactory;
 
 import sun.reflect.generics.factory.GenericsFactory;
 
