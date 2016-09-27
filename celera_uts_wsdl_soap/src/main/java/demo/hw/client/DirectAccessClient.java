@@ -19,24 +19,13 @@
 
 package demo.hw.client;
 
-import java.io.File;
-import java.io.StringReader;
-import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.ws.ProtocolException;
 
-import org.apache.hello_world_soap12_http.Greeter;
-import org.apache.hello_world_soap12_http.PingMeFault;
-import org.apache.hello_world_soap12_http.SOAPService;
-import org.apache.hello_world_soap12_http.types.FaultDetail;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 import com.vectails.processor.UtsDirectAccessMessage;
 import com.vectalis.B2TDataModel;
