@@ -1,0 +1,27 @@
+package com.celera.core.common;
+
+public class XNodeFactory
+{
+	public static Object <T> build() throws InstantiationException, IllegalAccessException {
+		return T.getclass().newInstance();
+	}
+	
+	
+	public static void main(String[] args) 
+	{
+		try
+		{
+			Object o = XNodeFactory.build(Integer.class);
+			System.out.println(o);
+		} catch (InstantiationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

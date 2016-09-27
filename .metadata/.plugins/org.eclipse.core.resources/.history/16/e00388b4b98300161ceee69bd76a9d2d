@@ -1,0 +1,94 @@
+package com.vectails.data;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class DerivativeType extends GenericXmlContainer<Legs> implements IXmlParser {
+	public DerivativeType() {
+		super(Legs.class);
+	}
+
+	private String Code = null;
+	private String Name = null;
+	private String IsPriceInPercent = null;
+	private String LegCount = null;
+	private String IsBasic = null;
+	private String UnderlyingClass = null;
+	private String LastUpdateDateTime = null;
+	
+	private String ParameterString = null;
+	
+//	Legs myLegs = new Legs();
+	
+	@Override
+	public String toString() {
+		return "DerivativeType [code=" + Code + ", name=" + Name + ", IsPriceInPercent=" + IsPriceInPercent
+				+ ", LegCount=" + LegCount + ", IsBasic=" + IsBasic + ", UnderlyingClass=" + UnderlyingClass
+				+ ", LastUpdateDateTime=" + LastUpdateDateTime + ", "  
+				+ myList.toString()	+ "]";
+	}
+	
+	public void setCode(String code) {
+		Code = code;
+	}
+
+	public void setName(String name) {
+		Name = name;
+	}
+
+	public void setIsPriceInPercent(String isPriceInPercent) {
+		IsPriceInPercent = isPriceInPercent;
+	}
+
+	public void setLegCount(String legCount) {
+		LegCount = legCount;
+	}
+
+	public void setIsBasic(String isBasic) {
+		IsBasic = isBasic;
+	}
+
+	public void setUnderlyingClass(String underlyingClass) {
+		UnderlyingClass = underlyingClass;
+	}
+
+	public void setLastUpdateDateTime(String lastUpdateDateTime) {
+		LastUpdateDateTime = lastUpdateDateTime;
+	}
+
+	public void setParameterString(String parameterString) {
+		ParameterString = parameterString;
+	}
+
+//	public void setMyLegs(Legs myLegs) {
+//		this.myLegs = myLegs;
+//	}
+
+//	@Override
+//	public void parseLeaveNodes(Element root) {
+//
+//		this.parseAttribute(root);
+//
+//		NodeList n = root.getChildNodes();
+//		int len = n.getLength();
+//		for (int i = 0; i < len; i++) {
+//			//// int count = 0;
+//			//
+//			Node n1 = n.item(i);
+//			if (n1.getNodeType() == Node.ELEMENT_NODE) {
+//				String nodeName = n1.getNodeName();
+//
+//				switch (nodeName) {
+//				case IXmlTag.ParameterString:
+//					this.ParameterString = n1.getNodeValue();
+//					break;
+//				case IXmlTag.Legs:
+//					myLegs.parseLeaveNodes((Element) n1);
+//					break;
+//				default:
+//				}
+//			}
+//		}
+//	}
+}

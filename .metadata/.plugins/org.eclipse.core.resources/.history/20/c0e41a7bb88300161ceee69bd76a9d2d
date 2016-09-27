@@ -1,0 +1,15 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import com.celera.core.common.GenericFactory;
+import com.vectails.data.IXmlParser.IXmlNode;
+
+public class AllowedQuoteCreators extends GenericFactory implements IXmlNode
+{
+	public AllowedQuoteCreators()
+	{
+		super(IXmlParser.QuoteCreator.class);
+	}
+
+	List<IXmlNode> QuoteCreator = new ArrayList<IXmlNode>();
+}

@@ -1,0 +1,17 @@
+package com.vectails.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.celera.core.common.GenericFactory;
+import com.vectails.data.IXmlParser.IXmlNode;
+
+public class IndexFutures extends GenericFactory implements IXmlNode
+{
+	public IndexFutures()
+	{
+		super(IXmlParser.IndexFuture.class);
+	}
+
+	List<IXmlNode> IndexFuture = new ArrayList<IXmlNode>();
+}

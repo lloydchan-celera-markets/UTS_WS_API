@@ -1,0 +1,8 @@
+package com.vectails.data;
+
+public class Currencies extends GenericXmlToken<Currency> {
+
+	public Currencies(Class<Currency> clazz) {
+		super(clazz);
+	}
+}

@@ -1,0 +1,37 @@
+package com.vectails.data;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class QuoteCreator implements IXmlParser{
+	
+	private String Code = null; 
+	
+	public void setCode(String code) {
+		Code = code;
+	}
+
+	UnderlyingType content = new UnderlyingType();
+	
+	@Override
+	public String toString() {
+		return "QuoteCreator [ Code=" + Code + ", " + content.toString() + "]";
+	}
+	
+	public void parseXmlElement(Element root) {
+
+		this.parseAttribute(root);
+
+		NodeList nl = root.getChildNodes();
+		int lenNl = nl.getLength();
+		for (int i = 0; i < lenNl; i++) {
+			Node n1 = nl.item(i);
+			if (n1.getNodeType() == Node.ELEMENT_NODE
+					&& IXmlTag.UnderlyingType.toString().equals(n1.getNodeName())) {
+					content.parseXmlElement((Element) n1);
+			}
+		}
+		System.out.println(this.toString());
+	}
+}

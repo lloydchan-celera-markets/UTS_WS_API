@@ -1,0 +1,48 @@
+package com.vectails.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.celera.core.common.GenericFactory;
+
+public class GenericXmlToken<T extends IXmlParser> extends GenericFactory<T> {
+	
+	public GenericXmlToken(Class<T> clazz) {
+		super(clazz);
+	}
+
+	private List<T> myList = new ArrayList<T>();
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getSimpleName()).append(" [");
+		for (T l: myList) {
+			sb.append(l.toString()).append(", ");
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+	
+	public void parseXmlElement(Element el) {
+		NodeList nl = el.getChildNodes();
+		int len = nl.getLength();
+		for (int i =0 ; i<len; i++) {
+			Node n = nl.item(i);
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				T o;
+				try {
+					o = (T) this.build();
+					o.parseAttribute((Element)n);
+			        myList.add(o);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+}

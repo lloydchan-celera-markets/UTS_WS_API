@@ -1,0 +1,5 @@
+package com.celera.core.common;
+
+public interface Factory<T> {
+	T factory();
+}

@@ -1,0 +1,8 @@
+package com.vectails.data;
+
+public class Currencies extends GenericXmlContainer<Currency> {
+
+	public Currencies() {
+		super(Currency.class);
+	}
+}

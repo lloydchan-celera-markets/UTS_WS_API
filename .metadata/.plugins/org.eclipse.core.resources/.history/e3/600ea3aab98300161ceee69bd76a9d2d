@@ -1,0 +1,19 @@
+package com.vectails.data;
+
+public class Currency implements IXmlParser{
+	private String Code;
+	private String Name;
+	
+	public void setCode(String code) {
+		Code = code;
+	}
+
+	public void setName(String name) {
+		Name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Currency [Code=" + Code + ", Name=" + Name + "]";
+	}
+}

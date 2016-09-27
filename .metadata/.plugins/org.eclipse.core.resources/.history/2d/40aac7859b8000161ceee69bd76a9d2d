@@ -1,0 +1,29 @@
+package com.vectails.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class DerivativeTypes {
+	
+	private List<DerivativeType> myList = new ArrayList<DerivativeType>();
+	
+	public void parseXmlElement(Element root) {	// root = <Legs>
+		NodeList nodes = root.getChildNodes();
+		int lenNodes = nodes.getLength();
+		
+		for (int k = 0; k < lenNodes; k++) {
+			Node n = nodes.item(k);
+			if (n.getNodeType() == Node.ELEMENT_NODE 
+					&& IXmlTag.DerivativeType.toString().equals(n.getNodeName())) {	// process each <Leg>
+				DerivativeType o = new DerivativeType();
+				o.parseXmlElement((Element)n);
+//				o.parseAttribute((Element)n);
+//				o.parseLeaveNodes((Element)n);
+			}
+		}
+	}
+}

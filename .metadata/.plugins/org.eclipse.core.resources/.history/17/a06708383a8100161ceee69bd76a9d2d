@@ -1,0 +1,41 @@
+package com.vectails.data;
+
+public class Addressee implements IXmlParser{
+	private String EntityCode = null;
+	private String Code = null;
+	private String TypeCode = null;
+	private String Name = null;
+	private String ShortCode = null;
+	private String LastUpdateDateTime = null;
+	
+	public void setEntityCode(String entityCode) {
+		EntityCode = entityCode;
+	}
+
+	public void setCode(String code) {
+		Code = code;
+	}
+
+	public void setTypeCode(String typeCode) {
+		TypeCode = typeCode;
+	}
+
+	public void setName(String name) {
+		Name = name;
+	}
+
+	public void setShortCode(String shortCode) {
+		ShortCode = shortCode;
+	}
+
+	public void setLastUpdateDateTime(String lastUpdateDateTime) {
+		LastUpdateDateTime = lastUpdateDateTime;
+	}
+
+	@Override
+	public String toString() {
+		return "IndexFuture [ExpiryDate=" + ExpiryDate + ", IndexCode=" + IndexCode + ", IndexFinancialMarketCode="
+				+ IndexFinancialMarketCode + ", IndexUnderlyingTypeCode=" + IndexUnderlyingTypeCode
+				+ ", LastUpdateDateTime=" + LastUpdateDateTime + "]";
+	}
+}

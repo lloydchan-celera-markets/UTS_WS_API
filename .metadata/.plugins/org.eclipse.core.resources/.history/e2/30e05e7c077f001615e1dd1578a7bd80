@@ -1,0 +1,3 @@
+  <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+      <classpath path="jaxws.classpath"/>
+  </taskdef>

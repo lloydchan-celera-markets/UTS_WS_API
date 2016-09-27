@@ -1,0 +1,5 @@
+package com.vectails.data;
+
+public interface IXmlNodeTag {
+
+}

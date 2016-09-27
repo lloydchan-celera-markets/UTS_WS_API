@@ -1,0 +1,12 @@
+package com.vectails.data;
+
+public interface IXmlTag {
+	public static final String NODE_CURRENCY = "Currency"; 
+	public static final String NODE_DERIVATIVETYPE = "DerivativeType"; 
+	public static final String NODE_LEGS = "Legs"; 
+	public static final String NODE_LEG = "Leg"; 
+	public static final String ATTR_MULTIPLIER = "Multiplier"; 
+	public static final String ATTR_DERIVATIVETYPE = "DerivativeType"; 
+	public static final String ATTR_EXPIRYDATE = "ExpiryDate"; 
+	public static final String ATTR_STRIKEINPERCENT = "StrikeInPercent"; 
+}

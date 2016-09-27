@@ -1,0 +1,40 @@
+package com.vectails.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.celera.core.common.Factory;
+
+@SuppressWarnings("rawtypes")
+public class ElementList<T> extends Factory  {
+	
+	@SuppressWarnings("unchecked")
+	public ElementList(Class clazz) {
+		super(clazz);
+	}
+
+	private List<T> myList = new ArrayList<T>();
+	
+	public void parseXmlElement(Element el) {
+//      List<Currency> l = new ArrayList<Currency>();
+      
+		NodeList nl = el.getChildNodes();
+		int len = nl.getLength();
+		for (int i =0 ; i<len; i++) {
+			Node n = nl.item(i);
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				@SuppressWarnings("unchecked")
+				T t = (T) build();
+				((IXmlParser) t).parseAttribute((Element)n);
+	
+		        myList.add(o);
+		        
+		        System.out.println(o);
+			}
+		}
+	}
+}

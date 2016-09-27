@@ -1,0 +1,40 @@
+package com.vectails.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+
+public class Currency {
+	private String code;
+	private String name;
+	
+	public Currency(String code, String name) {
+		this.code = code;
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Currency [code=" + code + ", name=" + name + "]";
+	}
+
+	public static List<Currency> fromXmlElement(Element el) {
+        List<Currency> l = new ArrayList<Currency>();
+        
+		NodeList nl = el.getElementsByTagName("Currency");
+		int len = nl.getLength();
+		for (int i =0 ; i<len; i++) {
+			NamedNodeMap m = nl.item(i).getAttributes();
+	        String code = m.getNamedItem("Code").getNodeValue();
+	        String name = m.getNamedItem("Name").getNodeValue();
+
+	        System.out.print(code +  "," + name);
+//	        l.add(new Currency(code, name));
+		}
+		
+        return l;
+	}
+}

@@ -1,0 +1,9 @@
+package com.vectails.data;
+
+public class Legs extends GenericXmlContainer<Leg> implements IXmlParser {
+
+	public Legs() {
+		super(Leg.class);
+	}
+	
+}

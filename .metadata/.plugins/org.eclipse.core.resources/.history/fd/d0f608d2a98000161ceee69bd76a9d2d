@@ -1,0 +1,53 @@
+package com.vectails.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class UnderlyingType {
+	
+	List<Leg> legsList = new ArrayList<Leg>();
+	
+//	public Legs(String code, String name, String isPriceInPercent, String legCount, String isBasic,
+//			String underlyingClass, String lastUpdateDateTime) {
+//		this.code = code;
+//		this.name = name;
+//		this.IsPriceInPercent = Boolean.valueOf(isPriceInPercent);
+//		this.LegCount = Integer.valueOf(legCount);
+//		this.IsBasic = Boolean.valueOf(isBasic);
+//		this.UnderlyingClass = underlyingClass;
+//		this.LastUpdateDateTime = lastUpdateDateTime;
+//	}
+//
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Leg l: legsList) {
+			sb.append(l.toString());
+		}
+		return sb.toString();
+//		return "DerivativeType [code=" + code + ", name=" + name + ", IsPriceInPercent=" + IsPriceInPercent
+//				+ ", LegCount=" + LegCount + ", IsBasic=" + IsBasic + ", UnderlyingClass=" + UnderlyingClass
+//				+ ", LastUpdateDateTime=" + LastUpdateDateTime + "]";
+	}
+	
+	public void parseXmlElement(Element root) {	// root = <Legs>
+		NodeList nodes = root.getChildNodes();
+		int lenNodes = nodes.getLength();
+		
+		for (int k = 0; k < lenNodes; k++) {
+			Node n = nodes.item(k);
+			
+			if (n.getNodeType() == Node.ELEMENT_NODE 
+					&& IXmlTag.Leg.toString().equals(n.getNodeName())) {	// process each <Leg>
+				Leg leg = new Leg();
+				leg.parseAttribute((Element)n);
+				leg.parseLeaveNodes((Element)n);
+				legsList.add(leg);
+			}
+		}
+	}
+}

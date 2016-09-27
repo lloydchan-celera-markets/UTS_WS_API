@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.uts.api</groupId>
+	<artifactId>uts-api</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>UTS_API</name>
+	<description>UTS web service api</description>
+	<packaging>pom</packaging>
+
+	<properties>
+		<!-- don't deploy the samples, kind of pointless -->
+		<maven.deploy.skip>true</maven.deploy.skip>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>uts-api-wsdl</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Pull in the cxf-parents as import scope to re-use the dependenecyManagement 
+				sections of those poms. Those sections define the versions of various third 
+				party deps that CXF used to build with and test with and we would like to 
+				make sure the same versions are used for the samples -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-parent</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

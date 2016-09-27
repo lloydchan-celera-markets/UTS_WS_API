@@ -1,0 +1,63 @@
+package com.vectails.data;
+
+public class Underlying implements IXmlParser{
+	private String FinancialMarketCode = null;
+	private String UnderlyingTypeCode = null;
+	private String Code = null;
+	private String Name = null;
+	private String Reuters = null;
+	private String ISIN = null;
+	private String Bloomberg = null;
+	private String IsObsolete = null;
+	private String HasFutures = null;
+	private String LastUpdateDateTime = null;
+	private String ExpiryDate = null;
+	
+	public void setCode(String code) {
+		Code = code;
+	}
+
+	public void setFinancialMarketCode(String financialMarketCode) {
+		FinancialMarketCode = financialMarketCode;
+	}
+
+	public void setUnderlyingTypeCode(String underlyingTypeCode) {
+		UnderlyingTypeCode = underlyingTypeCode;
+	}
+
+	public void setReuters(String reuters) {
+		Reuters = reuters;
+	}
+
+	public void setISIN(String iSIN) {
+		ISIN = iSIN;
+	}
+
+	public void setBloomberg(String bloomberg) {
+		Bloomberg = bloomberg;
+	}
+
+	public void setIsObsolete(String isObsolete) {
+		IsObsolete = isObsolete;
+	}
+
+	public void setHasFutures(String hasFutures) {
+		HasFutures = hasFutures;
+	}
+
+	public void setLastUpdateDateTime(String lastUpdateDateTime) {
+		LastUpdateDateTime = lastUpdateDateTime;
+	}
+
+	public void setName(String name) {
+		Name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Underlying [FinancialMarketCode=" + FinancialMarketCode + ", UnderlyingTypeCode=" + UnderlyingTypeCode
+				+ ", Code=" + Code + ", Name=" + Name + ", Reuters=" + Reuters + ", ISIN=" + ISIN + ", Bloomberg="
+				+ Bloomberg + ", IsObsolete=" + IsObsolete + ", HasFutures=" + HasFutures + ", LastUpdateDateTime="
+				+ LastUpdateDateTime + "]";
+	}
+}

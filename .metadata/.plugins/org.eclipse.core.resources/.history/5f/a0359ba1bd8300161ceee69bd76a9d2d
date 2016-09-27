@@ -1,0 +1,39 @@
+//package com.vectails.data;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NodeList;
+//
+//public class Currencies_old {
+//	
+//	private List<Currency> myList = new ArrayList<Currency>();
+//	
+//	@Override
+//	public String toString() {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("Currencies [");
+//		for (Currency l: myList) {
+//			sb.append(l.toString()).append(", ");
+//		}
+//		sb.append("]");
+//		return sb.toString();
+//	}
+//	
+//	public void parseXmlElement(Element el) {
+//		NodeList nl = el.getChildNodes();
+//		int len = nl.getLength();
+//		for (int i =0 ; i<len; i++) {
+//			Node n = nl.item(i);
+//			if (n.getNodeType() == Node.ELEMENT_NODE) {
+//				Currency o = new Currency();
+//				o.parseAttribute((Element)n);
+//		        o.parseLeaveNodes((Element)n);
+//		        
+//		        myList.add(o);
+//			}
+//		}
+//	}
+//}

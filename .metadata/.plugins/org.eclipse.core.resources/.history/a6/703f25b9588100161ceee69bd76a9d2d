@@ -1,0 +1,7 @@
+package com.vectails.data;
+
+public interface IGenericFactory {
+	public default T build() throws InstantiationException, IllegalAccessException {
+		return clazz.newInstance();
+	}
+}

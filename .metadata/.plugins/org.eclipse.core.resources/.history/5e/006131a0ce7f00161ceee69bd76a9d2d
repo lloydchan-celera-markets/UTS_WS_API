@@ -1,0 +1,17 @@
+package com.vectails.data;
+
+import com.vectails.parser.LastUpdateDateTime;
+import com.vectails.parser.Stirng;
+
+public class LastUpdateDateTime {
+	private String name;
+	private String dateTime;
+	
+	public LastUpdateDateTime(String name, String dateTime) {
+		this.name = name;
+		this.dateTime = dateTime;
+	}
+	
+	public String toXmlString() {
+		return "<LastUpdateDateTime Name='" + name + "' dateTime='" + dateTime	+ "'/>";
+	}

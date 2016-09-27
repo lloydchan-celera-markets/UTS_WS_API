@@ -1,0 +1,264 @@
+package com.vectails.data;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class Leg implements IXmlParser{
+	
+	// attributes
+	private String Label = null;
+	private String MultiUnderlyingItemType = null;
+	private String MultiUnderlyingItemIndex = null;
+	
+	// elements
+	private String Barrier = null;
+	private String BarrierInPercent = null;
+	private String Cap = null;
+	private String Coupon = null;
+	private String Delta = null;
+	private String DerivativeType = null;
+	private String DividendRequirement = null;
+	private String EndOfBarrierDate = null;
+	private String ExpiryDate = null;
+	private String FutureBasis = null;
+	private String FutureSpot = null;
+	private String Garantee = null;
+	private String KnockInBarrier = null;
+	private String Leverage = null;
+	private String LimitDown = null;
+	private String LimitUp = null;
+	private String Multiplier = null;
+	private String Periodicity = null;
+	private String QuantoCurrency = null;
+	private String Currency = null;
+	private String Radius = null;
+	private String Rate = null;
+	private String Rebate = null;
+	private String RebateInPercent = null;
+	private String ResetPeriodicity = null;
+	private String Size = null;
+	private String Spot = null;
+	private String StartDate = null;
+	private String Strike = null;
+	private String StrikeInPercent = null;
+	private String Until = null;
+	// not in spec v1.8
+	private String NAV = null;	
+	private String Frequency = null;
+
+	public Leg() {
+	}
+	
+	public void setLabel(String label) {
+		Label = label;
+	}
+	
+	public void setMultiUnderlyingItemType(String multiUnderlyingItemType) {
+		MultiUnderlyingItemType = multiUnderlyingItemType;
+	}
+
+	public void setMultiUnderlyingItemIndex(String multiUnderlyingItemIndex) {
+		MultiUnderlyingItemIndex = multiUnderlyingItemIndex;
+	}
+
+	public void setBarrier(String barrier) {
+		Barrier = barrier;
+	}
+
+	public void setBarrierInPercent(String barrierInPercent) {
+		BarrierInPercent = barrierInPercent;
+	}
+
+	public void setCap(String cap) {
+		Cap = cap;
+	}
+
+	public void setCoupon(String coupon) {
+		Coupon = coupon;
+	}
+
+	public void setDelta(String delta) {
+		Delta = delta;
+	}
+
+	public void setDerivativeType(String derivativeType) {
+		DerivativeType = derivativeType;
+	}
+
+	public void setDividendRequirement(String dividendRequirement) {
+		DividendRequirement = dividendRequirement;
+	}
+
+	public void setEndOfBarrierDate(String endOfBarrierDate) {
+		EndOfBarrierDate = endOfBarrierDate;
+	}
+
+	public void setExpiryDate(String expiryDate) {
+		ExpiryDate = expiryDate;
+	}
+
+	public void setFutureBasis(String futureBasis) {
+		FutureBasis = futureBasis;
+	}
+
+	public void setFutureSpot(String futureSpot) {
+		FutureSpot = futureSpot;
+	}
+
+	public void setGarantee(String guarantee) {
+		Garantee = guarantee;
+	}
+
+	public void setKnockInBarrier(String knockInBarrier) {
+		KnockInBarrier = knockInBarrier;
+	}
+
+	public void setLeverage(String leverage) {
+		Leverage = leverage;
+	}
+
+	public void setLimitDown(String limitDown) {
+		LimitDown = limitDown;
+	}
+
+	public void setLimitUp(String limitUp) {
+		LimitUp = limitUp;
+	}
+
+	public void setMultiplier(String multiplier) {
+		Multiplier = multiplier;
+	}
+
+	public void setPeriodicity(String periodicity) {
+		Periodicity = periodicity;
+	}
+
+	public void setQuantoCurrency(String quantoCurrency) {
+		QuantoCurrency = quantoCurrency;
+	}
+
+	public void setCurrency(String currency) {
+		Currency = currency;
+	}
+
+	public void setRadius(String radius) {
+		Radius = radius;
+	}
+
+	public void setRate(String rate) {
+		Rate = rate;
+	}
+
+	public void setRebate(String rebate) {
+		Rebate = rebate;
+	}
+
+	public void setRebateInPercent(String rebateInPercent) {
+		RebateInPercent = rebateInPercent;
+	}
+
+	public void setResetPeriodicity(String resetPeriodicity) {
+		ResetPeriodicity = resetPeriodicity;
+	}
+
+	public void setSize(String size) {
+		Size = size;
+	}
+
+	public void setSpot(String spot) {
+		Spot = spot;
+	}
+
+	public void setStartDate(String startDate) {
+		StartDate = startDate;
+	}
+
+	public void setStrike(String strike) {
+		Strike = strike;
+	}
+
+	public void setStrikeInPercent(String strikeInPercent) {
+		StrikeInPercent = strikeInPercent;
+	}
+
+	public void setUntil(String until) {
+		Until = until;
+	}
+	
+	public void setNAV(String nAV) {
+		NAV = nAV;
+	}
+	
+	public void setFrequency(String frequency) {
+		Frequency = frequency;
+	}
+
+	@Override
+	public String toString() {
+		return "Leg [Label=" + Label + ", MultiUnderlyingItemType=" + MultiUnderlyingItemType
+				+ ", MultiUnderlyingItemIndex=" + MultiUnderlyingItemIndex + ", Barrier=" + Barrier
+				+ ", BarrierInPercent=" + BarrierInPercent + ", Cap=" + Cap + ", Coupon=" + Coupon + ", Delta=" + Delta
+				+ ", DerivativeType=" + DerivativeType + ", DividendRequirement=" + DividendRequirement
+				+ ", EndOfBarrierDate=" + EndOfBarrierDate + ", ExpiryDate=" + ExpiryDate + ", FutureBasis="
+				+ FutureBasis + ", FutureSpot=" + FutureSpot + ", Garantee=" + Garantee + ", KnockInBarrier="
+				+ KnockInBarrier + ", Leverage=" + Leverage + ", LimitDown=" + LimitDown + ", LimitUp=" + LimitUp
+				+ ", Multiplier=" + Multiplier + ", Periodicity=" + Periodicity + ", QuantoCurrency=" + QuantoCurrency
+				+ ", Currency=" + Currency + ", Radius=" + Radius + ", Rate=" + Rate + ", Rebate=" + Rebate
+				+ ", RebateInPercent=" + RebateInPercent + ", ResetPeriodicity=" + ResetPeriodicity + ", Size=" + Size
+				+ ", Spot=" + Spot + ", StartDate=" + StartDate + ", Strike=" + Strike + ", StrikeInPercent="
+				+ StrikeInPercent + ", Until=" + Until + ", NAV=" + NAV + ", Frequency=" + Frequency + "]";
+	}
+
+	public static void parseXmlElement(Element root) {	// root = <Legs>
+		
+		NodeList nodes = root.getChildNodes();
+		int lenNodes = nodes.getLength();
+		
+		NamedNodeMap m = root.getAttributes();
+		int len = m.getLength();
+		for (int j=0; j<len; j++) {
+			Node n = m.item(j);
+			String nodeName = n.getNodeName();
+			try {
+				Field field = Leg.class.getDeclaredField(nodeName);
+				Method setter = Leg.class.getMethod("set" + nodeName, field.getType());
+				setter.invoke(t, n.getTextContent());
+			} catch (NoSuchFieldException e) {
+				System.out.println("NoSuchFieldException:" + e.getMessage());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		for (int l = 0; l < lenNodes; l++) {	// elements
+			Node n = nodes.item(l);
+			
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				String nodeName = n.getNodeName();
+				try {
+					Field field = t.getClass().getDeclaredField(nodeName);
+					Method setter = t.getClass().getMethod(
+							"set" + nodeName,
+//							"set" + nodeName.substring(0, 1).toUpperCase() + nodeName.substring(1),
+							field.getType());
+					setter.invoke(t, n.getTextContent());
+					
+				} catch (NoSuchFieldException e) {
+					System.out.println("NoSuchFieldException:" + e.getMessage());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+//				System.out.println(n4.getNodeName() + "=" + n4.getTextContent());
+			}
+		}
+		System.out.println(t.toString());
+	}
+	
+}

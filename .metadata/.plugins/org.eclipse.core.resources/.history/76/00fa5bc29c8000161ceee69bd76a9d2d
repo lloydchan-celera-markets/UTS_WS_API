@@ -1,0 +1,32 @@
+package com.vectails.data;
+
+public class Underlying implements IXmlParser{
+	private String FinancialMarketCode = null;
+	private String UnderlyingTypeCode = null;
+	private String Code = null;
+	private String Name = null;
+	private String Reuters = null;
+	private String ISIN = null;
+	private String Bloomberg = null;
+	private String IsObsolete = null;
+	private String HasFutures = null;
+	private String LastUpdateDateTime = null;
+	
+//	public Currency(String code, String name) {
+//		this.code = code;
+//		this.name = name;
+//	}
+
+	public void setCode(String code) {
+		Code = code;
+	}
+
+	public void setName(String name) {
+		Name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Currency [Code=" + Code + ", Name=" + Name + "]";
+	}
+}

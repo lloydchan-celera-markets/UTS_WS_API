@@ -1,0 +1,40 @@
+package com.vectails.data;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class Legs extends GenericXmlContainer<Leg> implements IXmlParser {
+
+	public Legs() {
+		super(Leg.class);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Legs [");
+		for (Leg l: myList) {
+			sb.append(l.toString()).append(", ");
+		}
+		sb.append("] ");
+		return sb.toString();
+	}
+	
+	@Override
+	public void parseLeaveNodes(Element root) {	// root = <Legs>
+		NodeList nodes = root.getChildNodes();
+		int lenNodes = nodes.getLength();
+		
+		for (int k = 0; k < lenNodes; k++) {
+			Node n = nodes.item(k);
+			
+			if (n.getNodeType() == Node.ELEMENT_NODE 
+					&& IXmlTag.Leg.toString().equals(n.getNodeName())) {	// process each <Leg>
+				Leg leg = new Leg();
+				leg.parseLeaveNodes((Element)n);
+				myList.add(leg);
+			}
+		}
+	}
+}

@@ -1,0 +1,8 @@
+package com.celera.core.common;
+
+public class XNodeFactory
+{
+	public T build() throws InstantiationException, IllegalAccessException {
+		return clazz.newInstance();
+	}
+}

@@ -1,0 +1,36 @@
+package com.vectails.data;
+
+public class AllowedQuoteCreators implements IXmlParser{
+	private String ExpiryDate = null;
+	private String IndexCode = null;
+	private String IndexFinancialMarketCode = null;
+	private String IndexUnderlyingTypeCode = null;
+	private String LastUpdateDateTime = null;
+	
+	public void setExpiryDate(String expiryDate) {
+		ExpiryDate = expiryDate;
+	}
+
+	public void setIndexCode(String indexCode) {
+		IndexCode = indexCode;
+	}
+
+	public void setIndexFinancialMarketCode(String indexFinancialMarketCode) {
+		IndexFinancialMarketCode = indexFinancialMarketCode;
+	}
+
+	public void setIndexUnderlyingTypeCode(String indexUnderlyingTypeCode) {
+		IndexUnderlyingTypeCode = indexUnderlyingTypeCode;
+	}
+
+	public void setLastUpdateDateTime(String lastUpdateDateTime) {
+		LastUpdateDateTime = lastUpdateDateTime;
+	}
+
+	@Override
+	public String toString() {
+		return "IndexFuture [ExpiryDate=" + ExpiryDate + ", IndexCode=" + IndexCode + ", IndexFinancialMarketCode="
+				+ IndexFinancialMarketCode + ", IndexUnderlyingTypeCode=" + IndexUnderlyingTypeCode
+				+ ", LastUpdateDateTime=" + LastUpdateDateTime + "]";
+	}
+}

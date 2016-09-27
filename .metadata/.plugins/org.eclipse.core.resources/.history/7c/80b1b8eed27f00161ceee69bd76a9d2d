@@ -1,0 +1,7 @@
+package com.vectails.data;
+
+public interface IXmlNodeTag {
+	private static final String XML_NODE_CURRENCY = "Currency"; 
+	private static final String XML_ATTR_NAME = "Code"; 
+	private static final String XML_ATTR_CODE = "Name"; 
+}
