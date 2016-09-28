@@ -1,6 +1,6 @@
 package com.vectails.message;
 
-public class MessageBuilder
+public class UtsApiMessageBuilder
 {
 	public static final String ENTITY_CODE = "CELERA";
 	public static final String CLIENT_CODE = "DACTEST";

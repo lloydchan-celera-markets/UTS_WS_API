@@ -11,7 +11,6 @@ import org.w3c.dom.NodeList;
 
 import com.vectails.common.IGenericFactory;
 
-//public interface IXmlNode<T>
 public interface IXmlNode
 {
 	public default void parseAttribute(Element root)
@@ -53,7 +52,8 @@ public interface IXmlNode
 		NodeList nodes = root.getChildNodes();
 		int lenNodes = nodes.getLength();
 		for (int l = 0; l < lenNodes; l++)
-		{ // elements
+		{
+			// elements
 			Node n = nodes.item(l);
 
 			if (n.getNodeType() == Node.ELEMENT_NODE)
@@ -66,17 +66,11 @@ public interface IXmlNode
 
 					if (Collection.class.isAssignableFrom(field.getType()))
 					{
-						// IXmlNode o = (IXmlNode)
-						// GenericFactory.build("com.vectails.data.IXmlParser$"
-						// + nodeName);
-
-						// ((IGenericFactory)
-						// this).setClass(Class.forName("com.vectails.data.IXmlParser$"
-						// + nodeName));
-//						IXmlNode o = (IXmlNode) ((IGenericFactory) this).build();
-						IXmlNode o = (IXmlNode)((IGenericFactory) this).build(IXmlTag.PACKAGE_XML_DATA_PREFIX + nodeName);	
+						// IXmlNode o = (IXmlNode) ((IGenericFactory)this).build();
+						IXmlNode o = (IXmlNode) ((IGenericFactory) this)
+								.build(IXmlTag.PACKAGE_XML_DATA_PREFIX + nodeName);
 						o.parseNode((Element) n);
-						
+
 						Object obj = field.get(this);
 						Method m = field.getType().getDeclaredMethod("add", Object.class);
 						m.invoke(obj, o);
@@ -92,41 +86,4 @@ public interface IXmlNode
 			}
 		}
 	}
-	
-//		public default void parseNode(Element root)
-//		{ // root = <Legs>
-//			
-//			String nodeName = root.getNodeName();
-//			
-//			NodeList nodes = root.getChildNodes();
-//			int lenNodes = nodes.getLength();
-//			for (int l = 0; l < lenNodes; l++)
-//			{ // elements
-//				Node n = nodes.item(l);
-//				
-//				if (n.getNodeType() == Node.ELEMENT_NODE)
-//				{
-//					nodeName = n.getNodeName();
-//					try
-//					{
-//						Class<?> clazz = Class.forName("com.vectails.data.IXmlParser$" + nodeName);
-//						if (IGenericFactory.class.isAssignableFrom(clazz) && IXmlNode.class.isAssignableFrom(clazz))
-//						{
-//							try
-//							{
-//								IGenericFactory o = (IGenericFactory) clazz.newInstance();
-//								((IXmlNode) o).parseNode((Element) n);
-//								System.out.println(nodeName);
-//							} catch (InstantiationException | IllegalAccessException e)
-//							{
-//								e.printStackTrace();
-//							}
-//						}
-//					} catch (ClassNotFoundException e)
-//					{
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}
-	}
+}
