@@ -3,9 +3,10 @@ package com.vectails.session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vectails.message.UtsApiMessageBuilder;
-import com.vectails.message.UtsApiMessageProcessor;
+import com.vectails.message.UtsDirectAccessMessageProcessor;
+import com.vectails.data.StaticDataManager;
 import com.vectails.message.UtsDirectAccessMessage;
+import com.vectails.message.UtsDirectAccessMessageBuilder;
 import com.vectails.xml.IXmlNode;
 import com.vectalis.B2TDataModel;
 import com.vectalis.B2TDataModelSoap;
@@ -13,9 +14,6 @@ import com.vectalis.B2TDataModelSoap;
 public final class UtsDirectAccessClient
 {
 	final static Logger logger = LoggerFactory.getLogger(UtsDirectAccessClient.class);
-	final static StringBuilder sb = new StringBuilder();
-	
-	private UtsDirectAccessSession sess;
 	
 	public static final String ENTITY_CODE = "CELERA";
 	public static final String CLIENT_CODE = "DACTEST";
@@ -23,12 +21,15 @@ public final class UtsDirectAccessClient
 	public static final String SESSION_ID = "7df96e02-e058-4212-a822-bd3cce2a87db";
 	public static final String CLIENT_VERSION = "UtsDacV1.8";
 	
+	final private UtsDirectAccessSession sess;
+	
 	private B2TDataModel service = null;
 	private B2TDataModelSoap port = null;
 	
 	public UtsDirectAccessClient()
 	{
 		sess = new UtsDirectAccessSession(ENTITY_CODE, CLIENT_CODE, PASSWORD, SESSION_ID, CLIENT_VERSION);
+		UtsDirectAccessMessageProcessor.setCallback(sess);
 	}
 
 	public void connect() 
@@ -42,25 +43,32 @@ public final class UtsDirectAccessClient
 	public void login()
 	{
 		// login
-		String resp = port.updateDirectAccess(UtsApiMessageBuilder.buildLogin());
-		IXmlNode o = UtsApiMessageProcessor.parseXml(resp);
+		String resp = port.updateDirectAccess(UtsDirectAccessMessageBuilder.buildLogin(sess));
+		IXmlNode o = UtsDirectAccessMessageProcessor.parseXml(resp);
+		UtsDirectAccessMessageProcessor.dispatch(o);
 		
-		logger.info(o.toString());
+		logger.debug("login() {}", o.toString());
+		
+System.out.println(resp); 
 	}
 	
 	public void poll()
 	{
-		String resp = port.getAllMyEntityQuotesDirectAccess(UtsApiMessageBuilder.buildGetAllQuotes());
+//		while (true) 
+//		{
+//			
+//		}
+		String resp = port.getAllMyEntityQuotesDirectAccess(UtsDirectAccessMessageBuilder.buildGetAllQuotes(sess));
 		// System.out.println(resp);
-		UtsApiMessageProcessor.parseXml(resp);
+		UtsDirectAccessMessageProcessor.parseXml(resp);
 
-		resp = port.getAllMyEntityQuotesDirectAccessDelta(UtsApiMessageBuilder.buildGetAllQuotesDelta());
+		resp = port.getAllMyEntityQuotesDirectAccessDelta(UtsDirectAccessMessageBuilder.buildGetAllQuotesDelta(sess));
 		// System.out.println(resp);
-		UtsApiMessageProcessor.parseXml(resp);
+		UtsDirectAccessMessageProcessor.parseXml(resp);
 
-		resp = port.getAllMyRepliesDirectAccess(UtsApiMessageBuilder.buildGetAllMyReplies());
+		resp = port.getAllMyRepliesDirectAccess(UtsDirectAccessMessageBuilder.buildGetAllMyReplies(sess));
 		// System.out.println(resp);
-		UtsApiMessageProcessor.parseXml(resp);
+		UtsDirectAccessMessageProcessor.parseXml(resp);
 
 		// port.getLoginGenericURL(new String());
 		resp = port.ping();
@@ -70,9 +78,9 @@ public final class UtsDirectAccessClient
 	public void logout()
 	{
 		// logout
-		String resp = port.updateDirectAccess(UtsApiMessageBuilder.buildLogout());
+		String resp = port.updateDirectAccess(UtsDirectAccessMessageBuilder.buildLogout(sess));
 		// System.out.println(resp);
-		UtsApiMessageProcessor.parseXml(resp);
+		UtsDirectAccessMessageProcessor.parseXml(resp);
 	}
 	
 	public static void main(String args[]) throws Exception
@@ -81,6 +89,9 @@ public final class UtsDirectAccessClient
 		client.connect();
 		client.login();
 		
+		client.poll();
+//StaticDataManager.print();
+
 //		B2TDataModel utsService = new B2TDataModel();
 //		B2TDataModelSoap port = utsService.getB2TDataModelSoap();
 //

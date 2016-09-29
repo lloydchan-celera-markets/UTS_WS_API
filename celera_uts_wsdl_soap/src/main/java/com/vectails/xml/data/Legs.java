@@ -12,11 +12,16 @@ import com.vectails.xml.IXmlNode;
 
 public class Legs extends GenericFactory implements IXmlNode
 {
-	List<Leg> Leg = new ArrayList<Leg>();
+	List<IXmlNode> Leg = new ArrayList<IXmlNode>();
 	
 	public Legs()
 	{
 		super(Leg.class);
+	}
+
+	public List<IXmlNode> getLeg()
+	{
+		return Leg;
 	}
 
 //	@Override

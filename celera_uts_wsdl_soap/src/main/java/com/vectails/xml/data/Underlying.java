@@ -1,9 +1,13 @@
 package com.vectails.xml.data;
 
+import java.time.LocalDate;
+
 import com.vectails.common.GenericFactory;
+import com.vectails.message.ICommonFields;
+import com.vectails.xml.INodeUpdateListener;
 import com.vectails.xml.IXmlNode;
 
-public class Underlying extends GenericFactory implements IXmlNode
+public class Underlying extends GenericFactory implements IXmlNode, INodeUpdateListener
 {
 	public Underlying()
 	{
@@ -109,5 +113,11 @@ public class Underlying extends GenericFactory implements IXmlNode
 	public String getLastUpdateDateTime()
 	{
 		return LastUpdateDateTime;
+	}
+	
+	@Override
+	public LocalDate getLastTime()
+	{
+		return LocalDate.parse(LastUpdateDateTime, ICommonFields.DT_FORMATTER);
 	}
 }

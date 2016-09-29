@@ -14,4 +14,9 @@ public class Underlyings extends GenericFactory implements IXmlNode
 	{
 		super(Underlying.class);
 	}
+
+	public List<IXmlNode> getUnderlying()
+	{
+		return Underlying;
+	}
 }

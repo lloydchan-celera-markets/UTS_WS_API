@@ -1,40 +1,66 @@
 package com.celera.core.dm;
 
-public class Instrument
+import java.time.LocalDate;
+
+public class Instrument implements IInstrument
 {
-	private final String key;
-	private final String market;
-	private final String symbol;
-	private final String name;
-	private final String ISIN;
-	private final String BLOOMBERG_CODE;
-	private final String RIC;
-	private EStatus status;
-	private Long lastUpdate;
-	
-	public Instrument(String key, String market, String symbol, String name, String iSIN, String bLOOMBERG_CODE,
-			String rIC)
+	protected final String market;
+	protected final String symbol;
+	protected final EInstrumentType type;
+	protected final String name;
+	protected final String ISIN;
+	protected final String BLOOMBERG_CODE;
+	protected final String RIC;
+	protected EStatus status;
+	protected LocalDate lastUpdate;
+
+	public Instrument(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE, String rIC,
+			LocalDate lastUpdate)
 	{
-		this.key = key;
 		this.market = market;
 		this.symbol = symbol;
+		this.type = type;
 		this.name = name;
 		ISIN = iSIN;
 		BLOOMBERG_CODE = bLOOMBERG_CODE;
 		RIC = rIC;
 		status = EStatus.CLOSE;
-		lastUpdate = 0L;
+		this.lastUpdate = lastUpdate;
 	}
 
+	@Override
+	public String key()
+	{
+		return market + "_" + symbol;
+	}
+	
+	@Override
 	public void setStatus(EStatus status)
 	{
-		if (System.currentTimeMillis() > this.lastUpdate)
+		LocalDate now = LocalDate.now();
+		if (now.isAfter(this.lastUpdate))
+		{
 			this.status = status;
+			this.lastUpdate = now;
+		}
 	}
 
-	public void setLastUpdate(Long lastUpdate)
+	public LocalDate getLastUpdate()
 	{
-		if (lastUpdate > this.lastUpdate)
-			this.lastUpdate = lastUpdate;
+		return lastUpdate;
+	}
+
+	@Override
+	public EStatus getStatus()
+	{
+		return this.status;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Instrument [market=" + market + ", symbol=" + symbol + ", type=" + type + ", name=" + name + ", ISIN="
+				+ ISIN + ", BLOOMBERG_CODE=" + BLOOMBERG_CODE + ", RIC=" + RIC + ", status=" + status + ", lastUpdate="
+				+ lastUpdate + "]";
 	}
 }

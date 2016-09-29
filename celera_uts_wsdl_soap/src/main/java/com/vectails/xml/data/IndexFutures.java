@@ -15,4 +15,9 @@ public class IndexFutures extends GenericFactory implements IXmlNode
 	}
 
 	List<IXmlNode> IndexFuture = new ArrayList<IXmlNode>();
+
+	public List<IXmlNode> getIndexFuture()
+	{
+		return IndexFuture;
+	}
 }

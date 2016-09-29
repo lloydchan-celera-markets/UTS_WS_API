@@ -1,13 +1,16 @@
 package com.vectails.xml.data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.vectails.common.GenericFactory;
+import com.vectails.message.ICommonFields;
+import com.vectails.xml.INodeUpdateListener;
 import com.vectails.xml.IXmlNode;
 
 @SuppressWarnings("rawtypes")
-public class DerivativeType extends GenericFactory implements IXmlNode
+public class DerivativeType extends GenericFactory implements IXmlNode, INodeUpdateListener
 {
 	public DerivativeType()
 	{
@@ -24,7 +27,7 @@ public class DerivativeType extends GenericFactory implements IXmlNode
 
 	private String ParameterString = null;
 
-	List<Legs> Legs = new ArrayList<Legs>();
+	List<IXmlNode> Legs = new ArrayList<IXmlNode>();
 	
 //	@Override
 //	public String toString() {
@@ -84,7 +87,7 @@ public class DerivativeType extends GenericFactory implements IXmlNode
 		return ParameterString;
 	}
 
-	public List<Legs> getLegs()
+	public List<IXmlNode> getLegs()
 	{
 		return Legs;
 	}
@@ -127,6 +130,12 @@ public class DerivativeType extends GenericFactory implements IXmlNode
 	public void setParameterString(String parameterString)
 	{
 		ParameterString = parameterString;
+	}
+	
+	@Override
+	public LocalDate getLastTime()
+	{
+		return LocalDate.parse(LastUpdateDateTime, ICommonFields.DT_FORMATTER);
 	}
 	
 //	@Override

@@ -2,6 +2,7 @@ package com.vectails.xml;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.Collection;
 
 import org.w3c.dom.Element;

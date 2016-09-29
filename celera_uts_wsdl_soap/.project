@@ -3,6 +3,7 @@
 	<name>uts_wsdl_soap</name>
 	<comment></comment>
 	<projects>
+		<project>celera_core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

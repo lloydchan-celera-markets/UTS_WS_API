@@ -3,21 +3,30 @@ package com.vectails.session;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class UtsDirectAccessSession {
+import com.celera.core.dm.IInstrument;
+import com.vectails.xml.INodeUpdateListener;
+import com.vectails.xml.IXmlNode;
+import com.vectails.xml.data.Addressee;
+import com.vectails.xml.data.DerivativeType;
+import com.vectails.xml.data.IndexFuture;
+import com.vectails.xml.data.Underlying;
+
+public class UtsDirectAccessSession implements IOnUpdateNode {
 
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-	
+
 	private final String EntityCode;
 	private final String ClientCode;
 	private final String Password;
 	private final String SessionId;
 	private final String ClientVersion;
+	
 	private String TimeOfLastRecoveredQuotes;
 
-	private LocalDate lastAddresseeTime = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
-	private LocalDate lastUnderlyingTime = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
-	private LocalDate lastDerivativeTypeTime = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
-	private LocalDate lastIndexFutureTime = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
+	private volatile LocalDate addresseeLT = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
+	private volatile LocalDate underlyingLT = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
+	private volatile LocalDate derivTypeLT = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
+	private volatile LocalDate idxFutureLT = LocalDate.parse("2000-01-01 00:00:00.000", formatter);
 
 	// =\"CELERA\" ClientCode=\"DACTEST\" Password=\"uat\"
 	// Command=\"OpenDirectAccessSession\"
@@ -35,28 +44,104 @@ public class UtsDirectAccessSession {
 		TimeOfLastRecoveredQuotes = null;
 	}
 
-	public void setLastAddresseeTime(String last) {
-		LocalDate d = LocalDate.parse(last, formatter);
-		if (d.isAfter(this.lastAddresseeTime))
-			lastAddresseeTime = d;
+	public static DateTimeFormatter getFormatter() {
+		return formatter;
 	}
 
-	public void setLastUnderlyingTime(String last) {
-		LocalDate d = LocalDate.parse(last, formatter);
-		if (d.isAfter(this.lastUnderlyingTime))
-			lastUnderlyingTime = d;
+	public String getEntityCode() {
+		return EntityCode;
 	}
 
-	public void setLastDerivativeTypeTime(String last) {
-		LocalDate d = LocalDate.parse(last, formatter);
-		if (d.isAfter(this.lastDerivativeTypeTime))
-			lastDerivativeTypeTime = d;
+	public String getClientCode() {
+		return ClientCode;
 	}
 
-	public void setLastIndexFutureTime(String last) {
-		LocalDate d = LocalDate.parse(last, formatter);
-		if (d.isAfter(this.lastIndexFutureTime))
-			lastIndexFutureTime = d;
+	public String getPassword() {
+		return Password;
+	}
+
+	public String getSessionId() {
+		return SessionId;
+	}
+
+	public String getClientVersion() {
+		return ClientVersion;
+	}
+
+	public String getTimeOfLastRecoveredQuotes()
+	{
+		return TimeOfLastRecoveredQuotes;
+	}
+
+	public LocalDate getAddresseeLT()
+	{
+		return addresseeLT;
+	}
+
+	public LocalDate getUnderlyingLT()
+	{
+		return underlyingLT;
+	}
+
+	public LocalDate getDerivTypeLT()
+	{
+		return derivTypeLT;
+	}
+
+	public LocalDate getIdxFutureLT()
+	{
+		return idxFutureLT;
+	}
+
+	@Override
+	public void onUpdateNode(INodeUpdateListener listener)
+	{
+		LocalDate ld = listener.getLastTime();
+		if (listener instanceof Underlying)
+		{
+			setUnderlyingLT(ld);
+		} else if (listener instanceof DerivativeType)
+		{
+			setDerivTypeLT(ld);
+		} else if (listener instanceof Addressee)
+		{
+			setAddresseeLT(ld);
+		} else if (listener instanceof IndexFuture)
+		{
+			setIdxFutureLT(ld);
+		}
+	}
+	
+	public void setAddresseeLT(LocalDate last)
+	{
+		if (last.isAfter(this.addresseeLT)) {
+			addresseeLT = last;
+			System.out.println("Addressee LastTime=" + last);
+		}
+	}
+
+	public void setDerivTypeLT(LocalDate last)
+	{
+		if (last.isAfter(this.derivTypeLT)) {
+			derivTypeLT = last;
+			System.out.println("DerivativeType LastTime=" + last);
+		}
+	}
+
+	public void setUnderlyingLT(LocalDate last)
+	{
+		if (last.isAfter(this.underlyingLT)) {
+			underlyingLT = last;
+			System.out.println("Underlying LastTime=" + last);
+		}
+	}
+
+	public void setIdxFutureLT(LocalDate last)
+	{
+		if (last.isAfter(this.idxFutureLT)) {
+			idxFutureLT = last;
+			System.out.println("IndexFuture LastTime=" + last);
+		}
 	}
 
 	public void setTimeOfLastRecoveredQuotes(String timeOfLastRecoveredQuotes) {
@@ -68,7 +153,7 @@ public class UtsDirectAccessSession {
 		return "UtsDirectAccessSession [EntityCode=" + EntityCode + ", ClientCode=" + ClientCode + ", Password="
 				+ Password + ", SessionId=" + SessionId + ", ClientVersion=" + ClientVersion
 				+ ", TimeOfLastRecoveredQuotes=" + TimeOfLastRecoveredQuotes + ", lastAddresseeTime="
-				+ lastAddresseeTime + ", lastUnderlyingTime=" + lastUnderlyingTime + ", lastDerivativeTypeTime="
-				+ lastDerivativeTypeTime + ", lastIndexFutureTime=" + lastIndexFutureTime + "]";
+				+ addresseeLT + ", lastUnderlyingTime=" + underlyingLT + ", lastDerivativeTypeTime="
+				+ derivTypeLT + ", lastIndexFutureTime=" + idxFutureLT + "]";
 	}
 }
