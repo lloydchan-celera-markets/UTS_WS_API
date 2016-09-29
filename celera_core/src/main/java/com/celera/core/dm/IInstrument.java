@@ -8,5 +8,7 @@ public interface IInstrument
 	public void setStatus(EStatus status);
 	public EStatus getStatus();
 	public LocalDate getLastUpdate();
+	public String getName();
+	public EInstrumentType getType();
 	public String toString();
 }

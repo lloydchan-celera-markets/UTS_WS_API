@@ -2,7 +2,7 @@ package com.celera.core.dm;
 
 public enum EInstrumentType 
 {
-	UNKNOWN("Unknown"),
+	OPTION("Option"),	// default
 	
 	// underlyings
 	STOCK("Stock"),

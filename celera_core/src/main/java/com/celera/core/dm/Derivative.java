@@ -2,15 +2,18 @@ package com.celera.core.dm;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-public class Derivative extends Instrument
+public class Derivative extends Instrument implements IDerivative
 {
-	protected final String strike;
-	protected final String expiry;
-	protected final Double price;
+	protected String strike;
+	protected String expiry;
+	protected Double price;
 	protected final Boolean isPriceInPercent;
-	protected List<Leg> legs = new ArrayList<Leg>();
+	protected Map<String, Leg> legs = new HashMap<String, Leg>();
 
 	public Derivative(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE,
 			String rIC, LocalDate lastUpdate, String strike, String expiry, Double price,
@@ -23,11 +26,20 @@ public class Derivative extends Instrument
 		this.isPriceInPercent = isPriceInPercent;
 	}
 	
-	public void addLeg(IInstrument leg)
+	/**
+	 * @param code   , flexible API, allow caller determine leg id
+	 * @param leg
+	 */
+	public void addLeg(String id, IInstrument leg)
 	{
-		legs.add((Leg) leg);
+		legs.put(id, (Leg) leg);
 	}
 
+	public Leg getLeg(String key) 
+	{
+		return legs.get(key);
+	}
+	
 	@Override
 	public String key()
 	{
@@ -43,11 +55,27 @@ public class Derivative extends Instrument
 		String s = super.toString();
 		s += "Derivative [strike=" + strike + ", expiry=" + expiry + ", price=" + price + ", isPriceInPercent="
 				+ isPriceInPercent + ", Legs[";
-		for (Leg g : legs)
+		for (Leg e : legs.values())
 		{
-			s += g.toString() + ",";
+			s += e.toString() + ",";
 		}
 		s += "]] ";
 		return s;
+	}
+
+	@Override
+	public void setPrice(Double price)
+	{
+		this.price = price;
+	}
+
+	public void setStrike(String strike)
+	{
+		this.strike = strike;
+	}
+
+	public void setExpiry(String expiry)
+	{
+		this.expiry = expiry;
 	}
 }

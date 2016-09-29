@@ -1,24 +1,14 @@
 package com.vectails.xml.data;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.vectails.common.GenericFactory;
 import com.vectails.xml.IXmlNode;
+import com.vectails.xml.data.tag.ParameterTag;
 
 public class Leg extends GenericFactory  implements IXmlNode
 {
-
 	// attributes (Quotes)
 	private String Name = null;
 	private String Index = null;
@@ -29,44 +19,52 @@ public class Leg extends GenericFactory  implements IXmlNode
 	private String MultiUnderlyingItemIndex = null;
 
 	// elements (DerivativeType)
-	private String Barrier = null;
-	private String BarrierInPercent = null;
-	private String Cap = null;
-	private String Coupon = null;
+	private String QuantoCurrency = null;
+	private String Radius = null;
 	private String Delta = null;
-	private String DerivativeType = null;
-	private String DividendRequirement = null;
-	private String EndOfBarrierDate = null;
-	private String ExpiryDate = null;
 	private String FutureBasis = null;
 	private String FutureSpot = null;
-	private String Garantee = null;
-	private String KnockInBarrier = null;
-	private String Leverage = null;
-	private String LimitDown = null;
-	private String LimitUp = null;
-	private String Multiplier = null;
-	private String Periodicity = null;
-	private String QuantoCurrency = null;
-	private String Currency = null;
-	private String Radius = null;
-	private String Rate = null;
-	private String Rebate = null;
-	private String RebateInPercent = null;
-	private String ResetPeriodicity = null;
 	private String Size = null;
 	private String Spot = null;
-	private String StartDate = null;
-	private String Strike = null;
-	private String StrikeInPercent = null;
 	private String Until = null;
+	
+	private ParameterTag Barrier = null;
+	private ParameterTag BarrierInPercent = null;
+	private ParameterTag Cap = null;
+	private ParameterTag Coupon = null;
+
+	private ParameterTag DerivativeType = null;
+	private ParameterTag DividendRequirement = null;
+	private ParameterTag EndOfBarrierDate = null;
+	
+	@LegMapping(value = {"setExpiry","java.lang.String",""})
+	private ParameterTag ExpiryDate = null;
+	@LegMapping(value = {"setMultiplier","java.lang.Double","valueOf"})
+	private ParameterTag Multiplier = null;
+	@LegMapping(value = {"setStrike","java.lang.String",""})
+	private ParameterTag Strike = null;
+	
+	private ParameterTag Garantee = null;
+	private ParameterTag KnockInBarrier = null;
+	private ParameterTag Leverage = null;
+	private ParameterTag LimitDown = null;
+	private ParameterTag LimitUp = null;
+	private ParameterTag Periodicity = null;
+	private ParameterTag Currency = null;
+	private ParameterTag Rate = null;
+	private ParameterTag Rebate = null;
+	private ParameterTag RebateInPercent = null;
+	private ParameterTag ResetPeriodicity = null;
+	private ParameterTag StartDate = null;
+	private ParameterTag StrikeInPercent = null;
+
 	// not in spec v1.8
-	private String NAV = null;
-	private String Frequency = null;
+	private ParameterTag NAV = null;
+	private ParameterTag Frequency = null;
 
 	// elements (DerivativeType)
-	List<IXmlNode> LegDerivative = new ArrayList<IXmlNode>();
-	List<IXmlNode> LegUnderlying = new ArrayList<IXmlNode>();
+	private List<IXmlNode> LegDerivative = new ArrayList<IXmlNode>();
+	private List<IXmlNode> LegUnderlying = new ArrayList<IXmlNode>();
 	
 	public Leg()
 	{
@@ -88,49 +86,9 @@ public class Leg extends GenericFactory  implements IXmlNode
 		MultiUnderlyingItemIndex = multiUnderlyingItemIndex;
 	}
 
-	public void setBarrier(String barrier)
-	{
-		Barrier = barrier;
-	}
-
-	public void setBarrierInPercent(String barrierInPercent)
-	{
-		BarrierInPercent = barrierInPercent;
-	}
-
-	public void setCap(String cap)
-	{
-		Cap = cap;
-	}
-
-	public void setCoupon(String coupon)
-	{
-		Coupon = coupon;
-	}
-
 	public void setDelta(String delta)
 	{
 		Delta = delta;
-	}
-
-	public void setDerivativeType(String derivativeType)
-	{
-		DerivativeType = derivativeType;
-	}
-
-	public void setDividendRequirement(String dividendRequirement)
-	{
-		DividendRequirement = dividendRequirement;
-	}
-
-	public void setEndOfBarrierDate(String endOfBarrierDate)
-	{
-		EndOfBarrierDate = endOfBarrierDate;
-	}
-
-	public void setExpiryDate(String expiryDate)
-	{
-		ExpiryDate = expiryDate;
 	}
 
 	public void setFutureBasis(String futureBasis)
@@ -143,74 +101,14 @@ public class Leg extends GenericFactory  implements IXmlNode
 		FutureSpot = futureSpot;
 	}
 
-	public void setGarantee(String guarantee)
-	{
-		Garantee = guarantee;
-	}
-
-	public void setKnockInBarrier(String knockInBarrier)
-	{
-		KnockInBarrier = knockInBarrier;
-	}
-
-	public void setLeverage(String leverage)
-	{
-		Leverage = leverage;
-	}
-
-	public void setLimitDown(String limitDown)
-	{
-		LimitDown = limitDown;
-	}
-
-	public void setLimitUp(String limitUp)
-	{
-		LimitUp = limitUp;
-	}
-
-	public void setMultiplier(String multiplier)
-	{
-		Multiplier = multiplier;
-	}
-
-	public void setPeriodicity(String periodicity)
-	{
-		Periodicity = periodicity;
-	}
-
 	public void setQuantoCurrency(String quantoCurrency)
 	{
 		QuantoCurrency = quantoCurrency;
 	}
 
-	public void setCurrency(String currency)
-	{
-		Currency = currency;
-	}
-
 	public void setRadius(String radius)
 	{
 		Radius = radius;
-	}
-
-	public void setRate(String rate)
-	{
-		Rate = rate;
-	}
-
-	public void setRebate(String rebate)
-	{
-		Rebate = rebate;
-	}
-
-	public void setRebateInPercent(String rebateInPercent)
-	{
-		RebateInPercent = rebateInPercent;
-	}
-
-	public void setResetPeriodicity(String resetPeriodicity)
-	{
-		ResetPeriodicity = resetPeriodicity;
 	}
 
 	public void setSize(String size)
@@ -223,34 +121,9 @@ public class Leg extends GenericFactory  implements IXmlNode
 		Spot = spot;
 	}
 
-	public void setStartDate(String startDate)
-	{
-		StartDate = startDate;
-	}
-
-	public void setStrike(String strike)
-	{
-		Strike = strike;
-	}
-
-	public void setStrikeInPercent(String strikeInPercent)
-	{
-		StrikeInPercent = strikeInPercent;
-	}
-
 	public void setUntil(String until)
 	{
 		Until = until;
-	}
-
-	public void setNAV(String nAV)
-	{
-		NAV = nAV;
-	}
-
-	public void setFrequency(String frequency)
-	{
-		Frequency = frequency;
 	}
 
 //	@Override
@@ -322,49 +195,9 @@ public class Leg extends GenericFactory  implements IXmlNode
 		return MultiUnderlyingItemIndex;
 	}
 
-	public String getBarrier()
-	{
-		return Barrier;
-	}
-
-	public String getBarrierInPercent()
-	{
-		return BarrierInPercent;
-	}
-
-	public String getCap()
-	{
-		return Cap;
-	}
-
-	public String getCoupon()
-	{
-		return Coupon;
-	}
-
 	public String getDelta()
 	{
 		return Delta;
-	}
-
-	public String getDerivativeType()
-	{
-		return DerivativeType;
-	}
-
-	public String getDividendRequirement()
-	{
-		return DividendRequirement;
-	}
-
-	public String getEndOfBarrierDate()
-	{
-		return EndOfBarrierDate;
-	}
-
-	public String getExpiryDate()
-	{
-		return ExpiryDate;
 	}
 
 	public String getFutureBasis()
@@ -377,74 +210,14 @@ public class Leg extends GenericFactory  implements IXmlNode
 		return FutureSpot;
 	}
 
-	public String getGarantee()
-	{
-		return Garantee;
-	}
-
-	public String getKnockInBarrier()
-	{
-		return KnockInBarrier;
-	}
-
-	public String getLeverage()
-	{
-		return Leverage;
-	}
-
-	public String getLimitDown()
-	{
-		return LimitDown;
-	}
-
-	public String getLimitUp()
-	{
-		return LimitUp;
-	}
-
-	public String getMultiplier()
-	{
-		return Multiplier;
-	}
-
-	public String getPeriodicity()
-	{
-		return Periodicity;
-	}
-
 	public String getQuantoCurrency()
 	{
 		return QuantoCurrency;
 	}
 
-	public String getCurrency()
-	{
-		return Currency;
-	}
-
 	public String getRadius()
 	{
 		return Radius;
-	}
-
-	public String getRate()
-	{
-		return Rate;
-	}
-
-	public String getRebate()
-	{
-		return Rebate;
-	}
-
-	public String getRebateInPercent()
-	{
-		return RebateInPercent;
-	}
-
-	public String getResetPeriodicity()
-	{
-		return ResetPeriodicity;
 	}
 
 	public String getSize()
@@ -457,34 +230,9 @@ public class Leg extends GenericFactory  implements IXmlNode
 		return Spot;
 	}
 
-	public String getStartDate()
-	{
-		return StartDate;
-	}
-
-	public String getStrike()
-	{
-		return Strike;
-	}
-
-	public String getStrikeInPercent()
-	{
-		return StrikeInPercent;
-	}
-
 	public String getUntil()
 	{
 		return Until;
-	}
-
-	public String getNAV()
-	{
-		return NAV;
-	}
-
-	public String getFrequency()
-	{
-		return Frequency;
 	}
 
 	public String getName()
@@ -507,57 +255,273 @@ public class Leg extends GenericFactory  implements IXmlNode
 		Index = index;
 	}
 
-//		@Override
-//		public void parseNode(Element root) // root = <Legs>
-//		{
-//			parseAttribute(root);
-//
-//			String nodeName = root.getNodeName();
-//
-//			NodeList nodes = root.getChildNodes();
-//			int lenNodes = nodes.getLength();
-//			for (int l = 0; l < lenNodes; l++)
-//			{ // elements
-//				Node n = nodes.item(l);
-//
-//				if (n.getNodeType() == Node.ELEMENT_NODE)
-//				{
-//					nodeName = n.getNodeName();
-//					try
-//					{
-//						Field field = this.getClass().getDeclaredField(nodeName);
-//
-//						if (Collection.class.isAssignableFrom(field.getType()))
-//						{
-//							IXmlNode o = (IXmlNode) this.build();
-//							o.parseNode((Element) n);
-//
-//						} else
-//						{
-//							Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
-//							setter.invoke(this, n.getTextContent());
-//						}
-//					} catch (Exception e)
-//					{
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}
-	
-	// public default void parseNode(Element root) { // root = <Legs>
-	//
-	// String nodeName = root.getNodeName();
-	// System.out.println(nodeName);
-	//
-	// NodeList nodes = root.getChildNodes();
-	// int lenNodes = nodes.getLength();
-	// for (int l = 0; l < lenNodes; l++) { // elements
-	// Node n = nodes.item(l);
-	//
-	// if (n.getNodeType() == Node.ELEMENT_NODE) {
-	// parseNode((Element)n);
-	// }
-	// }
-	// }
+	public void setBarrier(ParameterTag barrier)
+	{
+		Barrier = barrier;
+	}
+
+	public void setBarrierInPercent(ParameterTag barrierInPercent)
+	{
+		BarrierInPercent = barrierInPercent;
+	}
+
+	public void setCap(ParameterTag cap)
+	{
+		Cap = cap;
+	}
+
+	public ParameterTag getBarrier()
+	{
+		return Barrier;
+	}
+
+	public ParameterTag getBarrierInPercent()
+	{
+		return BarrierInPercent;
+	}
+
+	public ParameterTag getCap()
+	{
+		return Cap;
+	}
+
+	public ParameterTag getCoupon()
+	{
+		return Coupon;
+	}
+
+	public void setCoupon(ParameterTag coupon)
+	{
+		Coupon = coupon;
+	}
+
+	public ParameterTag getDerivativeType()
+	{
+		return DerivativeType;
+	}
+
+	public void setDerivativeType(ParameterTag derivativeType)
+	{
+		DerivativeType = derivativeType;
+	}
+
+	public ParameterTag getDividendRequirement()
+	{
+		return DividendRequirement;
+	}
+
+	public void setDividendRequirement(ParameterTag dividendRequirement)
+	{
+		DividendRequirement = dividendRequirement;
+	}
+
+	public ParameterTag getEndOfBarrierDate()
+	{
+		return EndOfBarrierDate;
+	}
+
+	public void setEndOfBarrierDate(ParameterTag endOfBarrierDate)
+	{
+		EndOfBarrierDate = endOfBarrierDate;
+	}
+
+	public ParameterTag getExpiryDate()
+	{
+		return ExpiryDate;
+	}
+
+	public void setExpiryDate(ParameterTag expiryDate)
+	{
+		ExpiryDate = expiryDate;
+	}
+
+	public ParameterTag getGarantee()
+	{
+		return Garantee;
+	}
+
+	public void setGarantee(ParameterTag garantee)
+	{
+		Garantee = garantee;
+	}
+
+	public ParameterTag getKnockInBarrier()
+	{
+		return KnockInBarrier;
+	}
+
+	public void setKnockInBarrier(ParameterTag knockInBarrier)
+	{
+		KnockInBarrier = knockInBarrier;
+	}
+
+	public ParameterTag getLeverage()
+	{
+		return Leverage;
+	}
+
+	public void setLeverage(ParameterTag leverage)
+	{
+		Leverage = leverage;
+	}
+
+	public ParameterTag getLimitDown()
+	{
+		return LimitDown;
+	}
+
+	public void setLimitDown(ParameterTag limitDown)
+	{
+		LimitDown = limitDown;
+	}
+
+	public ParameterTag getLimitUp()
+	{
+		return LimitUp;
+	}
+
+	public void setLimitUp(ParameterTag limitUp)
+	{
+		LimitUp = limitUp;
+	}
+
+	public ParameterTag getMultiplier()
+	{
+		return Multiplier;
+	}
+
+	public void setMultiplier(ParameterTag multiplier)
+	{
+		Multiplier = multiplier;
+	}
+
+	public ParameterTag getPeriodicity()
+	{
+		return Periodicity;
+	}
+
+	public void setPeriodicity(ParameterTag periodicity)
+	{
+		Periodicity = periodicity;
+	}
+
+	public ParameterTag getCurrency()
+	{
+		return Currency;
+	}
+
+	public void setCurrency(ParameterTag currency)
+	{
+		Currency = currency;
+	}
+
+	public ParameterTag getRate()
+	{
+		return Rate;
+	}
+
+	public void setRate(ParameterTag rate)
+	{
+		Rate = rate;
+	}
+
+	public ParameterTag getRebate()
+	{
+		return Rebate;
+	}
+
+	public void setRebate(ParameterTag rebate)
+	{
+		Rebate = rebate;
+	}
+
+	public ParameterTag getRebateInPercent()
+	{
+		return RebateInPercent;
+	}
+
+	public void setRebateInPercent(ParameterTag rebateInPercent)
+	{
+		RebateInPercent = rebateInPercent;
+	}
+
+	public ParameterTag getResetPeriodicity()
+	{
+		return ResetPeriodicity;
+	}
+
+	public void setResetPeriodicity(ParameterTag resetPeriodicity)
+	{
+		ResetPeriodicity = resetPeriodicity;
+	}
+
+	public ParameterTag getStartDate()
+	{
+		return StartDate;
+	}
+
+	public void setStartDate(ParameterTag startDate)
+	{
+		StartDate = startDate;
+	}
+
+	public ParameterTag getStrike()
+	{
+		return Strike;
+	}
+
+	public void setStrike(ParameterTag strike)
+	{
+		Strike = strike;
+	}
+
+	public ParameterTag getStrikeInPercent()
+	{
+		return StrikeInPercent;
+	}
+
+	public void setStrikeInPercent(ParameterTag strikeInPercent)
+	{
+		StrikeInPercent = strikeInPercent;
+	}
+
+	public ParameterTag getNAV()
+	{
+		return NAV;
+	}
+
+	public void setNAV(ParameterTag nAV)
+	{
+		NAV = nAV;
+	}
+
+	public ParameterTag getFrequency()
+	{
+		return Frequency;
+	}
+
+	public void setFrequency(ParameterTag frequency)
+	{
+		Frequency = frequency;
+	}
+
+	public List<IXmlNode> getLegDerivative()
+	{
+		return LegDerivative;
+	}
+
+	public void setLegDerivative(List<IXmlNode> legDerivative)
+	{
+		LegDerivative = legDerivative;
+	}
+
+	public List<IXmlNode> getLegUnderlying()
+	{
+		return LegUnderlying;
+	}
+
+	public void setLegUnderlying(List<IXmlNode> legUnderlying)
+	{
+		LegUnderlying = legUnderlying;
+	}
 }

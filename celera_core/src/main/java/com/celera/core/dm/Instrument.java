@@ -34,6 +34,11 @@ public class Instrument implements IInstrument
 		return market + "_" + symbol;
 	}
 	
+	public EInstrumentType getType()
+	{
+		return type;
+	}
+
 	@Override
 	public void setStatus(EStatus status)
 	{
@@ -43,6 +48,11 @@ public class Instrument implements IInstrument
 			this.status = status;
 			this.lastUpdate = now;
 		}
+	}
+
+	public String getName()
+	{
+		return name;
 	}
 
 	public LocalDate getLastUpdate()

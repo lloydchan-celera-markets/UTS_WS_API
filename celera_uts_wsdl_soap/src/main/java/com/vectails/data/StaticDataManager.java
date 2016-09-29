@@ -8,26 +8,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.celera.core.dm.IInstrument;
-import com.vectails.session.UtsDirectAccessClient;
 
 public class StaticDataManager
 {
 	final static Logger logger = LoggerFactory.getLogger(StaticDataManager.class);
 	
 	static Map<String, IInstrument> instrMap = new HashMap<String, IInstrument>();
+	static Map<String, String> paramString = new HashMap<String, String>();
 	
-	static public void add(IInstrument instr)
+	/**
+	 * @param id  flexible to client generated key
+	 * @param instr
+	 */
+	static public void add(String key, IInstrument instr)
 	{
-		String key = instr.key();
 		IInstrument old = instrMap.get(key);
 		if (old == null)
 		{
-			instrMap.put(instr.key(), instr);
+			instrMap.put(key, instr);
 			
 			logger.info(instr.toString());
 		}
 		else 
 			old.setStatus(instr.getStatus());
+	}
+	
+	static public IInstrument get(String key)
+	{
+		return instrMap.get(key);
+	}
+
+	static public void add(String type, String paramStr)
+	{
+		String old = paramString.get(type);
+		if (old != null)
+			System.out.println("=========not null=============");
+		paramString.put(type, paramStr);
 	}
 	
 	static public int size() {

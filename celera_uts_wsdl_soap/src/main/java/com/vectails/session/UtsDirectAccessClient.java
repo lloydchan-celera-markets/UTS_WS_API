@@ -3,10 +3,10 @@ package com.vectails.session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vectails.message.UtsDirectAccessMessageProcessor;
 import com.vectails.data.StaticDataManager;
 import com.vectails.message.UtsDirectAccessMessage;
 import com.vectails.message.UtsDirectAccessMessageBuilder;
+import com.vectails.message.processor.UtsDirectAccessMessageProcessor;
 import com.vectails.xml.IXmlNode;
 import com.vectalis.B2TDataModel;
 import com.vectalis.B2TDataModelSoap;
@@ -49,7 +49,7 @@ public final class UtsDirectAccessClient
 		
 		logger.debug("login() {}", o.toString());
 		
-System.out.println(resp); 
+System.out.println(o.toString()); 
 	}
 	
 	public void poll()

@@ -14,5 +14,9 @@ public class LegDerivativeItems extends GenericFactory implements IXmlNode
 	}
 
 	List<IXmlNode> LegDerivativeItem = new ArrayList<IXmlNode>();
-	
+
+	public List<IXmlNode> getLegDerivativeItem()
+	{
+		return LegDerivativeItem;
+	}
 }

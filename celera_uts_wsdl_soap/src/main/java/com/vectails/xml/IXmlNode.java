@@ -11,6 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.vectails.common.IGenericFactory;
+import com.vectails.xml.data.tag.ParameterTag;
 
 public interface IXmlNode
 {
@@ -47,8 +48,8 @@ public interface IXmlNode
 	public default void parseNode(Element root) // root = <Legs>
 	{
 		parseAttribute(root);
-
-		String nodeName = root.getNodeName();
+		
+		String nodeName = null;
 
 		NodeList nodes = root.getChildNodes();
 		int lenNodes = nodes.getLength();
@@ -64,7 +65,6 @@ public interface IXmlNode
 				{
 					Field field = this.getClass().getDeclaredField(nodeName);
 					field.setAccessible(true);
-
 					if (Collection.class.isAssignableFrom(field.getType()))
 					{
 						// IXmlNode o = (IXmlNode) ((IGenericFactory)this).build();
@@ -75,6 +75,22 @@ public interface IXmlNode
 						Object obj = field.get(this);
 						Method m = field.getType().getDeclaredMethod("add", Object.class);
 						m.invoke(obj, o);
+					} else if (ParameterTag.class.isAssignableFrom(field.getType()))
+					{
+						Node attr = n.getAttributes().getNamedItem("NameInString");
+						ParameterTag tag = new ParameterTag();
+						
+						if (attr != null)
+						{
+							String nameInString = attr.getTextContent();
+							tag.setNameInString(nameInString);
+						}
+
+						String value = n.getTextContent();
+						tag.setValue(value);
+						
+						Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
+						setter.invoke(this, tag);
 					} else
 					{
 						Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
@@ -87,4 +103,47 @@ public interface IXmlNode
 			}
 		}
 	}
+//	public default void parseNode(Element root) // root = <Legs>
+//	{
+//		parseAttribute(root);
+//
+//		String nodeName = root.getNodeName();
+//
+//		NodeList nodes = root.getChildNodes();
+//		int lenNodes = nodes.getLength();
+//		for (int l = 0; l < lenNodes; l++)
+//		{
+//			// elements
+//			Node n = nodes.item(l);
+//
+//			if (n.getNodeType() == Node.ELEMENT_NODE)
+//			{
+//				nodeName = n.getNodeName();
+//				try
+//				{
+//					Field field = this.getClass().getDeclaredField(nodeName);
+//					field.setAccessible(true);
+//
+//					if (Collection.class.isAssignableFrom(field.getType()))
+//					{
+//						// IXmlNode o = (IXmlNode) ((IGenericFactory)this).build();
+//						IXmlNode o = (IXmlNode) ((IGenericFactory) this)
+//								.build(IXmlTag.PACKAGE_XML_DATA_PREFIX + nodeName);
+//						o.parseNode((Element) n);
+//
+//						Object obj = field.get(this);
+//						Method m = field.getType().getDeclaredMethod("add", Object.class);
+//						m.invoke(obj, o);
+//					} else
+//					{
+//						Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
+//						setter.invoke(this, n.getTextContent());
+//					}
+//				} catch (Exception e)
+//				{
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//	}
 }

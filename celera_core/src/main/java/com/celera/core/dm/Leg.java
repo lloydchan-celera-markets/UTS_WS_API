@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Leg extends Derivative
+public class Leg extends Derivative implements ILeg
 {
 	private Double multiplier = null;
 
@@ -20,6 +20,13 @@ public class Leg extends Derivative
 	@Override
 	public String toString()
 	{
-		return "Leg [Type=" + this.type + ", multiplier=" + multiplier + "]";
+		return "Leg [symbol=" + this.symbol + ", name=" + this.name + ", type=" + this.type + ", multiplier=" + multiplier + ", strike="
+				+ this.strike + ", expiry=" + this.expiry + ", price=" + this.price + "]";
+	}
+
+	@Override
+	public void setMultiplier(Double multiplier)
+	{
+		this.multiplier = multiplier;
 	}
 }

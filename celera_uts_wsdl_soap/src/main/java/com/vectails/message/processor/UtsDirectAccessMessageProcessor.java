@@ -1,6 +1,9 @@
-package com.vectails.message;
+package com.vectails.message.processor;
 
 import java.io.StringReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import com.vectails.data.StaticDataManager;
+import com.vectails.message.ICommonFields;
 import com.vectails.session.IOnUpdateNode;
 import com.vectails.session.UtsDirectAccessClient;
 import com.vectails.xml.INodeUpdateListener;
@@ -24,10 +28,19 @@ import com.vectails.xml.data.DerivativeTypes;
 import com.vectails.xml.data.IndexFuture;
 import com.vectails.xml.data.IndexFutures;
 import com.vectails.xml.data.Leg;
+import com.vectails.xml.data.LegDerivative;
+import com.vectails.xml.data.LegDerivativeItem;
+import com.vectails.xml.data.LegDerivativeItems;
+import com.vectails.xml.data.LegMapping;
+import com.vectails.xml.data.LegSingleUnderlying;
+import com.vectails.xml.data.LegUnderlying;
 import com.vectails.xml.data.Legs;
+import com.vectails.xml.data.Quote;
+import com.vectails.xml.data.Quotes;
 import com.vectails.xml.data.Underlying;
 import com.vectails.xml.data.Underlyings;
 import com.vectails.xml.data.UtsDirectAccessResponse;
+import com.vectails.xml.data.tag.ParameterTag;
 import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.EStatus;
@@ -106,6 +119,11 @@ public class UtsDirectAccessMessageProcessor
 			{
 				dispatch(node);
 			}
+			List<IXmlNode> quotesList = resp.getQuotes();
+			for (IXmlNode node : quotesList)
+			{
+				dispatch(node);
+			}
 		}
 		else if (o instanceof Underlyings) 
 		{
@@ -126,6 +144,14 @@ public class UtsDirectAccessMessageProcessor
 		else if (o instanceof DerivativeTypes) 
 		{
 			List<IXmlNode> list = ((DerivativeTypes)o).getDerivativeType();
+			for (IXmlNode node : list)
+			{
+				dispatch(node);
+			}
+		}
+		else if (o instanceof Quotes) 
+		{
+			List<IXmlNode> list = ((Quotes)o).getQuote();
 			for (IXmlNode node : list)
 			{
 				dispatch(node);
@@ -154,15 +180,19 @@ public class UtsDirectAccessMessageProcessor
 						{
 							IInstrument leg;
 							leg = convertInstrument((Leg)o2);
-							((Derivative)instr).addLeg(leg);
+							((Derivative)instr).addLeg(leg.getName(), leg);	
 						}
 					}
 				}
 			}
 		}
+		else if (o instanceof Quote) {
+			instr = convertInstrument((Quote) o); 	
+		}
 		
 		if (instr != null) {
-			StaticDataManager.add(instr);
+			EInstrumentType type = instr.getType();
+			StaticDataManager.add(type.toString(), instr);
 			nodeUpdCb.onUpdateNode((INodeUpdateListener)o);
 		}
 	}
@@ -227,6 +257,9 @@ public class UtsDirectAccessMessageProcessor
 			// EStatus sts = EStatus.ACTIVE;
 			String lastUpdTime = u.getLastUpdateDateTime();
 
+			String paramStr = u.getParameterString();
+			StaticDataManager.add(code, paramStr);
+			
 			LocalDate lastUpdate = LocalDate.parse(lastUpdTime, ICommonFields.DT_FORMATTER);
 			EInstrumentType type = toInstrumentType(code);
 
@@ -242,9 +275,11 @@ public class UtsDirectAccessMessageProcessor
 	{
 		try
 		{
-			String code = u.getDerivativeType();
-			String name = u.getLabel();
-			String sMultiplier = u.getMultiplier();
+			ParameterTag tag = u.getDerivativeType();
+			String code = tag.getValue();
+			String name = u.getLabel(); 		// Derivative.Legs.Leg.Label <-> Quote.Legs.Leg.Name
+			tag = u.getMultiplier();
+			String sMultiplier = tag.getValue();
 			Double multiplier = null;
 			try
 			{
@@ -253,11 +288,117 @@ public class UtsDirectAccessMessageProcessor
 			{
 			}
 			EInstrumentType type = toInstrumentType(code);
-			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null, null, null,
-					multiplier);
+			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null, null,
+					null, multiplier);
 		} catch (Exception e)
 		{
+			logger.error(e.getMessage());
+			logger.error(u.toString());
 			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static IInstrument convertInstrument(Quote u)
+	{
+		try
+		{
+			String derivType = u.getProductDerivativeTypeCode();
+			Derivative instr = (Derivative) StaticDataManager.get(derivType);
+
+			List<IXmlNode> legsList = u.getLegs();
+			for (IXmlNode e : legsList)
+			{
+				try
+				{
+					List<IXmlNode> legList = ((Legs) e).getLeg();
+					for (IXmlNode e1 : legList)
+					{
+						Leg leg = (Leg) e1;
+						String name = leg.getName();
+						com.celera.core.dm.Leg oldLeg = instr.getLeg(name); // Derivative.Legs.Leg.Label
+																			// <->
+																			// Quote.Legs.Leg.Name
+
+						for (IXmlNode e2 : leg.getLegUnderlying())
+						{
+							for (IXmlNode e3 : ((LegUnderlying) e2).getLegSingleUnderlying())
+							{
+								String spot = ((LegSingleUnderlying) e3).getSpot();
+								oldLeg.setPrice(Double.valueOf(spot));
+							}
+						}
+						for (IXmlNode e2 : leg.getLegDerivative()) // LegDerivative
+						{
+							for (IXmlNode e3 : ((LegDerivative) e2).getLegDerivativeItems()) // LegDerivativeItems
+							{
+								for (IXmlNode e4 : ((LegDerivativeItems) e3).getLegDerivativeItem()) // LegDerivativeItem
+								{
+									try
+									{
+										String itemName = ((LegDerivativeItem) e4).getName();
+										String value = ((LegDerivativeItem) e4).getValue();
+
+										Field f = Leg.class.getDeclaredField(itemName);
+										f.setAccessible(true);
+										LegMapping annotation = f.getDeclaredAnnotation(LegMapping.class);
+
+										// Annotation[] annotations =
+										// f.getDeclaredAnnotations();
+										String[] values = annotation.value();
+										String mtd1 = values[0];
+										String type = values[1];
+										String mtd2 = values[2];
+										Class clz = Class.forName(type);
+
+										Object o = value;
+										if (!(mtd2 == null || mtd2.length() == 0)) 
+										{
+											Method valueOf = clz.getMethod(mtd2, String.class);
+											o = valueOf.invoke(oldLeg, value);
+										}
+										Method setter = oldLeg.getClass().getMethod(mtd1, clz);
+										setter.setAccessible(true);
+										setter.invoke(oldLeg, o);
+									} 
+									catch (Exception ex)
+									{
+										logger.error(ex.getMessage());
+										ex.printStackTrace();
+									}
+								}
+							}
+						}
+						// oldLeg.setPrice(Double.valueOf(leg.getSize()));
+					}
+				} catch (Exception ex)
+				{
+					logger.error(ex.getMessage());
+					ex.printStackTrace();
+				}
+			}
+
+			String ulyCode = u.getProductUnderlyingCode();
+
+			// String code = tag.getValue();
+			// String name = u.getLabel();
+			// tag = u.getMultiplier();
+			// String sMultiplier = tag.getValue();
+			// Double multiplier = null;
+			// try
+			// {
+			// multiplier = Double.valueOf(sMultiplier);
+			// } catch (Exception e)
+			// {
+			// }
+			// EInstrumentType type = toInstrumentType(code);
+			// return new com.celera.core.dm.Leg(IMarket.HK, code, type, name,
+			// null, null, null, null, null, null, null,
+			// null, multiplier);
+		} catch (Exception ex)
+		{
+			logger.error(ex.getMessage());
+			 ex.printStackTrace();
 		}
 		return null;
 	}
@@ -272,7 +413,7 @@ public class UtsDirectAccessMessageProcessor
 			return EInstrumentType.INDEX;
 		}
 		String newCode = code.replace("_", "").replace("%", "_PERCENT");
-		EInstrumentType type = EInstrumentType.UNKNOWN;
+		EInstrumentType type = EInstrumentType.OPTION;
 		try
 		{
 			type = EInstrumentType.valueOf(newCode);

@@ -15,4 +15,9 @@ public class Quotes extends GenericFactory implements IXmlNode
 	}
 
 	List<IXmlNode> Quote = new ArrayList<IXmlNode>();
+
+	public List<IXmlNode> getQuote()
+	{
+		return Quote;
+	}
 }
