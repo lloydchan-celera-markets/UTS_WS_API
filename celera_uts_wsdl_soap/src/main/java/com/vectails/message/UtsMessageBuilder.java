@@ -1,8 +1,8 @@
 package com.vectails.message;
 
-import com.vectails.session.UtsDirectAccessSession;
+import com.vectails.session.UtsSession;
 
-public class UtsDirectAccessMessageBuilder
+public class UtsMessageBuilder
 {
 	public static final String entityCode = "CELERA";
 	public static final String clientCode = "DACTEST";
@@ -16,21 +16,14 @@ public class UtsDirectAccessMessageBuilder
 	public static final String OPS_GET_ALL_MY_ENTITY_QUOTES_DELTA = "GetAllMyEntityQuotesDelta";
 	public static final String OPS_GET_ALL_MY_REPLIES = "GetAllMyReplies";
 	
-//	private static UtsDirectAccessSession sess; 
-//	
-//	public static void init(UtsDirectAccessSession sess) 
-//	{
-//		UtsDirectAccessMessageBuilder.sess = sess;
-//	}
-	
-	public static String buildLogin(UtsDirectAccessSession sess)
+	public static String buildLogin(UtsSession sess)
 	{
 		UtsDirectAccessMessage msg = new UtsDirectAccessMessage(sess.getEntityCode(), sess.getClientCode(),
 				sess.getPassword(), OPS_LOGIN, sess.getSessionId(), sess.getClientVersion());
 		return msg.toXmlString();
 	}
 
-	public static String buildLogout(UtsDirectAccessSession sess)
+	public static String buildLogout(UtsSession sess)
 	{
 		UtsDirectAccessMessage msg = new UtsDirectAccessMessage(sess.getEntityCode(), sess.getClientCode(),
 				sess.getPassword(), OPS_LOGOUT, sess.getSessionId(), sess.getClientVersion());
@@ -41,25 +34,26 @@ public class UtsDirectAccessMessageBuilder
 		return msg.toXmlString();
 	}
 	
-	public static String buildGetAllQuotes(UtsDirectAccessSession sess)
+	public static String buildGetAllQuotes(UtsSession sess)
 	{
 		UtsDirectAccessMessage msg = new UtsDirectAccessMessage(sess.getEntityCode(), sess.getClientCode(),
 				sess.getPassword(), OPS_GET_ALL_MY_ENTITY_QUOTES, sess.getSessionId(), sess.getClientVersion());
 		return msg.toXmlString();
 	}
 
-	public static String buildGetAllQuotesDelta(UtsDirectAccessSession sess)
+	public static String buildGetAllQuotesDelta(UtsSession sess)
 	{
 		UtsDirectAccessMessage msg = new UtsDirectAccessMessage(sess.getEntityCode(), sess.getClientCode(),
 				sess.getPassword(), OPS_GET_ALL_MY_ENTITY_QUOTES_DELTA, sess.getSessionId(), sess.getClientVersion());
-		msg.setTimeOfLastRecoveredQuotes("0");
+		msg.setTimeOfLastRecoveredQuotes(sess.getTimeOfLastRecoveredQuotes());
 		return msg.toXmlString();
 	}
 
-	public static String buildGetAllMyReplies(UtsDirectAccessSession sess)
+	public static String buildGetAllMyReplies(UtsSession sess)
 	{
 		UtsDirectAccessMessage msg = new UtsDirectAccessMessage(sess.getEntityCode(), sess.getClientCode(),
 				sess.getPassword(), OPS_GET_ALL_MY_REPLIES, sess.getSessionId(), sess.getClientVersion());
+		msg.setTimeOfLastRecoveredQuotes(sess.getTimeOfLastRecoveredQuotes());
 		return msg.toXmlString();
 	}
 }

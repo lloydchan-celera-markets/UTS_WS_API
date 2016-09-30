@@ -43,6 +43,8 @@ public class Leg extends GenericFactory  implements IXmlNode
 	private ParameterTag Multiplier = null;
 	@LegMapping(value = {"setStrike","java.lang.String",""})
 	private ParameterTag Strike = null;
+	@LegMapping(value = {"setStrike","java.lang.String",""})
+	private ParameterTag StrikeInPercent = null;
 	
 	private ParameterTag Garantee = null;
 	private ParameterTag KnockInBarrier = null;
@@ -56,7 +58,7 @@ public class Leg extends GenericFactory  implements IXmlNode
 	private ParameterTag RebateInPercent = null;
 	private ParameterTag ResetPeriodicity = null;
 	private ParameterTag StartDate = null;
-	private ParameterTag StrikeInPercent = null;
+
 
 	// not in spec v1.8
 	private ParameterTag NAV = null;

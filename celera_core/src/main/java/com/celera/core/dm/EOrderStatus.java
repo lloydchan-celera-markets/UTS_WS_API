@@ -1,12 +1,15 @@
 package com.celera.core.dm;
 
-public enum EQuoteStatus
+public enum EOrderStatus
 {
-	INSERT("INSERT");
+	ON_MARKET("ON_MARKET"), 
+	SENT("SENT"), 
+	INACTIVE("INACTIVE"), 
+	;
 	
 	private final String name;
 
-	EQuoteStatus(String name) {
+	EOrderStatus(String name) {
 		this.name = name;
 	};
 

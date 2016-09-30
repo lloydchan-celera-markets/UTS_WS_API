@@ -5,16 +5,21 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.vectails.common.IGenericFactory;
+import com.vectails.message.processor.UtsMessageProcessor;
 import com.vectails.xml.data.tag.ParameterTag;
 
 public interface IXmlNode
 {
+	final static Logger logger = LoggerFactory.getLogger(IXmlNode.class);
+	
 	public default void parseAttribute(Element root)
 	{
 		NamedNodeMap m = root.getAttributes();
@@ -30,16 +35,9 @@ public interface IXmlNode
 				Field field = this.getClass().getDeclaredField(nodeName);
 				Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
 				setter.invoke(this, n.getTextContent());
-			} catch (NoSuchFieldException e)
-			{
-				System.out.println("NoSuchFieldException:" + e.getMessage() + "," + nodeName);
-				e.printStackTrace();
-			} catch (IllegalArgumentException e)
-			{
-				System.out.println("IllegalArgumentException:" + e.getMessage() + "," + nodeName);
-				e.printStackTrace();
 			} catch (Exception e)
 			{
+				logger.error(e.getLocalizedMessage());
 				e.printStackTrace();
 			}
 		}
@@ -65,7 +63,9 @@ public interface IXmlNode
 				{
 					Field field = this.getClass().getDeclaredField(nodeName);
 					field.setAccessible(true);
-					if (Collection.class.isAssignableFrom(field.getType()))
+					Class clazz = field.getType();
+					
+					if (Collection.class.isAssignableFrom(clazz))
 					{
 						// IXmlNode o = (IXmlNode) ((IGenericFactory)this).build();
 						IXmlNode o = (IXmlNode) ((IGenericFactory) this)
@@ -75,7 +75,7 @@ public interface IXmlNode
 						Object obj = field.get(this);
 						Method m = field.getType().getDeclaredMethod("add", Object.class);
 						m.invoke(obj, o);
-					} else if (ParameterTag.class.isAssignableFrom(field.getType()))
+					} else if (ParameterTag.class.isAssignableFrom(clazz))
 					{
 						Node attr = n.getAttributes().getNamedItem("NameInString");
 						ParameterTag tag = new ParameterTag();
@@ -91,7 +91,8 @@ public interface IXmlNode
 						
 						Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
 						setter.invoke(this, tag);
-					} else
+					}
+					else
 					{
 						Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
 						setter.invoke(this, n.getTextContent());

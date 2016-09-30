@@ -2,6 +2,7 @@ package com.vectails.xml.data;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,11 +13,14 @@ import org.w3c.dom.NodeList;
 
 import com.vectails.common.GenericFactory;
 import com.vectails.common.IGenericFactory;
+import com.vectails.message.processor.Uts2Dm;
+import com.vectails.session.IUtsLastTimeUpdateListener;
+import com.vectails.xml.IUtsLastTimeUpdater;
 import com.vectails.xml.IXmlNode;
 import com.vectails.xml.IXmlTag;
 
 @SuppressWarnings("rawtypes")
-public class UtsDirectAccessResponse extends GenericFactory implements IXmlNode
+public class UtsDirectAccessResponse extends GenericFactory implements IXmlNode, IUtsLastTimeUpdater
 {
 	public UtsDirectAccessResponse()
 	{
@@ -89,70 +93,15 @@ public class UtsDirectAccessResponse extends GenericFactory implements IXmlNode
 	{
 	}
 
-	// @Override
-	// public void parseNode(Element root) // root = <Legs>
-	// {
-	// parseAttribute(root);
-	//
-	// String nodeName = root.getNodeName();
-	//
-	// NodeList nodes = root.getChildNodes();
-	// int lenNodes = nodes.getLength();
-	// for (int l = 0; l < lenNodes; l++)
-	// { // elements
-	// Node n = nodes.item(l);
-	//
-	// if (n.getNodeType() == Node.ELEMENT_NODE)
-	// {
-	// nodeName = n.getNodeName();
-	// try
-	// {
-	// Field field = this.getClass().getDeclaredField(nodeName);
-	// field.setAccessible(true);
-	//
-	// if (Collection.class.isAssignableFrom(field.getType()))
-	// {
-	//// IXmlNode o = null;
-	//// switch (nodeName) {
-	//// case "AllowedQuoteCreators":
-	//// o = (IXmlNode)((IGenericFactory)
-	// this).build("com.vectails.data.IXmlParser$AllowedQuoteCreators");
-	//// break;
-	//// case "IndexFutures":
-	//// o = (IXmlNode)((IGenericFactory)
-	// this).build("com.vectails.data.IXmlParser$IndexFutures");
-	//// break;
-	//// case "Underlyings":
-	//// o = (IXmlNode)((IGenericFactory)
-	// this).build("com.vectails.data.IXmlParser$Underlyings");
-	//// break;
-	//// case "Currencies":
-	//// o = (IXmlNode)((IGenericFactory)
-	// this).build("com.vectails.data.IXmlParser$Currencies");
-	//// break;
-	//// case "DerivativeTypes":
-	//// o = (IXmlNode)((IGenericFactory)
-	// this).build("com.vectails.data.IXmlParser$DerivativeTypes");
-	//// break;
-	//// }
-	// IXmlNode o = (IXmlNode)((IGenericFactory)
-	// this).build(IXmlTag.PACKAGE_XML_DATA_PREFIX + nodeName);
-	// o.parseNode((Element) n);
-	//
-	// Object obj = field.get(this);
-	// Method m = field.getType().getDeclaredMethod("add", Object.class);
-	// m.invoke(obj, o);
-	// } else
-	// {
-	// Method setter = this.getClass().getMethod("set" + nodeName,
-	// field.getType());
-	// setter.invoke(this, n.getTextContent());
-	// }
-	// } catch (Exception e)
-	// {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-	// }
+	@Override
+	public LocalDate getLastTime()
+	{
+		return Uts2Dm.toLocalDate(TimeOfLastRecoveredQuotes);
+	}
+	
+	@Override
+	public void updateLastTime(IUtsLastTimeUpdateListener l)
+	{
+		l.setTimeofLastRecoveredQuotes(TimeOfLastRecoveredQuotes);
+	}
 }

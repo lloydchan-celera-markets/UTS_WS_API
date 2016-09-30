@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -25,11 +27,8 @@ import sun.reflect.generics.factory.GenericsFactory;
 
 public interface IXmlParser
 {
-	// static public <T> void parseXmlElement(Element root, T t) { // root =
-	// <Legs>
-	// public default <T> void parseXmlElement(Element root, T t) { // root =
-	// <Legs>
-
+	Logger logger = LoggerFactory.getLogger(IXmlParser.class);
+	
 	public default Object create()
 	{
 		Object o = null;
@@ -59,16 +58,9 @@ public interface IXmlParser
 				Field field = this.getClass().getDeclaredField(nodeName);
 				Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
 				setter.invoke(this, n.getTextContent());
-			} catch (NoSuchFieldException e)
-			{
-				System.out.println("NoSuchFieldException:" + e.getMessage() + "," + nodeName);
-				e.printStackTrace();
-			} catch (IllegalArgumentException e)
-			{
-				System.out.println("IllegalArgumentException:" + e.getMessage() + "," + nodeName);
-				e.printStackTrace();
 			} catch (Exception e)
 			{
+				logger.error(e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -104,12 +96,9 @@ public interface IXmlParser
 						setter.invoke(this, n.getTextContent());
 					}
 
-				} catch (NoSuchFieldException e)
-				{
-					System.out.println("NoSuchFieldException:" + e.getMessage() + "," + nodeName);
-					e.printStackTrace();
 				} catch (Exception e)
 				{
+					logger.error(e.getMessage());
 					e.printStackTrace();
 				}
 			}

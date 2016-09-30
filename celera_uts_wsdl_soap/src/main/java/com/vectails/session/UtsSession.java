@@ -3,16 +3,23 @@ package com.vectails.session;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.celera.core.dm.IInstrument;
-import com.vectails.xml.INodeUpdateListener;
+import com.vectails.message.processor.Uts2Dm;
+import com.vectails.xml.IUtsLastTimeUpdater;
 import com.vectails.xml.IXmlNode;
 import com.vectails.xml.data.Addressee;
 import com.vectails.xml.data.DerivativeType;
 import com.vectails.xml.data.IndexFuture;
 import com.vectails.xml.data.Underlying;
+import com.vectails.xml.data.UtsDirectAccessResponse;
 
-public class UtsDirectAccessSession implements IOnUpdateNode {
+public class UtsSession implements IUtsLastTimeUpdateListener {
 
+	private static final Logger logger = LoggerFactory.getLogger(UtsSession.class); 
+	
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
 	private final String EntityCode;
@@ -33,7 +40,7 @@ public class UtsDirectAccessSession implements IOnUpdateNode {
 	// SessionId=\"7df96e02-e058-4212-a822-bd3cce2a87db\"
 	// ClientVersion=\"UtsDacV1.8\"></UtsDirectAccessMessage";
 
-	public UtsDirectAccessSession(String entityCode, String clientCode, String password, String sessionId,
+	public UtsSession(String entityCode, String clientCode, String password, String sessionId,
 			String clientVersion) {
 		EntityCode = entityCode;
 		ClientCode = clientCode;
@@ -41,7 +48,7 @@ public class UtsDirectAccessSession implements IOnUpdateNode {
 		SessionId = sessionId;
 		ClientVersion = clientVersion;
 
-		TimeOfLastRecoveredQuotes = null;
+		TimeOfLastRecoveredQuotes = "0";
 	}
 
 	public static DateTimeFormatter getFormatter() {
@@ -93,54 +100,44 @@ public class UtsDirectAccessSession implements IOnUpdateNode {
 		return idxFutureLT;
 	}
 
-	@Override
-	public void onUpdateNode(INodeUpdateListener listener)
+	public void setTimeofLastRecoveredQuotes(String last)
 	{
-		LocalDate ld = listener.getLastTime();
-		if (listener instanceof Underlying)
+		if (last != null)
 		{
-			setUnderlyingLT(ld);
-		} else if (listener instanceof DerivativeType)
-		{
-			setDerivTypeLT(ld);
-		} else if (listener instanceof Addressee)
-		{
-			setAddresseeLT(ld);
-		} else if (listener instanceof IndexFuture)
-		{
-			setIdxFutureLT(ld);
+			this.TimeOfLastRecoveredQuotes = last;
+			logger.trace("setTimeofLastRecoveredQuotes[{}]", last);
 		}
 	}
-	
+
 	public void setAddresseeLT(LocalDate last)
 	{
-		if (last.isAfter(this.addresseeLT)) {
+		if (this.addresseeLT.isBefore(last)) {
 			addresseeLT = last;
-			System.out.println("Addressee LastTime=" + last);
+			logger.trace("setAddresseeLT[{}]", last);
 		}
 	}
 
 	public void setDerivTypeLT(LocalDate last)
 	{
-		if (last.isAfter(this.derivTypeLT)) {
+		if (this.derivTypeLT.isBefore(last)) {
 			derivTypeLT = last;
-			System.out.println("DerivativeType LastTime=" + last);
+			logger.trace("setDerivTypeLT[{}]", last);
 		}
 	}
 
 	public void setUnderlyingLT(LocalDate last)
 	{
-		if (last.isAfter(this.underlyingLT)) {
+		if (this.underlyingLT.isBefore(last)) {
 			underlyingLT = last;
-			System.out.println("Underlying LastTime=" + last);
+			logger.trace("setUnderlyingLT[{}]", last);
 		}
 	}
 
 	public void setIdxFutureLT(LocalDate last)
 	{
-		if (last.isAfter(this.idxFutureLT)) {
+		if (this.idxFutureLT.isBefore(last)) {
 			idxFutureLT = last;
-			System.out.println("IndexFuture LastTime=" + last);
+			logger.trace("idxFutureLT[{}]", last);
 		}
 	}
 

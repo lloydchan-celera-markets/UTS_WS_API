@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vectails.common.GenericFactory;
-import com.vectails.message.ICommonFields;
-import com.vectails.xml.INodeUpdateListener;
+import com.vectails.message.processor.Uts2Dm;
+import com.vectails.session.IUtsLastTimeUpdateListener;
+import com.vectails.xml.IUtsLastTimeUpdater;
 import com.vectails.xml.IXmlNode;
 
 @SuppressWarnings("rawtypes")
-public class DerivativeType extends GenericFactory implements IXmlNode, INodeUpdateListener
+public class DerivativeType extends GenericFactory implements IXmlNode, IUtsLastTimeUpdater
 {
 	public DerivativeType()
 	{
@@ -135,60 +136,12 @@ public class DerivativeType extends GenericFactory implements IXmlNode, INodeUpd
 	@Override
 	public LocalDate getLastTime()
 	{
-		return LocalDate.parse(LastUpdateDateTime, ICommonFields.DT_FORMATTER);
+		return Uts2Dm.toLocalDate(LastUpdateDateTime);
 	}
-	
-//	@Override
-//	public void parseNode(Element root) // root = <Legs>
-//	{
-//		parseAttribute(root);
-//		
-//		String nodeName = root.getNodeName();
-//		
-//		NodeList nodes = root.getChildNodes();
-//		int lenNodes = nodes.getLength();
-//		for (int l = 0; l < lenNodes; l++)
-//		{ // elements
-//			Node n = nodes.item(l);
-//
-//			if (n.getNodeType() == Node.ELEMENT_NODE)
-//			{
-//				nodeName = n.getNodeName();
-////				try
-////				{
-////					Class<?> clazz = Class.forName("com.vectails.data.IXmlParser$" + nodeName);
-////					if (IGenericFactory.class.isAssignableFrom(clazz))
-////					{
-//						Field field;
-//						try
-//						{
-//							field = this.getClass().getDeclaredField(nodeName);
-//
-//							if (Collection.class.isAssignableFrom(field.getType()))
-//							{
-//								IXmlNode o = new IXmlParser.Legs();
-//								o.parseNode((Element) n);
-//								
-//								Object obj = field.get(this);
-//								Method m = field.getType().getDeclaredMethod("add", Object.class);
-//								m.invoke(obj, o);
-//							} else
-//							{
-//								Method setter = this.getClass().getMethod("set" + nodeName, field.getType());
-//								setter.invoke(this, n.getTextContent());
-//							}
-//						} catch (Exception e)
-//						{
-//							System.out.println("nodeName="+nodeName);
-//							e.printStackTrace();
-//						}
-////					}
-////				} catch (ClassNotFoundException e)
-////				{
-////					// TODO Auto-generated catch block
-////					e.printStackTrace();
-////				}
-//			}
-//		}
-//	}
+
+	@Override
+	public void updateLastTime(IUtsLastTimeUpdateListener l)
+	{
+		l.setDerivTypeLT(getLastTime());
+	}
 }

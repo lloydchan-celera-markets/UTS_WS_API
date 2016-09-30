@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.vectails.session.IUtsLastTimeUpdateListener;
 import com.vectails.xml.data.tag.ParameterTag;
 
 public class GenericFactory<T> implements IGenericFactory<T> {
@@ -37,34 +38,39 @@ public class GenericFactory<T> implements IGenericFactory<T> {
 		{
 			try
 			{
-				if (Collection.class.isAssignableFrom(field.getType()))
+				Class clazz = field.getType();
+				if (Collection.class.isAssignableFrom(clazz))
 				{
-					field.setAccessible(true);	// unsafe
+					field.setAccessible(true); // unsafe
 					Object listObj = field.get(this);
-					
+
 					Method mthGet = field.getType().getDeclaredMethod("iterator", null);
-					mthGet.setAccessible(true);	// unsafe
+					mthGet.setAccessible(true); // unsafe
 					Iterator begin = (Iterator) mthGet.invoke(listObj, null);
-					for (Iterator it = begin; it.hasNext(); ) {
+					for (Iterator it = begin; it.hasNext();)
+					{
 						sb.append(it.next().toString()).append(", ");
 					}
-				} else 
-//					if (ParameterTag.class.isAssignableFrom(field.getType()))
+				}
+				else
+				// if (ParameterTag.class.isAssignableFrom(field.getType()))
 				{
 					String fieldName = field.getName();
 					Method setter = this.getClass().getMethod("get" + fieldName, null);
 					Object o = setter.invoke(this, null);
 					sb.append(fieldName).append("=").append(o).append(", ");
-				} 
-//				else
-//				{
-//					String fieldName = field.getName();
-//					Method setter = this.getClass().getMethod("get" + fieldName, null);
-//					String s = (String) setter.invoke(this, null);
-//					sb.append(fieldName).append("=").append(s).append(", ");
-//				}
+				}
+				// else
+				// {
+				// String fieldName = field.getName();
+				// Method setter = this.getClass().getMethod("get" + fieldName,
+				// null);
+				// String s = (String) setter.invoke(this, null);
+				// sb.append(fieldName).append("=").append(s).append(", ");
+				// }
 
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				e.printStackTrace();
 			}

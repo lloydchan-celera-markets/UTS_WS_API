@@ -15,4 +15,9 @@ public class Addressees extends GenericFactory implements IXmlNode
 	{
 		super(Addressee.class);
 	}
+
+	public List<IXmlNode> getAddressee()
+	{
+		return Addressee;
+	}
 }

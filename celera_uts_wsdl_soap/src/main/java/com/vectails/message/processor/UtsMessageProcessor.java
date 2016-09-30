@@ -1,7 +1,6 @@
 package com.vectails.message.processor;
 
 import java.io.StringReader;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
@@ -17,12 +16,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import com.vectails.data.StaticDataManager;
-import com.vectails.message.ICommonFields;
-import com.vectails.session.IOnUpdateNode;
-import com.vectails.session.UtsDirectAccessClient;
-import com.vectails.xml.INodeUpdateListener;
+import com.vectails.oms.OMS;
+import com.vectails.sds.UtsStaticDataService;
+import com.vectails.session.IUtsLastTimeUpdateListener;
+import com.vectails.xml.IUtsLastTimeUpdater;
 import com.vectails.xml.IXmlNode;
+import com.vectails.xml.data.Addressee;
+import com.vectails.xml.data.Addressees;
 import com.vectails.xml.data.DerivativeType;
 import com.vectails.xml.data.DerivativeTypes;
 import com.vectails.xml.data.IndexFuture;
@@ -43,19 +43,41 @@ import com.vectails.xml.data.UtsDirectAccessResponse;
 import com.vectails.xml.data.tag.ParameterTag;
 import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
-import com.celera.core.dm.EStatus;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IMarket;
+import com.celera.core.dm.IOrder;
+import com.celera.core.dm.IQuote;
+import com.celera.core.dm.ITrade;
 import com.celera.core.dm.Instrument;
+import com.celera.core.dm.Trade;
 
-public class UtsDirectAccessMessageProcessor
+public class UtsMessageProcessor
 {
-	final static Logger logger = LoggerFactory.getLogger(UtsDirectAccessMessageProcessor.class);
+	final static Logger logger = LoggerFactory.getLogger(UtsMessageProcessor.class);
+
+	private static UtsMessageProcessor _instance;
+	private IUtsLastTimeUpdateListener utsSessListener;
 	
-	private static IOnUpdateNode nodeUpdCb;
+	protected UtsMessageProcessor()
+	{
+	}
 	
-	public static void setCallback(IOnUpdateNode cb) {
-		nodeUpdCb = cb;
+	public void setUtsSessionListener(IUtsLastTimeUpdateListener cb)
+	{
+		utsSessListener = cb;
+	}
+
+	public static UtsMessageProcessor instance()
+	{
+		if (_instance == null)
+		{
+			synchronized (UtsMessageProcessor.class) 
+			{
+				if (_instance == null)	
+					_instance = new UtsMessageProcessor();
+			}
+		}
+		return _instance;
 	}
 	
 	public static IXmlNode parseXml(String resp)
@@ -68,21 +90,24 @@ public class UtsDirectAccessMessageProcessor
 
 			builder = factory.newDocumentBuilder();
 			Document dom = builder.parse(new InputSource(new StringReader(resp)));
-
 			dom.getDocumentElement().normalize();
 
 			Element docEle = dom.getDocumentElement();
-
 			o = (IXmlNode) new UtsDirectAccessResponse();
 			o.parseNode(docEle);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		return o;
 	}
 
-	public static void dispatch(IXmlNode o)
+	/**
+	 * @param o
+	 * description: dispatch parsed node object into OMS and process 
+	 */
+	public void dispatch(IXmlNode o)
 	{
 		// List<IXmlNode> DerivativeTypes = new ArrayList<IXmlNode>();
 		// List<IXmlNode> Currencies = new ArrayList<IXmlNode>();
@@ -92,13 +117,13 @@ public class UtsDirectAccessMessageProcessor
 		// List<IXmlNode> Addressees = new ArrayList<IXmlNode>();
 		// List<IXmlNode> Quotes = new ArrayList<IXmlNode>();
 		IInstrument instr = null;
-		
+
 		if (o instanceof UtsDirectAccessResponse)
 		{
 			UtsDirectAccessResponse resp = (UtsDirectAccessResponse) o;
 
 			// List currencies = resp.getCurrencies();
-//			List derivTypes = resp.getDerivativeTypes();
+			// List derivTypes = resp.getDerivativeTypes();
 			List<IXmlNode> underlyingsList = resp.getUnderlyings();
 			for (IXmlNode node : underlyingsList)
 			{
@@ -119,106 +144,117 @@ public class UtsDirectAccessMessageProcessor
 			{
 				dispatch(node);
 			}
-			List<IXmlNode> quotesList = resp.getQuotes();
-			for (IXmlNode node : quotesList)
+			if (resp.getTimeOfLastRecoveredQuotes() != null)	// login Quote messages (skip) 
 			{
-				dispatch(node);
+				List<IXmlNode> quotesList = resp.getQuotes();
+				for (IXmlNode node : quotesList)
+				{
+					dispatch(node);
+				}
 			}
 		}
-		else if (o instanceof Underlyings) 
+		else if (o instanceof Underlyings)
 		{
-			List<IXmlNode> underlyingList = ((Underlyings)o).getUnderlying();
+			List<IXmlNode> underlyingList = ((Underlyings) o).getUnderlying();
 			for (IXmlNode node : underlyingList)
 			{
 				dispatch(node);
 			}
 		}
-		else if (o instanceof IndexFutures) 
+		else if (o instanceof IndexFutures)
 		{
-			List<IXmlNode> list = ((IndexFutures)o).getIndexFuture();
+			List<IXmlNode> list = ((IndexFutures) o).getIndexFuture();
 			for (IXmlNode node : list)
 			{
 				dispatch(node);
 			}
 		}
-		else if (o instanceof DerivativeTypes) 
+		else if (o instanceof DerivativeTypes)
 		{
-			List<IXmlNode> list = ((DerivativeTypes)o).getDerivativeType();
+			List<IXmlNode> list = ((DerivativeTypes) o).getDerivativeType();
 			for (IXmlNode node : list)
 			{
 				dispatch(node);
 			}
 		}
-		else if (o instanceof Quotes) 
+		else if (o instanceof Quotes)
 		{
-			List<IXmlNode> list = ((Quotes)o).getQuote();
+			List<IXmlNode> list = ((Quotes) o).getQuote();
 			for (IXmlNode node : list)
 			{
 				dispatch(node);
 			}
 		}
-		else if (o instanceof Underlying) 
+		else if (o instanceof Underlying)
 		{
-			instr = convertInstrument((Underlying)o);
+			instr = onInstrument((Underlying) o);
 		}
-		else if (o instanceof IndexFuture) 
+		else if (o instanceof IndexFuture)
 		{
-			instr = convertInstrument((IndexFuture)o);
+			instr = onInstrument((IndexFuture) o);
 		}
-		else if (o instanceof DerivativeType) 
+		else if (o instanceof DerivativeType)
 		{
-			instr = convertInstrument((DerivativeType)o);
-			List<IXmlNode> l1 = ((DerivativeType)o).getLegs();
+			instr = onInstrument((DerivativeType) o);
+			List<IXmlNode> l1 = ((DerivativeType) o).getLegs();
 			for (IXmlNode o1 : l1)
 			{
-				if (o1 instanceof Legs) 
+				if (o1 instanceof Legs)
 				{
-					List<IXmlNode> l2 = ((Legs)o1).getLeg();
+					List<IXmlNode> l2 = ((Legs) o1).getLeg();
 					for (IXmlNode o2 : l2)
 					{
-						if (o2 instanceof Leg) 
+						if (o2 instanceof Leg)
 						{
 							IInstrument leg;
-							leg = convertInstrument((Leg)o2);
-							((Derivative)instr).addLeg(leg.getName(), leg);	
+							leg = onInstrument((Leg) o2);
+							((Derivative) instr).addLeg(leg.getName(), leg);
 						}
 					}
 				}
 			}
 		}
-		else if (o instanceof Quote) {
-			instr = convertInstrument((Quote) o); 	
+		else if (o instanceof Quote)
+		{
+			doQuote((Quote) o);
 		}
 		
-		if (instr != null) {
-			EInstrumentType type = instr.getType();
-			StaticDataManager.add(type.toString(), instr);
-			nodeUpdCb.onUpdateNode((INodeUpdateListener)o);
+		if (instr != null)
+		{
+//			EInstrumentType type = instr.getType();
+			UtsStaticDataService.instance().onInstrumentUpdate(instr);
+		}
+		
+		if (o instanceof IUtsLastTimeUpdater)
+		{
+			// update UTS session
+			((IUtsLastTimeUpdater)o).updateLastTime(utsSessListener);
 		}
 	}
 
-	public static IInstrument convertInstrument(IndexFuture u)
+	public IInstrument onInstrument(IndexFuture u)
 	{
 		try
 		{
 			String code = u.getIndexCode();
 			String expiry = u.getExpiryDate();
 			String typeCode = u.getIndexUnderlyingTypeCode();
-//			EStatus sts = EStatus.ACTIVE;
+			// EStatus sts = EStatus.ACTIVE;
 			String lastUpdTime = u.getLastUpdateDateTime();
-			LocalDate lastUpdate = LocalDate.parse(lastUpdTime, ICommonFields.DT_FORMATTER);
-			EInstrumentType type = toInstrumentType(typeCode);
+			LocalDate lastUpdate = Uts2Dm.toLocalDate(lastUpdTime);
+			EInstrumentType type = Uts2Dm.toInstrumentType(typeCode);
 
 			return new Derivative(IMarket.HK, code, type, null, null, null, null, lastUpdate, null, expiry, null, null);
-			
-		} catch (Exception e)
+
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	public static IInstrument convertInstrument(Underlying u)
+
+	public IInstrument onInstrument(Underlying u)
 	{
 		try
 		{
@@ -228,69 +264,69 @@ public class UtsDirectAccessMessageProcessor
 			String ric = u.getReuters();
 			String bbg = u.getBloomberg();
 			String isin = u.getISIN();
-			String isDead = u.getIsObsolete();
-//			EStatus sts = EStatus.ACTIVE;
-//			if ("True".equals(isDead))
-//				sts = EStatus.OBSOLETED;
+			// String isDead = u.getIsObsolete();
 			String lastUpdTime = u.getLastUpdateDateTime();
-			LocalDate lastUpdate = LocalDate.parse(lastUpdTime, ICommonFields.DT_FORMATTER);
-			EInstrumentType type = toInstrumentType(typeCode);
+			LocalDate lastUpdate = Uts2Dm.toLocalDate(lastUpdTime);
+			EInstrumentType type = Uts2Dm.toInstrumentType(typeCode);
 
 			return new Instrument(IMarket.HK, code, type, name, isin, bbg, ric, lastUpdate);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public static IInstrument convertInstrument(DerivativeType u)
+	public IInstrument onInstrument(DerivativeType u)
 	{
 		try
 		{
 			String code = u.getCode();
 			String name = u.getName();
 			String sIsPriceInPercent = u.getIsPriceInPercent();
-			boolean isPriceInPercent = Boolean.valueOf(sIsPriceInPercent);
-			// String legCnt = u.getLegCount();
-			// String isBasic = u.getIsBasic();
-			// EStatus sts = EStatus.ACTIVE;
+			Boolean isPriceInPercent = Boolean.valueOf(sIsPriceInPercent);
 			String lastUpdTime = u.getLastUpdateDateTime();
 
-			String paramStr = u.getParameterString();
-			StaticDataManager.add(code, paramStr);
-			
-			LocalDate lastUpdate = LocalDate.parse(lastUpdTime, ICommonFields.DT_FORMATTER);
-			EInstrumentType type = toInstrumentType(code);
+//			String paramStr = u.getParameterString();
+//			UtsStaticDataService.add(code, paramStr);
 
-			return new Derivative(IMarket.HK, code, type, name, null, null, null, lastUpdate, null, null, null, isPriceInPercent);
-		} catch (Exception e)
+			LocalDate lastUpdate = Uts2Dm.toLocalDate(lastUpdTime);
+			EInstrumentType type = Uts2Dm.toInstrumentType(code);
+
+			return new Derivative(IMarket.HK, code, type, name, null, null, null, lastUpdate, null, null, null,
+					isPriceInPercent);
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	public static IInstrument convertInstrument(Leg u) 
+
+	public IInstrument onInstrument(Leg u)
 	{
 		try
 		{
 			ParameterTag tag = u.getDerivativeType();
 			String code = tag.getValue();
-			String name = u.getLabel(); 		// Derivative.Legs.Leg.Label <-> Quote.Legs.Leg.Name
+			String name = u.getLabel(); // Derivative.Legs.Leg.Label <->
+										// Quote.Legs.Leg.Name
 			tag = u.getMultiplier();
 			String sMultiplier = tag.getValue();
 			Double multiplier = null;
 			try
 			{
 				multiplier = Double.valueOf(sMultiplier);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 			}
-			EInstrumentType type = toInstrumentType(code);
+			EInstrumentType type = Uts2Dm.toInstrumentType(code);
 			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null, null,
 					null, multiplier);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			logger.error(e.getMessage());
 			logger.error(u.toString());
@@ -298,13 +334,51 @@ public class UtsDirectAccessMessageProcessor
 		}
 		return null;
 	}
-	
-	public static IInstrument convertInstrument(Quote u)
+
+	public void doTrade(String id , String price, String size, String time, String comment)
 	{
-		try
+		if (id == null || price == null || size == null || time == null)
+			return;
+
+		if (Uts2Dm.DB_NULL.equals(id) || Uts2Dm.DB_NULL.equals(price) || Uts2Dm.DB_NULL.equals(size)
+				|| Uts2Dm.DB_NULL.equals(time))
+			return;
+		
+		Trade trade = new Trade();
+		trade.setOrderId(Uts2Dm.toLong(id));
+		trade.setPrice(Uts2Dm.toDouble(price));
+		trade.setQty(Uts2Dm.toLong(size));
+		trade.setTime(Uts2Dm.toLocalDate(time));
+		trade.setComment(comment);
+
+		OMS.instance().onTrade(trade);
+	}
+
+	public void doQuote(Quote u)
+	{
+		Derivative instr = null;
+
+		Long id = Long.valueOf(u.getQuoteId());
+		com.celera.core.dm.Quote quote = (com.celera.core.dm.Quote) OMS.instance().get(id);
+		if (quote == null)
 		{
-			String derivType = u.getProductDerivativeTypeCode();
-			Derivative instr = (Derivative) StaticDataManager.get(derivType);
+			quote = new com.celera.core.dm.Quote();
+			quote.setId(id);
+
+			// set instrument and legs
+			String sDerivTypeCode = u.getProductDerivativeTypeCode();
+			if (sDerivTypeCode == null)
+			{
+				logger.error("Derivate Type not found {}", sDerivTypeCode);
+				return;
+			}
+			instr = (Derivative) UtsStaticDataService.instance().get(sDerivTypeCode);
+			if (instr == null)
+			{
+				logger.error("Instrument not found {}", sDerivTypeCode);
+				return;
+			}
+			quote.setInstr(instr);
 
 			List<IXmlNode> legsList = u.getLegs();
 			for (IXmlNode e : legsList)
@@ -325,7 +399,7 @@ public class UtsDirectAccessMessageProcessor
 							for (IXmlNode e3 : ((LegUnderlying) e2).getLegSingleUnderlying())
 							{
 								String spot = ((LegSingleUnderlying) e3).getSpot();
-								oldLeg.setPrice(Double.valueOf(spot));
+								oldLeg.setPrice(Uts2Dm.toDouble(spot));
 							}
 						}
 						for (IXmlNode e2 : leg.getLegDerivative()) // LegDerivative
@@ -334,10 +408,11 @@ public class UtsDirectAccessMessageProcessor
 							{
 								for (IXmlNode e4 : ((LegDerivativeItems) e3).getLegDerivativeItem()) // LegDerivativeItem
 								{
+									String itemName = null, value = null;
 									try
 									{
-										String itemName = ((LegDerivativeItem) e4).getName();
-										String value = ((LegDerivativeItem) e4).getValue();
+										itemName = ((LegDerivativeItem) e4).getName();
+										value = ((LegDerivativeItem) e4).getValue();
 
 										Field f = Leg.class.getDeclaredField(itemName);
 										f.setAccessible(true);
@@ -352,7 +427,7 @@ public class UtsDirectAccessMessageProcessor
 										Class clz = Class.forName(type);
 
 										Object o = value;
-										if (!(mtd2 == null || mtd2.length() == 0)) 
+										if (!(mtd2 == null || mtd2.length() == 0))
 										{
 											Method valueOf = clz.getMethod(mtd2, String.class);
 											o = valueOf.invoke(oldLeg, value);
@@ -360,67 +435,64 @@ public class UtsDirectAccessMessageProcessor
 										Method setter = oldLeg.getClass().getMethod(mtd1, clz);
 										setter.setAccessible(true);
 										setter.invoke(oldLeg, o);
-									} 
+									}
 									catch (Exception ex)
 									{
-										logger.error(ex.getMessage());
-										ex.printStackTrace();
+										logger.error("field[{}], annotation[{}]", itemName, value, ex);
 									}
 								}
 							}
 						}
 						// oldLeg.setPrice(Double.valueOf(leg.getSize()));
 					}
-				} catch (Exception ex)
+				}
+				catch (Exception ex)
 				{
 					logger.error(ex.getMessage());
 					ex.printStackTrace();
 				}
 			}
-
-			String ulyCode = u.getProductUnderlyingCode();
-
-			// String code = tag.getValue();
-			// String name = u.getLabel();
-			// tag = u.getMultiplier();
-			// String sMultiplier = tag.getValue();
-			// Double multiplier = null;
-			// try
-			// {
-			// multiplier = Double.valueOf(sMultiplier);
-			// } catch (Exception e)
-			// {
-			// }
-			// EInstrumentType type = toInstrumentType(code);
-			// return new com.celera.core.dm.Leg(IMarket.HK, code, type, name,
-			// null, null, null, null, null, null, null,
-			// null, multiplier);
-		} catch (Exception ex)
-		{
-			logger.error(ex.getMessage());
-			 ex.printStackTrace();
 		}
-		return null;
-	}
-
-	public static EInstrumentType toInstrumentType(String code)
-	{
-		switch (code)
-		{
-		case "S":
-			return EInstrumentType.STOCK;
-		case "I":
-			return EInstrumentType.INDEX;
-		}
-		String newCode = code.replace("_", "").replace("%", "_PERCENT");
-		EInstrumentType type = EInstrumentType.OPTION;
+		
+		// addressees
+		List<com.celera.core.dm.Addressee> list = new ArrayList<com.celera.core.dm.Addressee>();
 		try
 		{
-			type = EInstrumentType.valueOf(newCode);
-		} catch (Exception e)
-		{
-			logger.error("type=[{}], {}", code, e.getMessage());
+			for (IXmlNode o1: u.getAddressees())
+			{
+				if (o1 instanceof Addressees)
+				{
+					for (IXmlNode o2: ((Addressees)o1).getAddressee())
+					{
+						Addressee o3 = (Addressee)o2;
+						
+						com.celera.core.dm.Addressee addr = new com.celera.core.dm.Addressee();
+						addr.setEntityCode(o3.getEntityCode());
+						addr.setAddrCode(o3.getAddresseeCode());
+						addr.setIsBroadcast(Uts2Dm.toBoolean(o3.getBroadcast()));
+						list.add(addr);
+					}	
+				}
+			}
 		}
-		return type;
+		catch (Exception e)
+		{
+			logger.error("parse Quote addressee error", e);
+		}
+		
+		// modifiable fields
+		quote.setStatus(Uts2Dm.toStatus(u.getMode()));
+		quote.setEntity(u.getQuoteCreatorEntityCode());
+		quote.setAskPrice(Uts2Dm.toDouble(u.getAskPrice()));
+		quote.setAskQty(Uts2Dm.toLong(u.getAskSize()));
+		quote.setAskTime(Uts2Dm.toLocalDate(u.getAskTime()));
+		quote.setBidPrice(Uts2Dm.toDouble(u.getBidPrice()));
+		quote.setBidQty(Uts2Dm.toLong(u.getBidSize()));
+		quote.setBidTime(Uts2Dm.toLocalDate(u.getBidTime()));
+		quote.setAddressees(list);
+		
+		OMS.instance().onQuote(quote);
+		
+		doTrade(u.getQuoteId(), u.getTradedPrice(), u.getTradedSize(), u.getTradedTime(), u.getTradedComment());
 	}
 }

@@ -3,11 +3,12 @@ package com.vectails.xml.data;
 import java.time.LocalDate;
 
 import com.vectails.common.GenericFactory;
-import com.vectails.message.ICommonFields;
-import com.vectails.xml.INodeUpdateListener;
+import com.vectails.message.processor.Uts2Dm;
+import com.vectails.session.IUtsLastTimeUpdateListener;
+import com.vectails.xml.IUtsLastTimeUpdater;
 import com.vectails.xml.IXmlNode;
 
-public class IndexFuture extends GenericFactory implements IXmlNode, INodeUpdateListener
+public class IndexFuture extends GenericFactory implements IXmlNode, IUtsLastTimeUpdater
 {
 	public IndexFuture()
 	{
@@ -68,6 +69,12 @@ public class IndexFuture extends GenericFactory implements IXmlNode, INodeUpdate
 	@Override
 	public LocalDate getLastTime()
 	{
-		return LocalDate.parse(LastUpdateDateTime, ICommonFields.DT_FORMATTER);
+		return Uts2Dm.toLocalDate(LastUpdateDateTime);
+	}
+	
+	@Override
+	public void updateLastTime(IUtsLastTimeUpdateListener l)
+	{
+		l.setIdxFutureLT(getLastTime());
 	}
 }
