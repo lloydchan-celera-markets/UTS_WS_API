@@ -1,5 +1,7 @@
 package com.vectails.session;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,7 @@ import com.vectails.xml.IXmlNode;
 import com.vectalis.B2TDataModel;
 import com.vectalis.B2TDataModelSoap;
 
-public final class UtsClient
+public final class UtsClient implements Runnable
 {
 	final static Logger logger = LoggerFactory.getLogger(UtsClient.class);
 	
@@ -25,6 +27,8 @@ public final class UtsClient
 	
 	private B2TDataModel service = null;
 	private B2TDataModelSoap port = null;
+	
+	private AtomicBoolean isStart = new AtomicBoolean(false);
 	
 	public UtsClient()
 	{
@@ -64,10 +68,6 @@ public final class UtsClient
 //		resp = port.getAllMyRepliesDirectAccess(UtsDirectAccessMessageBuilder.buildGetAllMyReplies(sess));
 //		// System.out.println(resp);
 //		UtsDirectAccessMessageProcessor.parseXml(resp);
-
-		// port.getLoginGenericURL(new String());
-//		resp = port.ping();
-		// System.out.println(resp);
 	}
 	
 	public void logout()
@@ -81,19 +81,48 @@ public final class UtsClient
 	{
 		String resp = port.ping();
 	}
-	
-	public static void main(String args[]) throws InterruptedException
+
+	public void stop() 
 	{
-		UtsClient client = new UtsClient();
-		client.connect();
-		client.login();
-		
-		while (true) {
-			client.poll();
-			Thread.sleep(10000);
-		}
-
-//		System.exit(0);
+		isStart.compareAndSet(true, false);
+		logout();
+		logger.info("Stop client");
 	}
+	
+	@Override
+	public void run()
+	{
+		try
+		{
+			isStart.compareAndSet(false, true);
+			
+			logger.info("Start client");
+			
+			UtsClient client = new UtsClient();
+			client.connect();
+			client.login();
 
+			for (;;)
+			{
+				if (isStart.get()) {
+					
+					client.poll();
+					try
+					{
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
+		catch (Exception e)
+		{
+			logger.error("", e);
+		}
+		logger.info("Exit client");
+	}
 }

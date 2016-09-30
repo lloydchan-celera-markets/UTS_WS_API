@@ -127,5 +127,11 @@
             <artifactId>cxf-rt-transports-http-jetty</artifactId>
             <version>3.1.7</version>
         </dependency>
+        <dependency>
+        	<groupId>org.apache.cxf.samples</groupId>
+        	<artifactId>celera_core</artifactId>
+        	<version>3.1.7</version>
+        	<scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
