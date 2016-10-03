@@ -34,6 +34,8 @@ public final class UtsClient implements Runnable
 
 	public static final String WSDL_FILE;
 	
+	public static final String CXF_SPI_PROVIDER;
+	
 	final private UtsSession sess;
 	
 	static 
@@ -45,6 +47,14 @@ public final class UtsClient implements Runnable
 		CLIENT_VERSION = ResourceManager.getProperties(IResourceProperties.PROP_UTS_CLIENT_VERESION, DEFAULT_CLIENT_VERSION);
 
 		WSDL_FILE = ResourceManager.getProperties(IResourceProperties.PROP_UTS_WSDL_FILE);
+
+		CXF_SPI_PROVIDER = ResourceManager.getProperties(IResourceProperties.PROP_CXF_SPI_PROVIDER);
+		if (CXF_SPI_PROVIDER != null)
+		{
+			String oldSpi = System.getProperty("javax.xml.ws.spi.Provider");
+			System.setProperty("javax.xml.ws.spi.Provider", CXF_SPI_PROVIDER);
+			logger.info("override javax.xml.ws.spi.Provider old[{}] new[{}]", oldSpi, CXF_SPI_PROVIDER);
+		}
 	}
 	
 	private B2TDataModel service = null;

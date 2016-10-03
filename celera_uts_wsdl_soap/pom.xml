@@ -49,66 +49,109 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<shadedGroupFilter>org.apache.cxf</shadedGroupFilter>
+							<shadedArtifactAttached>false</shadedArtifactAttached>
+							<createSourcesJar>${createSourcesJar}</createSourcesJar>
+							<promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+							<createDependencyReducedPom>true</createDependencyReducedPom>
+							<dependencyReducedPomLocation>${basedir}/target/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+							<filters>
+								<filter>
+									<artifact>${project.groupId}:${project.artifactId}</artifact>
+									<excludes>
+										<exclude>org/**</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+									<projectName>Apache CXF</projectName>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.handlers</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/services/javax.xml.ws.spi.Provider</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/services/com.sun.tools.xjc.Plugin</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.schemas</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/cxf/cxf.extension</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/extensions.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/cxf/extensions.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/cxf/bus-extensions.txt</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/cxf/bus-extensions.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/wsdl.plugin.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/tools.service.validator.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/cxf/java2wsbeans.xml</resource>
+								</transformer>
+								<!-- 
+								<transformer implementation="org.apache.cxf.maven.PluginTransformer">
+									<resource>META-INF/tools-plugin.xml</resource>
+								</transformer>
+								<transformer implementation="org.apache.cxf.maven.CXFAllTransformer" />
+								-->
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-	<profiles>
-		<profile>
-			<id>server</id>
-			<build>
-				<defaultGoal>test</defaultGoal>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>test</phase>
-								<goals>
-									<goal>java</goal>
-								</goals>
-								<configuration>
-									<source>1.8</source>
-									<target>1.8</target>
-									<mainClass>demo.hw.server.Server</mainClass>
-									<arguments>
-										<argument>${basedir}/src/main/resources/wsdl/MainServer_DirectAccess__Broker.wsdl</argument>
-									</arguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>client</id>
-			<build>
-				<defaultGoal>test</defaultGoal>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>test</phase>
-								<goals>
-									<goal>java</goal>
-								</goals>
-								<configuration>
-									<source>1.8</source>
-									<target>1.8</target>
-									<mainClass>demo.hw.client.Client</mainClass>
-									<arguments>
-										<argument>${basedir}/src/main/resources/wsdl/MainServer_DirectAccess__Broker.wsdl</argument>
-									</arguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+	<!-- <profiles> <profile> <id>server</id> <build> <defaultGoal>test</defaultGoal> 
+		<plugins> <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>exec-maven-plugin</artifactId> 
+		<executions> <execution> <phase>test</phase> <goals> <goal>java</goal> </goals> 
+		<configuration> <source>1.8</source> <target>1.8</target> <mainClass>demo.hw.server.Server</mainClass> 
+		<arguments> <argument>${basedir}/src/main/resources/wsdl/MainServer_DirectAccess__Broker.wsdl</argument> 
+		</arguments> </configuration> </execution> </executions> </plugin> </plugins> 
+		</build> </profile> <profile> <id>client</id> <build> <defaultGoal>test</defaultGoal> 
+		<plugins> <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>exec-maven-plugin</artifactId> 
+		<executions> <execution> <phase>test</phase> <goals> <goal>java</goal> </goals> 
+		<configuration> <source>1.8</source> <target>1.8</target> <mainClass>demo.hw.client.Client</mainClass> 
+		<arguments> <argument>${basedir}/src/main/resources/wsdl/MainServer_DirectAccess__Broker.wsdl</argument> 
+		</arguments> </configuration> </execution> </executions> </plugin> </plugins> 
+		</build> </profile> </profiles> -->
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
