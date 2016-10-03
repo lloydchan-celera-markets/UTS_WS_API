@@ -32,7 +32,6 @@ public class OMS implements IOMSListener
 		return allOrders.get(id);
 	}
 
-	@Override
 	public void onOrder(IOrder o)
 	{
 		Long id = o.getId();
@@ -40,7 +39,6 @@ public class OMS implements IOMSListener
 		logger.info("onOrder: " + o.toString());		
 	}
 
-	@Override
 	public void onQuote(IOrder o)
 	{
 		Long id = o.getId();
@@ -51,7 +49,6 @@ public class OMS implements IOMSListener
 		logger.info("onQuote: " + o.toString());
 	}
 
-	@Override
 	public void onTrade(ITrade o)
 	{
 		Long id = o.getId();

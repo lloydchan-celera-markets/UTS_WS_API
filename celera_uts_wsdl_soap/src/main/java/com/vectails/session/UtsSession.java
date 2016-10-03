@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.celera.core.dm.IInstrument;
 import com.vectails.message.processor.Uts2Dm;
 import com.vectails.xml.IUtsLastTimeUpdater;
 import com.vectails.xml.IXmlNode;

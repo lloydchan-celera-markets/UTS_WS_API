@@ -28,7 +28,7 @@ public class Instrument implements IInstrument
 		this.lastUpdate = lastUpdate;
 	}
 
-	@Override
+//	@Override
 	public String key()
 	{
 		return market + "_" + symbol;
@@ -39,7 +39,7 @@ public class Instrument implements IInstrument
 		return type;
 	}
 
-	@Override
+//	@Override
 	public void setStatus(EStatus status)
 	{
 		LocalDate now = LocalDate.now();
@@ -60,7 +60,7 @@ public class Instrument implements IInstrument
 		return lastUpdate;
 	}
 
-	@Override
+//	@Override
 	public EStatus getStatus()
 	{
 		return this.status;

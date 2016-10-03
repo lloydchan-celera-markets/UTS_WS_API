@@ -88,18 +88,15 @@ public class UtsDirectAccessResponse extends GenericFactory implements IXmlNode,
 		return Quotes;
 	}
 
-	@Override
 	public void parseAttribute(Element root)
 	{
 	}
 
-	@Override
 	public LocalDate getLastTime()
 	{
 		return Uts2Dm.toLocalDate(TimeOfLastRecoveredQuotes);
 	}
 	
-	@Override
 	public void updateLastTime(IUtsLastTimeUpdateListener l)
 	{
 		l.setTimeofLastRecoveredQuotes(TimeOfLastRecoveredQuotes);

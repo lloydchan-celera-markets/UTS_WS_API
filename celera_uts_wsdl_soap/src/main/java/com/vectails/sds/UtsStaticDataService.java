@@ -98,7 +98,6 @@ public class UtsStaticDataService implements IStaticDataService
 		return get1(key);
 	}
 
-	@Override
 	public void onInstrumentUpdate(IInstrument instr)
 	{
 		String key = toKey(instr);
@@ -112,14 +111,12 @@ public class UtsStaticDataService implements IStaticDataService
 			old.setStatus(instr.getStatus());
 	}
 
-	@Override
 	public IInstrument get(String derivTypeCode)
 	{
 		String key = genKey(derivTypeCode);
 		return instrMap.get(key);
 	}
 
-	@Override
 	public String toKey(IInstrument instr)
 	{
 		return instr.getType().toString();

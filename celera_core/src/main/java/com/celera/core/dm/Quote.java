@@ -182,23 +182,23 @@ public class Quote implements IQuote
 		return sb.toString();
 	}
 
-	@Override
+//	@Override
 	public void setQty(Long qty)
 	{
 	}
 
-	@Override
+//	@Override
 	public Long getQty()
 	{
 		return null;
 	}
 
-	@Override
+//	@Override
 	public void setPrice(Double p)
 	{
 	}
 
-	@Override
+//	@Override
 	public Double getPrice()
 	{
 		return null;

@@ -24,7 +24,7 @@ public class Leg extends Derivative implements ILeg
 				+ this.strike + ", expiry=" + this.expiry + ", price=" + this.price + "]";
 	}
 
-	@Override
+//	@Override
 	public void setMultiplier(Double multiplier)
 	{
 		this.multiplier = multiplier;

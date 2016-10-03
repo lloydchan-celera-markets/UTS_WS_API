@@ -63,7 +63,7 @@ public class Derivative extends Instrument implements IDerivative
 		return s;
 	}
 
-	@Override
+//	@Override
 	public void setPrice(Double price)
 	{
 		this.price = price;
