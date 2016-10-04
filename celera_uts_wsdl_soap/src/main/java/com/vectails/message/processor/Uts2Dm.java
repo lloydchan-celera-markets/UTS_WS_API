@@ -1,6 +1,7 @@
 package com.vectails.message.processor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
@@ -65,6 +66,22 @@ public class Uts2Dm
 	}
 
 	public static String toLocalDate(LocalDate time)
+	{
+		if (time == null)
+			return null; // skip throw
+		
+		try
+		{
+			return time.format(UTS_FORMATTER);
+		}
+		catch (Exception e)
+		{
+//			e.printStackTrace();	// time must be same format
+			return null;
+		}
+	}
+	
+	public static String toLocalDateTime(LocalDateTime time)
 	{
 		if (time == null)
 			return null; // skip throw

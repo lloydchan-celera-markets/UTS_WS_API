@@ -71,7 +71,7 @@ public final class UtsClient implements Runnable
 		logger.info("create Uts client : {}", sess.toString());
 	}
 
-	public void connect() 
+	public synchronized void connect() 
 	{
 		if (WSDL_FILE == null)
 		{
@@ -98,7 +98,7 @@ public final class UtsClient implements Runnable
 		logger.info("connect() [{}, {} {}, {}] wsdl[{}]", ENTITY_CODE, CLIENT_CODE, SESSION_ID, CLIENT_VERSION, WSDL_FILE);
 	}
 	
-	public void login()
+	public synchronized void login()
 	{
 		String resp = port.updateDirectAccess(UtsMessageBuilder.buildLogin(sess));
 		IXmlNode o = UtsMessageProcessor.parseXml(resp);
@@ -107,7 +107,7 @@ public final class UtsClient implements Runnable
 		logger.info("login() - {}", o.toString());
 	}
 	
-	public void poll()
+	public synchronized void poll()
 	{
 		String content = UtsMessageBuilder.buildGetAllQuotesDelta(sess);
 		String resp = port.getAllMyEntityQuotesDirectAccessDelta(content);
@@ -122,7 +122,7 @@ public final class UtsClient implements Runnable
 //		UtsDirectAccessMessageProcessor.parseXml(resp);
 	}
 	
-	public void logout()
+	public synchronized void logout()
 	{
 		try
 		{
@@ -136,7 +136,7 @@ public final class UtsClient implements Runnable
 		}
 	}
 	
-	public void ping()
+	public synchronized void ping()
 	{
 		try
 		{
@@ -152,8 +152,11 @@ public final class UtsClient implements Runnable
 	{
 		try
 		{
-			isStart.compareAndSet(true, false);
-			logout();
+			boolean isExpected = isStart.compareAndSet(true, false);
+			if (!isExpected)
+			{
+				logout();
+			}
 			logger.info("Stop client");
 		}
 		catch (Exception e)
@@ -170,15 +173,15 @@ public final class UtsClient implements Runnable
 			
 			logger.info("Start client");
 			
-			UtsClient client = new UtsClient();
-			client.connect();
-			client.login();
+//			UtsClient client = new UtsClient();
+			connect();
+			login();
 
 			for (;;)
 			{
 				if (isStart.get()) {
 					
-					client.poll();
+					poll();
 					try
 					{
 						Thread.sleep(1000);
