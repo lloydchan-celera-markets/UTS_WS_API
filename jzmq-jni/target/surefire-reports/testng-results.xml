@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="40" passed="40">
+  <reporter-output>
+  </reporter-output>
+  <suite name="org.zeromq.ZMQTest" duration-ms="1395" started-at="2016-10-04T04:15:10Z" finished-at="2016-10-04T04:15:12Z">
+    <groups>
+    </groups>
+    <test name="Command line test bc34032c-6dd1-4de9-b972-30d82aa2b0a4" duration-ms="1395" started-at="2016-10-04T04:15:10Z" finished-at="2016-10-04T04:15:12Z">
+      <class name="org.zeromq.ZMQTest">
+        <test-method status="PASS" signature="testEventDisconnected()[pri:0, instance:testEventDisconnected(org.zeromq.ZMQTest)]" name="testEventDisconnected" duration-ms="33" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventDisconnected -->
+        <test-method status="PASS" signature="testKeyDecode()[pri:0, instance:testKeyDecode(org.zeromq.ZMQTest)]" name="testKeyDecode" duration-ms="2" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testKeyDecode -->
+        <test-method status="PASS" signature="testSendMoreRequestReplyOverTcp()[pri:0, instance:testSendMoreRequestReplyOverTcp(org.zeromq.ZMQTest)]" name="testSendMoreRequestReplyOverTcp" duration-ms="5" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSendMoreRequestReplyOverTcp -->
+        <test-method status="PASS" signature="testZeroCopyRecv()[pri:0, instance:testZeroCopyRecv(org.zeromq.ZMQTest)]" name="testZeroCopyRecv" duration-ms="8" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testZeroCopyRecv -->
+        <test-method status="PASS" signature="testKeyEncode()[pri:0, instance:testKeyEncode(org.zeromq.ZMQTest)]" name="testKeyEncode" duration-ms="0" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testKeyEncode -->
+        <test-method status="PASS" signature="testZeroCopySend()[pri:0, instance:testZeroCopySend(org.zeromq.ZMQTest)]" name="testZeroCopySend" duration-ms="2" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testZeroCopySend -->
+        <test-method status="PASS" signature="testEventListening()[pri:0, instance:testEventListening(org.zeromq.ZMQTest)]" name="testEventListening" duration-ms="2" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventListening -->
+        <test-method status="PASS" signature="testCurveBinaryKeys()[pri:0, instance:testCurveBinaryKeys(org.zeromq.ZMQTest)]" name="testCurveBinaryKeys" duration-ms="14" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCurveBinaryKeys -->
+        <test-method status="PASS" signature="testProxy()[pri:0, instance:testProxy(org.zeromq.ZMQTest)]" name="testProxy" duration-ms="1011" started-at="2016-10-04T12:15:10Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testProxy -->
+        <test-method status="PASS" signature="testEventMonitorStopped()[pri:0, instance:testEventMonitorStopped(org.zeromq.ZMQTest)]" name="testEventMonitorStopped" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventMonitorStopped -->
+        <test-method status="PASS" signature="testWritingToClosedSocket()[pri:0, instance:testWritingToClosedSocket(org.zeromq.ZMQTest)]" name="testWritingToClosedSocket" duration-ms="3" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testWritingToClosedSocket -->
+        <test-method status="PASS" signature="testBindToRandomPort()[pri:0, instance:testBindToRandomPort(org.zeromq.ZMQTest)]" name="testBindToRandomPort" duration-ms="34" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testBindToRandomPort -->
+        <test-method status="PASS" signature="testEventClosed()[pri:0, instance:testEventClosed(org.zeromq.ZMQTest)]" name="testEventClosed" duration-ms="2" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventClosed -->
+        <test-method status="PASS" signature="testEventConnected()[pri:0, instance:testEventConnected(org.zeromq.ZMQTest)]" name="testEventConnected" duration-ms="2" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventConnected -->
+        <test-method status="PASS" signature="testSetXpubVerbose()[pri:0, instance:testSetXpubVerbose(org.zeromq.ZMQTest)]" name="testSetXpubVerbose" duration-ms="6" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSetXpubVerbose -->
+        <test-method status="PASS" signature="testByteBufferRecvTooLarge()[pri:0, instance:testByteBufferRecvTooLarge(org.zeromq.ZMQTest)]" name="testByteBufferRecvTooLarge" duration-ms="2" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testByteBufferRecvTooLarge -->
+        <test-method status="PASS" signature="testEventBindFailed()[pri:0, instance:testEventBindFailed(org.zeromq.ZMQTest)]" name="testEventBindFailed" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventBindFailed -->
+        <test-method status="PASS" signature="testByteBufferRecv()[pri:0, instance:testByteBufferRecv(org.zeromq.ZMQTest)]" name="testByteBufferRecv" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testByteBufferRecv -->
+        <test-method status="PASS" signature="testByteBufferSend()[pri:0, instance:testByteBufferSend(org.zeromq.ZMQTest)]" name="testByteBufferSend" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testByteBufferSend -->
+        <test-method status="PASS" signature="testPollingInvalidSockets()[pri:0, instance:testPollingInvalidSockets(org.zeromq.ZMQTest)]" name="testPollingInvalidSockets" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testPollingInvalidSockets -->
+        <test-method status="PASS" signature="testEventConnectRetried()[pri:0, instance:testEventConnectRetried(org.zeromq.ZMQTest)]" name="testEventConnectRetried" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventConnectRetried -->
+        <test-method status="PASS" signature="testBindToSystemRandomPort()[pri:0, instance:testBindToSystemRandomPort(org.zeromq.ZMQTest)]" name="testBindToSystemRandomPort" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testBindToSystemRandomPort -->
+        <test-method status="PASS" signature="testKeyEncodeDecode()[pri:0, instance:testKeyEncodeDecode(org.zeromq.ZMQTest)]" name="testKeyEncodeDecode" duration-ms="115" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testKeyEncodeDecode -->
+        <test-method status="PASS" signature="testGetVersion()[pri:0, instance:testGetVersion(org.zeromq.ZMQTest)]" name="testGetVersion" duration-ms="0" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testGetVersion -->
+        <test-method status="PASS" signature="testEventConnectDelayed()[pri:0, instance:testEventConnectDelayed(org.zeromq.ZMQTest)]" name="testEventConnectDelayed" duration-ms="4" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventConnectDelayed -->
+        <test-method status="PASS" signature="testXPUBSUB()[pri:0, instance:testXPUBSUB(org.zeromq.ZMQTest)]" name="testXPUBSUB" duration-ms="0" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testXPUBSUB -->
+        <test-method status="PASS" signature="testMakeVersion()[pri:0, instance:testMakeVersion(org.zeromq.ZMQTest)]" name="testMakeVersion" duration-ms="0" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testMakeVersion -->
+        <test-method status="PASS" signature="testSetOption()[pri:0, instance:testSetOption(org.zeromq.ZMQTest)]" name="testSetOption" duration-ms="1" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSetOption -->
+        <test-method status="PASS" signature="testRouterMandatory()[pri:0, instance:testRouterMandatory(org.zeromq.ZMQTest)]" name="testRouterMandatory" duration-ms="0" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testRouterMandatory -->
+        <test-method status="PASS" signature="testPollerUnregister()[pri:0, instance:testPollerUnregister(org.zeromq.ZMQTest)]" name="testPollerUnregister" duration-ms="0" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:11Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testPollerUnregister -->
+        <test-method status="PASS" signature="testCurveZ85Keys()[pri:0, instance:testCurveZ85Keys(org.zeromq.ZMQTest)]" name="testCurveZ85Keys" duration-ms="17" started-at="2016-10-04T12:15:11Z" finished-at="2016-10-04T12:15:12Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCurveZ85Keys -->
+        <test-method status="PASS" signature="testReqRep()[pri:0, instance:testReqRep(org.zeromq.ZMQTest)]" name="testReqRep" duration-ms="0" started-at="2016-10-04T12:15:12Z" finished-at="2016-10-04T12:15:12Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testReqRep -->
+        <test-method status="PASS" signature="testEventAccepted()[pri:0, instance:testEventAccepted(org.zeromq.ZMQTest)]" name="testEventAccepted" duration-ms="4" started-at="2016-10-04T12:15:12Z" finished-at="2016-10-04T12:15:12Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEventAccepted -->
+      </class> <!-- org.zeromq.ZMQTest -->
+    </test> <!-- Command line test bc34032c-6dd1-4de9-b972-30d82aa2b0a4 -->
+  </suite> <!-- org.zeromq.ZMQTest -->
+  <suite name="org.zeromq.EmbeddedLibraryToolsTest" duration-ms="2209" started-at="2016-10-04T04:15:12Z" finished-at="2016-10-04T04:15:14Z">
+    <groups>
+    </groups>
+    <test name="Command line test d74efc79-fc90-4c49-975b-4c8d537ca48b" duration-ms="2209" started-at="2016-10-04T04:15:12Z" finished-at="2016-10-04T04:15:14Z">
+      <class name="org.zeromq.EmbeddedLibraryToolsTest">
+        <test-method status="PASS" signature="rewriteMacOSX()[pri:0, instance:rewriteMacOSX(org.zeromq.EmbeddedLibraryToolsTest)]" name="rewriteMacOSX" duration-ms="19" started-at="2016-10-04T12:15:13Z" finished-at="2016-10-04T12:15:13Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- rewriteMacOSX -->
+        <test-method status="PASS" signature="passThroughLinux32Bit()[pri:0, instance:passThroughLinux32Bit(org.zeromq.EmbeddedLibraryToolsTest)]" name="passThroughLinux32Bit" duration-ms="1" started-at="2016-10-04T12:15:13Z" finished-at="2016-10-04T12:15:13Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- passThroughLinux32Bit -->
+        <test-method status="PASS" signature="rewriteWindowsXP()[pri:0, instance:rewriteWindowsXP(org.zeromq.EmbeddedLibraryToolsTest)]" name="rewriteWindowsXP" duration-ms="1" started-at="2016-10-04T12:15:13Z" finished-at="2016-10-04T12:15:13Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- rewriteWindowsXP -->
+        <test-method status="PASS" signature="rewriteWindows8()[pri:0, instance:rewriteWindows8(org.zeromq.EmbeddedLibraryToolsTest)]" name="rewriteWindows8" duration-ms="1" started-at="2016-10-04T12:15:13Z" finished-at="2016-10-04T12:15:13Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- rewriteWindows8 -->
+        <test-method status="PASS" signature="rewriteSpacesInPath()[pri:0, instance:rewriteSpacesInPath(org.zeromq.EmbeddedLibraryToolsTest)]" name="rewriteSpacesInPath" duration-ms="1" started-at="2016-10-04T12:15:13Z" finished-at="2016-10-04T12:15:13Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- rewriteSpacesInPath -->
+        <test-method status="PASS" signature="multiLibLoad()[pri:0, instance:multiLibLoad(org.zeromq.EmbeddedLibraryToolsTest)]" name="multiLibLoad" duration-ms="531" started-at="2016-10-04T12:15:13Z" finished-at="2016-10-04T12:15:13Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- multiLibLoad -->
+        <test-method status="PASS" signature="libsAsProp()[pri:0, instance:libsAsProp(org.zeromq.EmbeddedLibraryToolsTest)]" name="libsAsProp" duration-ms="402" started-at="2016-10-04T12:15:13Z" finished-at="2016-10-04T12:15:14Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- libsAsProp -->
+      </class> <!-- org.zeromq.EmbeddedLibraryToolsTest -->
+    </test> <!-- Command line test d74efc79-fc90-4c49-975b-4c8d537ca48b -->
+  </suite> <!-- org.zeromq.EmbeddedLibraryToolsTest -->
+</testng-results>
