@@ -8,6 +8,7 @@ public interface IResourceProperties
 	public static final String PROP_UTS_SESSION_ID = "uts.session.id";
 	public static final String PROP_UTS_CLIENT_VERESION = "uts.client.version";
 	public static final String PROP_UTS_WSDL_FILE = "uts.wsdl.file";
+	public static final String PROP_UTS_POLL_FREQ = "uts.poll.frequency";
 
 	public static final String PROP_CXF_SPI_PROVIDER = "cxf.spi.provider";
 }

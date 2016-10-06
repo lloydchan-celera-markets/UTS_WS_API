@@ -25,13 +25,15 @@ public final class UtsClient implements Runnable
 	public static final String DEFAULT_PASSWORD = "uat";
 	public static final String DEFAULT_SESSION_ID = "7df96e02-e058-4212-a822-bd3cce2a87db";
 	public static final String DEFAULT_CLIENT_VERSION = "UtsDacV1.8";
+	public static final String DEFAULT_POLL_FREQ = "3000";
 
 	public static final String ENTITY_CODE;
 	public static final String CLIENT_CODE;
 	public static final String PASSWORD;
 	public static final String SESSION_ID;
 	public static final String CLIENT_VERSION;
-
+	public static final Long POLL_FREQ;
+	
 	public static final String WSDL_FILE;
 	
 	public static final String CXF_SPI_PROVIDER;
@@ -45,6 +47,7 @@ public final class UtsClient implements Runnable
 		PASSWORD = ResourceManager.getProperties(IResourceProperties.PROP_UTS_PWD, DEFAULT_PASSWORD);
 		SESSION_ID = ResourceManager.getProperties(IResourceProperties.PROP_UTS_SESSION_ID, DEFAULT_SESSION_ID);
 		CLIENT_VERSION = ResourceManager.getProperties(IResourceProperties.PROP_UTS_CLIENT_VERESION, DEFAULT_CLIENT_VERSION);
+		POLL_FREQ = Long.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_UTS_POLL_FREQ, DEFAULT_POLL_FREQ));
 
 		WSDL_FILE = ResourceManager.getProperties(IResourceProperties.PROP_UTS_WSDL_FILE);
 
@@ -167,28 +170,34 @@ public final class UtsClient implements Runnable
 	
 	public void run()
 	{
+		long now = 0, diff = 0, lastSent = 0;
 		try
 		{
 			isStart.compareAndSet(false, true);
 			
 			logger.info("Start client");
 			
-//			UtsClient client = new UtsClient();
 			connect();
 			login();
 
 			for (;;)
 			{
-				if (isStart.get()) {
-					
-					poll();
-					try
+				if (isStart.get()) 
+				{
+					now = System.currentTimeMillis();
+					if (now > lastSent)
 					{
-						Thread.sleep(1000);
-					}
-					catch (InterruptedException e)
-					{
-						e.printStackTrace();
+						poll();
+						lastSent = System.currentTimeMillis();
+						diff = lastSent - now;
+						try
+						{
+							Thread.sleep(POLL_FREQ - diff);
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
 					}
 				}
 			}
