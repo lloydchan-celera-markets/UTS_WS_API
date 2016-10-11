@@ -11,4 +11,16 @@ public interface IResourceProperties
 	public static final String PROP_UTS_POLL_FREQ = "uts.poll.frequency";
 
 	public static final String PROP_CXF_SPI_PROVIDER = "cxf.spi.provider";
+	
+	public static final String PROP_UTS_EMAILTC_SUBJECT_PREFIX = "uts.email.tradeconf.subject";
+	public static final String PROP_UTS_EMAILTC_SENDER = "uts.email.tradeconf.sender";
+	public static final String PROP_UTS_EMAILTC_ATTACHMENT_PREFIX = "uts.email.tradeconf.attach.prefix";
+	public static final String PROP_UTS_EMAILTC_ATTACHMENT_EXT = "uts.email.tradeconf.attach.ext";
+	
+	public static final String PROP_EMAIL_SERVER_PROTO = "mail.server.protocol";
+	public static final String PROP_EMAIL_SERVER_IP = "mail.server.ip";
+	public static final String PROP_EMAIL_SERVER_PORT = "mail.server.port";
+	public static final String PROP_EMAIL_SERVER_USER = "mail.server.user";
+	public static final String PROP_EMAIL_SERVER_PWD = "mail.server.password";
+	public static final String PROP_EMAIL_POLL_INTERVAL = "mail.poll.interval";
 }

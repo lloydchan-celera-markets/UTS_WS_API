@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -17,37 +20,105 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.MimeBodyPart;
 
+import org.apache.log4j.BasicConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.celera.core.configure.ResourceManager;
 import com.celera.library.javamail.IMailListener;
 import com.celera.library.javamail.IMailService;
 import com.celera.library.javamail.MailService;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
+import com.vectails.common.IResourceProperties;
 
-public class UtsTradeConfoApp implements IMailListener, Runnable
+public class UtsTradeConfoApp implements IMailListener
 {
-	// private final String protocol;
-	// private final String host;
-	// private final String port;
-	// private final String userName;
-	// private final String password;
-	private final String PREFIX_SUBJECT = "Trade Confirmation";
-	private final String FROM_SENDER = "eqd@celera-markets.com";
-	private final String PREFIX_TRADE_CONFO_FILENAME = "CELERAEQ-";
-	private final String TRADE_CONFO_FILE_EXT = ".pdf";
+	final static Logger logger = LoggerFactory.getLogger(UtsTradeConfoApp.class);
 
-//	private final String SAVE_DIRECTORY = "/home/idbs/workspace/uts/build/UTS_WS_API/data";
+	private static final String CHARSET_UTF8 = "UTF-8";
+	private static final String CHARSET_UTF16 = "UTF-16";
+	private static final String CHARSET_UTF32 = "UTF-32";
+	private static final String CHARSET_ASCII = "US-ASCII";
+
+	private static final String DEFAULT_PREFIX_EMAIL_SUBJECT = "Trade Confirmation";
+	private static final String DEFAULT_EMAIL_SENDER = "eqd@celera-markets.com";
+	private static final String DEFAULT_PREFIX_ATTACHMENT = "CELERAEQ-";
+	private static final String DEFAULT_ATTACHMENT_FILE_EXT = ".pdf";
+
+	private static final String DEFAULT_EMAIL_SERVER_PROTO = "imap";
+	private static final String DEFAULT_EMAIL_SERVER_IP = "outlook.office365.com";
+	private static final String DEFAULT_EMAIL_SERVER_PORT = "993";
+	private static final String DEFAULT_EMAIL_SERVER_USER = "Lloyd.Chan@celera-markets.com";
+	private static final String DEFAULT_EMAIL_SERVER_PWD = "Ja9XuVDj";
+	
+	private static final String DEFAULT_EMAIL_POLL_INTERVAL = "10";
+
+	private static String PREFIX_EMAIL_SUBJECT = null;
+	private static String EMAIL_SENDER = null;
+	private static String PREFIX_ATTACHMENT = null;
+	private static String ATTACHMENT_FILE_EXT = null;
+
+	private static String EMAIL_SERVER_PROTO;
+	private static String EMAIL_SERVER_IP;
+	private static String EMAIL_SERVER_PORT;
+	private static String EMAIL_SERVER_USER;
+	private static String EMAIL_SERVER_PWD;
+	
+	private static Integer EMAIL_POLLING_INTERVAL; 
+
+	static
+	{
+		PREFIX_EMAIL_SUBJECT = ResourceManager.getProperties(IResourceProperties.PROP_UTS_EMAILTC_SUBJECT_PREFIX,
+				DEFAULT_PREFIX_EMAIL_SUBJECT);
+		EMAIL_SENDER = ResourceManager.getProperties(IResourceProperties.PROP_UTS_EMAILTC_SENDER, DEFAULT_EMAIL_SENDER);
+		PREFIX_ATTACHMENT = ResourceManager.getProperties(IResourceProperties.PROP_UTS_EMAILTC_ATTACHMENT_PREFIX,
+				DEFAULT_PREFIX_ATTACHMENT);
+		ATTACHMENT_FILE_EXT = ResourceManager.getProperties(IResourceProperties.PROP_UTS_EMAILTC_ATTACHMENT_EXT,
+				DEFAULT_ATTACHMENT_FILE_EXT);
+
+		EMAIL_SERVER_PROTO = ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_SERVER_PROTO,
+				DEFAULT_EMAIL_SERVER_PROTO);
+		EMAIL_SERVER_IP = ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_SERVER_IP,
+				DEFAULT_EMAIL_SERVER_IP);
+		EMAIL_SERVER_PORT = ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_SERVER_PORT,
+				DEFAULT_EMAIL_SERVER_PORT);
+		EMAIL_SERVER_USER = ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_SERVER_USER,
+				DEFAULT_EMAIL_SERVER_USER);
+		EMAIL_SERVER_PWD = ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_SERVER_PWD,
+				DEFAULT_EMAIL_SERVER_PWD);
+		EMAIL_POLLING_INTERVAL = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_POLL_INTERVAL,
+				DEFAULT_EMAIL_POLL_INTERVAL));
+	}
 
 	private Date last = null;
-
 	final private IMailService serv;
 
-	private AtomicBoolean isWorking = new AtomicBoolean(false);
+	ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+	final PollEmailTask actualTask = new PollEmailTask();
 
-	public UtsTradeConfoApp(String protocol, String host, String port, String userName, String password, Date last)
+	class PollEmailTask implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			serv.getAllFromInbox();
+		}
+	}
+	
+	public UtsTradeConfoApp(Date last)
 	{
 		this.last = last;
-		serv = new MailService(protocol, host, port, userName, password);
+		serv = new MailService(EMAIL_SERVER_PROTO, EMAIL_SERVER_IP, EMAIL_SERVER_PORT, EMAIL_SERVER_USER,
+				EMAIL_SERVER_PWD);
 		serv.setListener(this);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "UtsTradeConfoApp [last=" + last + ", serv=" + serv + "]";
 	}
 
 	@Override
@@ -60,7 +131,9 @@ public class UtsTradeConfoApp implements IMailListener, Runnable
 			if (message.getSentDate().after(last))
 			{
 				Address[] fromAddresses = message.getFrom();
-				if (isFrom(fromAddresses[0].toString()) && isMatchSubject(message.getSubject()))
+				logger.debug(message.getSentDate().toString() + "," + fromAddresses[0].toString() + ","
+						+ message.getSubject());
+				if (/* isFrom(fromAddresses[0].toString()) && */ isMatchSubject(message.getSubject()))
 				{
 					try
 					{
@@ -68,10 +141,9 @@ public class UtsTradeConfoApp implements IMailListener, Runnable
 					}
 					catch (IOException e)
 					{
-						e.printStackTrace();
+						logger.error("", e);
 					}
 				}
-
 				last.setTime(message.getSentDate().getTime());
 			}
 		}
@@ -93,10 +165,11 @@ public class UtsTradeConfoApp implements IMailListener, Runnable
 			{
 				// this part is attachment
 				String fileName = part.getFileName();
-				if (fileName.startsWith(PREFIX_TRADE_CONFO_FILENAME) && fileName.endsWith(TRADE_CONFO_FILE_EXT))
+				if (fileName.startsWith(PREFIX_ATTACHMENT) && fileName.endsWith(ATTACHMENT_FILE_EXT))
 				{
-//					fileName = fileName.replaceAll("/", "_");
-//					part.saveFile(SAVE_DIRECTORY + File.separator + fileName);
+					// fileName = fileName.replaceAll("/", "_");
+					// part.saveFile(SAVE_DIRECTORY + File.separator +
+					// fileName);
 					// parsePdf(SAVE_DIRECTORY + File.separator + fileName);
 					parsePdf(part);
 				}
@@ -106,49 +179,69 @@ public class UtsTradeConfoApp implements IMailListener, Runnable
 
 	public void parsePdf(MimeBodyPart part) throws IOException, MessagingException
 	{
-		System.out.println("=====parsePdf==");
 		InputStream is = part.getInputStream();
 		PdfReader reader = new PdfReader(is);
+
 		for (int page = 1; page <= 1; page++)
 		{
-			byte[] b = PdfTextExtractor.getTextFromPage(reader, page).getBytes("UTF-8");
+			byte[] b = PdfTextExtractor.getTextFromPage(reader, page, new MyTextExtractionStrategy())
+					.getBytes(CHARSET_UTF8);
+			// byte[] b1 = reader.getPageContent(0);
+			// for (int i =0; i<b.length; i++) {
+			// System.out.print(b[i] + ",");
+			// }
+
 			String sPdf = new String(b);
+			// System.out.println(sPdf);
 			UtsTradeConfoDetail t = new UtsTradeConfoDetail();
 			t.parsePdf(sPdf);
-			System.out.println(t.toString());
+			logger.info(t.toString());
 		}
-		System.out.println("=====end==");
 	}
 
-	@Override
-	public void run()
+	public void start()
 	{
-		boolean isWait = this.isWorking.compareAndSet(false, true);
-		if (isWait)
+		logger.info("Start poll email every {} seconds", EMAIL_POLLING_INTERVAL);
+		
+		executorService.scheduleAtFixedRate(new Runnable()
 		{
-//			System.out.println("=======retrieve email======");
-			serv.getAllFromInbox();
-		}
+			private final ExecutorService executor = Executors.newSingleThreadExecutor();
+			private Future<?> lastExecution;
+
+			@Override
+			public void run()
+			{
+				if (lastExecution != null && !lastExecution.isDone())
+				{
+					logger.debug("Polling email not done");
+					return;
+				}
+				lastExecution = executor.submit(actualTask);
+			}
+		}, 0, EMAIL_POLLING_INTERVAL, TimeUnit.SECONDS);
 	}
 
 	private boolean isMatchSubject(String sub)
 	{
 		if (sub == null)
 			return false;
-		if (sub.startsWith(PREFIX_SUBJECT))
+		if (sub.contains(PREFIX_EMAIL_SUBJECT))
 			return true;
 		return false;
 	}
 
 	private boolean isFrom(String from)
 	{
-		if (FROM_SENDER.equals(from))
+		if (EMAIL_SENDER.equals(from))
 			return true;
 		return false;
 	}
 
 	public static void main(String[] args)
 	{
+		BasicConfigurator.configure();
+		logger.info("Read BasicConfigurator");
+
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
@@ -156,14 +249,25 @@ public class UtsTradeConfoApp implements IMailListener, Runnable
 		cal.set(Calendar.MILLISECOND, 0);
 		//
 		// Date to = cal.getTime();
-		cal.add(Calendar.DATE, -1);
+		cal.add(Calendar.DATE, -7);
 		Date from = cal.getTime();
 		// serv.getBetween(from, to);
-		Runnable a = new UtsTradeConfoApp("imap", "outlook.office365.com", "993", "Lloyd.Chan@celera-markets.com", "Ja9XuVDj",
-				from);
+		UtsTradeConfoApp a = new UtsTradeConfoApp(from);
+		logger.info(a.toString());
+		a.start();
 
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		final ScheduledFuture<?> beeperHandle = scheduler.scheduleAtFixedRate(a, 10, 10, TimeUnit.SECONDS);
+		for (;;)
+		{
+			try
+			{
+				Thread.sleep(100000);
+			}
+			catch (InterruptedException e)
+			{
+				// e.printStackTrace();
+			}
+		}
+
 		// scheduler.schedule(new Runnable()
 		// {
 		// public void run()

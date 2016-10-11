@@ -1,5 +1,7 @@
 package com.celera.library.javamail;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Properties;
 
@@ -14,8 +16,16 @@ import javax.mail.search.ComparisonTerm;
 import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.SortTerm;
+
 public class MailService implements IMailService
 {
+	final static Logger logger = LoggerFactory.getLogger(MailService.class);
+	
 	private final String protocol;
 	private final String host;
 	private final String port;
@@ -36,6 +46,13 @@ public class MailService implements IMailService
 
 		Properties properties = getServerProperties(protocol, host, port);
 		session = Session.getDefaultInstance(properties);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "MailService [protocol=" + protocol + ", host=" + host + ", port=" + port + ", userName=" + userName
+				+ ", password=" + password + ", session=" + session + "]";
 	}
 
 	private Properties getServerProperties(String protocol, String host, String port)
@@ -106,8 +123,22 @@ public class MailService implements IMailService
 			inbox.open(Folder.READ_WRITE);
 
 			int count = inbox.getMessageCount();
+			logger.info("Inbox emails " + count);
 			Message[] messages = inbox.getMessages(1, count);
-
+			Arrays.sort(messages, new Comparator<Message>() {
+			    @Override
+			    public int compare(Message o1, Message o2) {
+			        try
+					{
+						return o1.getSentDate().compareTo(o2.getSentDate());
+					}
+					catch (MessagingException e)
+					{
+						e.printStackTrace();
+					}
+			        return 0;
+			    }
+			});
 			for (Message message : messages)
 			{
 				cb.onEmail(message);
@@ -118,13 +149,11 @@ public class MailService implements IMailService
 		}
 		catch (NoSuchProviderException ex)
 		{
-			System.out.println("No provider for protocol: " + protocol);
-			ex.printStackTrace();
+			logger.error("No provider for protocol {}", protocol, ex);
 		}
 		catch (MessagingException ex)
 		{
-			System.out.println("Could not connect to the message store");
-			ex.printStackTrace();
+			logger.error("Could not connect to the message store {}", protocol, ex);
 		}
 	}
 
