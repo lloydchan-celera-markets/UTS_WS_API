@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public interface ITrade
 {
-	public Long getId();	// unique
-	public void setId(Long id);
+	public String getId();	// unique
+	public void setId(String id);
 	public Double getPrice();
 	public void setPrice(Double price);
 	public Long getQty();

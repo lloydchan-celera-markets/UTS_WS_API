@@ -4,19 +4,19 @@ import java.time.LocalDate;
 
 public class Trade implements ITrade
 {
-	private Long id = null;
+	private String id = null;
 	private Long orderId = null;
 	private Double price = null;
 	private Long qty = null;
 	private LocalDate time = null;
 	private String comment = null;
 
-	public Long getId()
+	public String getId()
 	{
 		return id;
 	}
 
-	public void setId(Long id)
+	public void setId(String id)
 	{
 		this.id = id;
 	}

@@ -236,44 +236,4 @@ public class UtsTradeConfoApp implements IMailListener
 			return true;
 		return false;
 	}
-
-	public static void main(String[] args)
-	{
-		BasicConfigurator.configure();
-		logger.info("Read BasicConfigurator");
-
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		//
-		// Date to = cal.getTime();
-		cal.add(Calendar.DATE, -7);
-		Date from = cal.getTime();
-		// serv.getBetween(from, to);
-		UtsTradeConfoApp a = new UtsTradeConfoApp(from);
-		logger.info(a.toString());
-		a.start();
-
-		for (;;)
-		{
-			try
-			{
-				Thread.sleep(100000);
-			}
-			catch (InterruptedException e)
-			{
-				// e.printStackTrace();
-			}
-		}
-
-		// scheduler.schedule(new Runnable()
-		// {
-		// public void run()
-		// {
-		// beeperHandle.cancel(true);
-		// }
-		// }, 60 * 60, TimeUnit.SECONDS);
-	}
 }

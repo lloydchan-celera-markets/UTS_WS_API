@@ -13,21 +13,20 @@ import com.celera.core.dm.ITrade;
 public class OMS implements IOMSListener
 {
 	final static Logger logger = LoggerFactory.getLogger(OMS.class);
-	
+
 	private Map<Long, IOrder> allOrders = new HashMap<Long, IOrder>();
-	private Map<Long, ITrade> allTrades = new HashMap<Long, ITrade>();
-	
-	private Long tradeId = 0l;
-	
+	private Map<String, ITrade> trades = new HashMap<String, ITrade>();
+
 	static private OMS INSTANCE = null;
-	
-	static synchronized public OMS instance() {
+
+	static synchronized public OMS instance()
+	{
 		if (INSTANCE == null)
 			INSTANCE = new OMS();
 		return INSTANCE;
 	}
-	
-	public IOrder get(Long id) 
+
+	public IOrder get(Long id)
 	{
 		return allOrders.get(id);
 	}
@@ -36,7 +35,7 @@ public class OMS implements IOMSListener
 	{
 		Long id = o.getId();
 		allOrders.put(id, o);
-		logger.info("onOrder: " + o.toString());		
+		logger.info("onOrder: " + o.toString());
 	}
 
 	public void onQuote(IOrder o)
@@ -51,13 +50,15 @@ public class OMS implements IOMSListener
 
 	public void onTrade(ITrade o)
 	{
-		Long id = o.getId();
-		if (id == null)
+		String id = o.getId();
+		ITrade t = trades.put(id, o);
+		if (t != null)
 		{
-			id = ++tradeId;
-			o.setId(id);
+			logger.info("onTrade update: " + o.toString());
 		}
-		allTrades.put(id, o);
-		logger.info("onTrade: " + o.toString());		
+		else
+		{
+			logger.info("onTrade new: " + o.toString());
+		}
 	}
 }
