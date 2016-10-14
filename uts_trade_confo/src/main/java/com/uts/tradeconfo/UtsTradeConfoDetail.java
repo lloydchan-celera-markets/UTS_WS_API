@@ -1,12 +1,17 @@
 package com.uts.tradeconfo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UtsTradeConfoDetail
+import com.celera.mongo.adapter.ITradeConfoConverter;
+import com.celera.mongo.entity.TradeConfo;
+import com.vectails.message.processor.Uts2Dm;
+
+public class UtsTradeConfoDetail 
 {
 	final static Logger logger = LoggerFactory.getLogger(UtsTradeConfoDetail.class);
 	
@@ -186,5 +191,165 @@ public class UtsTradeConfoDetail
 		{
 			logger.error("Error parsePdf {}", sPdf, e);
 		}
+	}
+
+	public static Logger getLogger()
+	{
+		return logger;
+	}
+
+	public String getSummary()
+	{
+		return summary;
+	}
+
+	public String getBuyer()
+	{
+		return buyer;
+	}
+
+	public String getSeller()
+	{
+		return seller;
+	}
+
+	public String getPrice()
+	{
+		return price;
+	}
+
+	public String getCurncy()
+	{
+		return curncy;
+	}
+
+	public String getTradeDate()
+	{
+		return tradeDate;
+	}
+
+	public String getRefPrice()
+	{
+		return refPrice;
+	}
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public String getDelta()
+	{
+		return delta;
+	}
+
+	public String getBuyQty()
+	{
+		return buyQty;
+	}
+
+	public String getSellQty()
+	{
+		return sellQty;
+	}
+
+	public String getPtValue()
+	{
+		return ptValue;
+	}
+
+	public String getPtCny()
+	{
+		return ptCny;
+	}
+
+	public String getPremiumPmt()
+	{
+		return premiumPmt;
+	}
+
+	public String getNotational()
+	{
+		return notational;
+	}
+
+	public String getNotationalCny()
+	{
+		return notationalCny;
+	}
+
+	public String getRate()
+	{
+		return rate;
+	}
+
+	public String getPremium()
+	{
+		return premium;
+	}
+
+	public String getPremiumCny()
+	{
+		return premiumCny;
+	}
+
+	public List<String> getLegs()
+	{
+		return legs;
+	}
+
+	public String getHedge()
+	{
+		return hedge;
+	}
+
+	public String getHedgeFutRef()
+	{
+		return hedgeFutRef;
+	}
+
+	public String getBrokerageFee()
+	{
+		return brokerageFee;
+	}
+
+	public String getBrokerageCny()
+	{
+		return brokerageCny;
+	}
+	
+	public TradeConfo convert() 
+	{
+		TradeConfo to = new TradeConfo();
+		to.setSummary(this.summary);
+		to.setBuyer(this.buyer);
+		to.setSeller(this.seller);
+		to.setPrice(Uts2Dm.toDouble(this.price));
+		to.setCurncy(this.curncy);
+		to.setTradeDate(this.tradeDate);
+		to.setRefPrice(Uts2Dm.toDouble(this.refPrice));
+		to.setTradeConfoId(this.id);
+		to.setDelta(this.delta);
+		to.setBuyQty(Uts2Dm.toDouble(this.buyQty));
+		to.setSellQty(Uts2Dm.toDouble(this.sellQty));
+		to.setPtValue(Uts2Dm.toDouble(this.ptValue));
+		to.setPtCny(this.ptCny);
+		to.setPremiumPmt(this.premiumPmt);
+		to.setNotational(Uts2Dm.toDouble(this.notational));
+		to.setNotationalCny(this.notationalCny);
+		to.setRate(Uts2Dm.toDouble(this.rate));
+		to.setPremium(Uts2Dm.toDouble(this.premium));
+		to.setPremiumCny(this.premiumCny);
+		to.setHedge(this.hedge);
+		to.setHedgeFutRef(Uts2Dm.toDouble(this.hedgeFutRef));
+		to.setBrokerageFee(Uts2Dm.toDouble(this.brokerageFee));
+		to.setBrokerageCny(this.brokerageCny);
+		
+		List<String> legs = to.getLegs();
+		legs.addAll(this.legs);
+		
+		to.setLastModified(new Date(System.currentTimeMillis()));
+		
+		return to;
 	}
 }

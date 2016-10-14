@@ -1,8 +1,10 @@
 package com.vectails.message.processor;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ public class Uts2Dm
 
 	static final DateTimeFormatter UTS_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 	static final String DB_NULL = "DBNull";
+	static final NumberFormat format = NumberFormat.getInstance();
 
 	public static EInstrumentType toInstrumentType(String code)
 	{
@@ -103,7 +106,7 @@ public class Uts2Dm
 			return null; // skip throw
 		try
 		{
-			return Double.valueOf(s);
+			return format.parse(s).doubleValue();
 		}
 		catch (Exception e)
 		{
@@ -132,7 +135,7 @@ public class Uts2Dm
 		
 		try
 		{
-			return Long.valueOf(s);
+			return format.parse(s).longValue();
 		}
 		catch (Exception e)
 		{

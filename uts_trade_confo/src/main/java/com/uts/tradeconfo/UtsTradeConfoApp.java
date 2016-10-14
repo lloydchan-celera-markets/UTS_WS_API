@@ -28,10 +28,13 @@ import com.celera.core.configure.ResourceManager;
 import com.celera.library.javamail.IMailListener;
 import com.celera.library.javamail.IMailService;
 import com.celera.library.javamail.MailService;
+import com.celera.mongo.MongoDbAdapter;
+import com.celera.mongo.entity.TradeConfo;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.vectails.common.IResourceProperties;
+import com.vectails.oms.OMS;
 
 public class UtsTradeConfoApp implements IMailListener
 {
@@ -95,6 +98,8 @@ public class UtsTradeConfoApp implements IMailListener
 	private Date last = null;
 	final private IMailService serv;
 
+	private OMS oms = null;
+	
 	ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 	final PollEmailTask actualTask = new PollEmailTask();
 
@@ -196,6 +201,8 @@ public class UtsTradeConfoApp implements IMailListener
 			UtsTradeConfoDetail t = new UtsTradeConfoDetail();
 			t.parsePdf(sPdf);
 			logger.info(t.toString());
+			
+			writeDb(t);
 		}
 	}
 
@@ -235,5 +242,11 @@ public class UtsTradeConfoApp implements IMailListener
 		if (EMAIL_SENDER.equals(from))
 			return true;
 		return false;
+	}
+	
+	private void writeDb(UtsTradeConfoDetail detail) 
+	{
+		TradeConfo tradeConfo = detail.convert();
+		MongoDbAdapter.instance().save(tradeConfo);
 	}
 }

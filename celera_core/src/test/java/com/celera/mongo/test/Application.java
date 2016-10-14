@@ -25,7 +25,7 @@ public class Application
 		
 		TradeConfoRepo tradeConfoRepo = context.getBean(TradeConfoRepo.class);
 		TradeConfo tradeConfo = new TradeConfo();
-		tradeConfo.setId(1l);
+//		tradeConfo.setId(1l);
 		tradeConfo.setSummary("Listed KS200 DEC17 200/240 -2/1 European Put Ratio REF 259.50 (DEC16)");
 		tradeConfo.setBuyer("Optiver Australia Pty Ltd - Lucy Goulopoulos");
 		tradeConfo.setSeller("Morgan Stanley & Co. International PLC");
@@ -53,7 +53,7 @@ public class Application
 		legs.add("Leg1 Buy 100 28-Dec-17 10,800 EuropeanCall 523.00 +2,615,000.00");
 		legs.add("Leg2 Sell 200 29-Dec-16 10,800 EuropeanCall 100.00 -1,000,000.00");
 
-//		tradeConfoRepo.save(tradeConfo);
+		tradeConfoRepo.save(tradeConfo);
 
 		Iterable<TradeConfo> tradeConfoList = tradeConfoRepo.findAll();
 		System.out.println("TradeConfo List : ");
