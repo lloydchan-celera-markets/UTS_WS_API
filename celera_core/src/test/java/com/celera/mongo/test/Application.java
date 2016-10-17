@@ -1,6 +1,7 @@
 package com.celera.mongo.test;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -45,7 +46,7 @@ public class Application
 		tradeConfo.setRate(1103d);
 		tradeConfo.setPremium(172500000d);
 		tradeConfo.setPremiumCny("KRW");
-		tradeConfo.setHedge("Buy 50 MINI FUTURES (KS200 DEC16)");
+//		tradeConfo.setHedge(Arrays.asList({"Buy 50 MINI FUTURES (KS200 DEC16)"}));
 		tradeConfo.setHedgeFutRef(259.5d);
 		tradeConfo.setBrokerageFee(0d);
 		tradeConfo.setBrokerageCny("USD");

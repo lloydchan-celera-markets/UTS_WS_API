@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.celera.mongo.adapter.ITradeConfoConverter;
+import com.celera.mongo.entity.Hedge;
 import com.celera.mongo.entity.TradeConfo;
 import com.vectails.message.processor.Uts2Dm;
 
@@ -35,21 +36,20 @@ public class UtsTradeConfoDetail
 	String premium = null;
 	String premiumCny = null;
 	List<String> legs = new ArrayList<String>();
-	String hedge = null;
-	String hedgeFutRef = null;
+	List<Hedge> hedge = new ArrayList<Hedge>();
+//	List<String> hedgeFutRef = null;
 	String brokerageFee = null;
 	String brokerageCny = null;
 
 	@Override
 	public String toString()
 	{
-		return "Trade [summary=" + summary + ", buyer=" + buyer + ", seller=" + seller + ", price=" + price
-				+ ", curncy=" + curncy + ", tradeDate=" + tradeDate + ", refPrice=" + refPrice + ", id=" + id
+		return "UtsTradeConfoDetail [summary=" + summary + ", buyer=" + buyer + ", seller=" + seller + ", price="
+				+ price + ", curncy=" + curncy + ", tradeDate=" + tradeDate + ", refPrice=" + refPrice + ", id=" + id
 				+ ", delta=" + delta + ", buyQty=" + buyQty + ", sellQty=" + sellQty + ", ptValue=" + ptValue
 				+ ", ptCny=" + ptCny + ", premiumPmt=" + premiumPmt + ", notational=" + notational + ", notationalCny="
 				+ notationalCny + ", rate=" + rate + ", premium=" + premium + ", premiumCny=" + premiumCny + ", legs="
-				+ legs + ", hedge=" + hedge + ", hedgeFutRef=" + hedgeFutRef + ", brokerageFee=" + brokerageFee
-				+ ", brokerageCny=" + brokerageCny + "]";
+				+ legs + ", hedge=" + hedge + ", brokerageFee=" + brokerageFee + ", brokerageCny=" + brokerageCny + "]";
 	}
 
 	public void parsePdf(String sPdf)
@@ -171,9 +171,14 @@ public class UtsTradeConfoDetail
 			{
 				if (isHedge)
 				{
-					String[] tokens = s.split(";|=");
-					this.hedge = tokens[0];
-					this.hedgeFutRef = tokens[2];
+					String[] tokens = s.split("\\s|;|=|\\(|\\)");
+					Hedge h = new Hedge();
+					h.setSide(tokens[0]);
+					h.setQty(Uts2Dm.toDouble(tokens[1]));
+					h.setPrice(Uts2Dm.toDouble(tokens[12]));
+					h.setFuture(tokens[4] + " " + tokens[5]);
+					this.hedge.add(h);
+//					this.hedgeFutRef = tokens[2];
 				}
 				else if (isFees & s.startsWith("BROKERAGE FEE"))
 				{
@@ -298,15 +303,15 @@ public class UtsTradeConfoDetail
 		return legs;
 	}
 
-	public String getHedge()
+	public List<Hedge> getHedge()
 	{
 		return hedge;
 	}
 
-	public String getHedgeFutRef()
-	{
-		return hedgeFutRef;
-	}
+//	public String getHedgeFutRef()
+//	{
+//		return hedgeFutRef;
+//	}
 
 	public String getBrokerageFee()
 	{
@@ -340,11 +345,12 @@ public class UtsTradeConfoDetail
 		to.setRate(Uts2Dm.toDouble(this.rate));
 		to.setPremium(Uts2Dm.toDouble(this.premium));
 		to.setPremiumCny(this.premiumCny);
-		to.setHedge(this.hedge);
-		to.setHedgeFutRef(Uts2Dm.toDouble(this.hedgeFutRef));
+//		to.setHedgeFutRef(Uts2Dm.toDouble(this.hedgeFutRef));
 		to.setBrokerageFee(Uts2Dm.toDouble(this.brokerageFee));
 		to.setBrokerageCny(this.brokerageCny);
 		
+		List<Hedge> hedges = to.getHedge();
+		hedges.addAll(this.hedge);
 		List<String> legs = to.getLegs();
 		legs.addAll(this.legs);
 		
@@ -352,4 +358,14 @@ public class UtsTradeConfoDetail
 		
 		return to;
 	}
+	
+	public static void main(String[] args)
+	{
+		String s = "Buy 5 FUTURES (HSCEI OCT16); Future Reference = 9,950";
+		String[] tokens = s.split("\\s|;|=|\\(|\\)");
+		for (int i =0; i <s.length(); i++){
+			System.out.println(i + "=" + tokens[i]);
+		}
+	}
+	
 }

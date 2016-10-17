@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,6 +73,8 @@ public class UtsTradeConfoApp implements IMailListener
 	
 	private static Integer EMAIL_POLLING_INTERVAL; 
 
+	private Map<String, TradeConfo> map = new HashMap<String, TradeConfo>();
+	
 	static
 	{
 		PREFIX_EMAIL_SUBJECT = ResourceManager.getProperties(IResourceProperties.PROP_UTS_EMAILTC_SUBJECT_PREFIX,
@@ -102,13 +106,23 @@ public class UtsTradeConfoApp implements IMailListener
 	
 	ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 	final PollEmailTask actualTask = new PollEmailTask();
-
+	final AtomicBoolean isPolling = new AtomicBoolean(false);
+	
 	class PollEmailTask implements Runnable
 	{
 		@Override
 		public void run()
 		{
-			serv.getAllFromInbox();
+//			boolean res = isPolling.compareAndSet(false, true);
+//			if (isPolling.compareAndSet(false, true)) 
+//			{
+				serv.getAllFromInbox();
+//				isPolling.compareAndSet(true, false);
+//			}
+//			else
+//			{
+//				logger.debug("polling");
+//			}
 		}
 	}
 	
@@ -220,7 +234,7 @@ public class UtsTradeConfoApp implements IMailListener
 			{
 				if (lastExecution != null && !lastExecution.isDone())
 				{
-					logger.debug("Polling email not done");
+					logger.debug("Polling email in progress");
 					return;
 				}
 				lastExecution = executor.submit(actualTask);
@@ -247,6 +261,10 @@ public class UtsTradeConfoApp implements IMailListener
 	private void writeDb(UtsTradeConfoDetail detail) 
 	{
 		TradeConfo tradeConfo = detail.convert();
-		MongoDbAdapter.instance().save(tradeConfo);
+		TradeConfo old = map.put(tradeConfo.key(), tradeConfo);
+		if (old != null) {
+			tradeConfo.setId(old.getId());
+		}
+		MongoDbAdapter.instance().save(tradeConfo);	// save will also do update
 	}
 }

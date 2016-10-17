@@ -25,7 +25,7 @@ public class Application
 		cal.set(Calendar.MILLISECOND, 0);
 		//
 		// Date to = cal.getTime();
-		cal.add(Calendar.DATE, -15);
+		cal.add(Calendar.DATE, -18);
 		Date from = cal.getTime();
 		// serv.getBetween(from, to);
 		UtsTradeConfoApp a = new UtsTradeConfoApp(from);

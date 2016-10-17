@@ -1,17 +1,11 @@
 package com.celera.mongo.repo;
 
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.Repository;
 
-import com.celera.mongo.entity.Person;
-import com.celera.mongo.entity.TradeConfo;
+import com.celera.mongo.entity.Hedge;
 
-public interface TradeConfoRepo extends CrudRepository<TradeConfo, String>
+public interface HedgeRepo extends CrudRepository<Hedge, String>
 {
-	@Query("{'tradeConfoId' : ?0}")
-	public Iterable<TradeConfo> searchByTradeConfoId(String tradeConfoId);
-	
 //	@Query("UPDATE TradeConfo t set t.summary = ?1, t.buyer = ?2, t.seller = ?3, t.price = ?4, t.curncy = ?5, "
 //			+ "t.tradeDate = ?6, t.refPrice = ?7, t.tradeConfoId = ?8, t.delta = ?9, t.buyQty = ?10, t.sellQty = ?11"
 //			+ ", t.ptValue = ?12, t.ptCny = ?13, t.premiumPmt = ?14, t.notational = ?15, t.notationalCny = ?16, "
