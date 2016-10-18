@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,19 +18,22 @@ import javax.mail.internet.MimeBodyPart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.CrudRepository;
 
+import com.celera.adapter.EmailServiceImpl;
 import com.celera.core.configure.IOverrideConfig;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
 import com.celera.library.javamail.IMailListener;
 import com.celera.mongo.MongoDbAdapter;
 import com.celera.mongo.entity.TradeConfo;
+import com.celera.mongo.repo.TradeConfoRepo;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 
-public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConfig
+public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 {
-	final static Logger logger = LoggerFactory.getLogger(UtsTradeConfoEmailProcessor.class);
+	final static Logger logger = LoggerFactory.getLogger(UtsEmailProcessor.class);
 	
 	private static final String CHARSET_UTF8 = "UTF-8";
 	private static final String CHARSET_UTF16 = "UTF-16";
@@ -37,6 +41,7 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 	private static final String CHARSET_ASCII = "US-ASCII";
 	
 	private static final String DATE_FORMATTER = "yyyy-MM-dd";
+	private static final String DB_DATE_FORMATTER = "dd-MMM-yy";
 	
 	private static final String DEFAULT_PREFIX_EMAIL_SUBJECT = "Trade Confirmation";
 	private static final String DEFAULT_EMAIL_SENDER = "eqd@celera-markets.com";
@@ -47,18 +52,24 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 	
 	private static Date EMAIL_START_DATE; 
 	private static Date EMAIL_END_DATE; 
+	private static String DB_START_DATE; 
+	private static String DB_END_DATE; 
 	
 	private static String PREFIX_EMAIL_SUBJECT = null;
 	private static String EMAIL_SENDER = null;
 	private static String PREFIX_ATTACHMENT = null;
 	private static String ATTACHMENT_FILE_EXT = null;
 	
-	private static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMATTER);
+	private final static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMATTER);
+	private final static SimpleDateFormat dbSdf = new SimpleDateFormat(DB_DATE_FORMATTER);
+	
 	private Date last = new Date();
 	
+	private EmailServiceImpl service;
 	private Map<String, TradeConfo> map = new HashMap<String, TradeConfo>();
 	
-	static {
+	static 
+	{
 		PREFIX_EMAIL_SUBJECT = ResourceManager.getProperties(IResourceProperties.PROP_UTS_EMAILTC_SUBJECT_PREFIX,
 				DEFAULT_PREFIX_EMAIL_SUBJECT);
 		EMAIL_SENDER = ResourceManager.getProperties(IResourceProperties.PROP_UTS_EMAILTC_SENDER, DEFAULT_EMAIL_SENDER);
@@ -78,6 +89,7 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 		try
 		{
 			EMAIL_START_DATE = sdf.parse(ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_FILTER_STARTDATE));
+			DB_START_DATE = dbSdf.format(EMAIL_START_DATE);
 		} catch (ParseException e)
 		{
 			logger.error("{} invalid patter", IResourceProperties.PROP_EMAIL_FILTER_STARTDATE, e);
@@ -86,19 +98,28 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 		try
 		{
 			EMAIL_END_DATE = sdf.parse(ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_FILTER_ENDDATE));
+			DB_END_DATE = dbSdf.format(EMAIL_END_DATE);
 		} catch (ParseException e)
 		{
 			logger.error("{} invalid patter", IResourceProperties.PROP_EMAIL_FILTER_ENDDATE, e);
 			System.exit(-1);
 		}
-		logger.debug("{} {} {} {} {} {}", PREFIX_EMAIL_SUBJECT, EMAIL_SENDER, PREFIX_ATTACHMENT, ATTACHMENT_FILE_EXT,
+		logger.debug("{},{},{},{},{},{}", PREFIX_EMAIL_SUBJECT, EMAIL_SENDER, PREFIX_ATTACHMENT, ATTACHMENT_FILE_EXT,
 				EMAIL_START_DATE, EMAIL_END_DATE);
 	}
 	
-	public UtsTradeConfoEmailProcessor()
+	public UtsEmailProcessor()
 	{
 		last = EMAIL_START_DATE;
-		this.overrideCfg();
+		overrideCfg();
+		service = new EmailServiceImpl(this);
+//		logger.info(a.toString());
+	}
+	
+	@Override
+	public void overrideCfg()
+	{
+		this.overrideCxfSpiProvider();
 	}
 	
 	@Override
@@ -113,7 +134,7 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 				Address[] fromAddresses = message.getFrom();
 				logger.debug(message.getSentDate().toString() + "," + fromAddresses[0].toString() + ","
 						+ message.getSubject());
-				if (/* isFrom(fromAddresses[0].toString()) && */ isMatchSubject(message.getSubject()))
+				if (/* isFrom(fromAddresses[0].toString()) && */ isSubjectMatched(message.getSubject()))
 				{
 					try
 					{
@@ -133,6 +154,19 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 		}
 	}
 
+	public void loadTradeConfo() 
+	{
+		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
+		Collection<TradeConfo> l = repo.findBetween(DB_START_DATE, DB_END_DATE);
+		l.forEach(c -> map.put(((TradeConfo)c).key(), c));
+		logger.info("load {} tradeConfo", l.size());
+	}
+	
+	public void poll()
+	{
+		service.start();
+	}
+	
 	public void parseAttachment(Message message) throws IOException, MessagingException
 	{
 		Multipart multipart = (Multipart) message.getContent();
@@ -181,7 +215,7 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 		}
 	}
 	
-	private boolean isMatchSubject(String sub)
+	private boolean isSubjectMatched(String sub)
 	{
 		if (sub == null)
 			return false;
@@ -198,11 +232,5 @@ public class UtsTradeConfoEmailProcessor implements IMailListener, IOverrideConf
 			tradeConfo.setId(old.getId());
 		}
 		MongoDbAdapter.instance().save(tradeConfo);	// save will also do update
-	}
-
-	@Override
-	public void overrideCfg()
-	{
-		this.overrideCxfSpiProvider();
 	}
 }

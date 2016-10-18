@@ -55,8 +55,8 @@ public class MongoDbAdapter
 //		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 //				new ClassPathResource("spring-config.xml").getPath());
 			Class clazz = doc.getRepo();
-			CrudRepository tradeConfoRepo = (CrudRepository) ctx.getBean(clazz);
-			tradeConfoRepo.save(doc);
+			CrudRepository repo = (CrudRepository) ctx.getBean(clazz);
+			repo.save(doc);
 
 //		Iterable<TradeConfo> tradeConfoList = tradeConfoRepo.findAll();
 //		System.out.println("TradeConfo List : ");
@@ -65,7 +65,7 @@ public class MongoDbAdapter
 //			System.out.println(person);
 //		}
 //		System.out.println("TradeConfo with tradeId CELERAEQ-2016-13155 is " + tradeConfoRepo.searchByTradeConfoId("CELERAEQ-2016-13155"));
-		logger.info("insert: {}" , doc.toString());
+//		logger.info("insert: {}" , doc.toString());
 //		context.close();
 		}
 		catch (Exception e)
@@ -73,6 +73,10 @@ public class MongoDbAdapter
 			logger.error("", e);
 			throw e;
 		}
+	}
+
+	public CrudRepository get(Class clazz) {
+		return (CrudRepository) ctx.getBean(clazz);
 	}
 	
 	static public void main(String[] a)

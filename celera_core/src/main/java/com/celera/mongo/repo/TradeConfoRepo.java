@@ -1,8 +1,12 @@
 package com.celera.mongo.repo;
 
+import java.util.Collection;
+import java.util.Date;
+
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 
 import com.celera.mongo.entity.Person;
 import com.celera.mongo.entity.TradeConfo;
@@ -18,4 +22,9 @@ public interface TradeConfoRepo extends CrudRepository<TradeConfo, String>
 //			+ "t.rate = ?17, t.premium = ?18, t.premiumCny= ?19, t.hedge = ?20, t.hedgeFutRef = ?21, "
 //			+ "t.brokerageFee = ?22, t.brokerageCny = ?23, where t.buyer = ?24 and t.seller = ?25 and t.tradeConfoId = ?26}")
 //	public void updateTradeConfo(String tradeConfoId);
+	
+	
+	@Query("{'tradeDate' : { '$gte' : ?0, '$lte' : ?1 }}")
+	public Collection<TradeConfo> findBetween(String startDay, String endDay);
+	
 }

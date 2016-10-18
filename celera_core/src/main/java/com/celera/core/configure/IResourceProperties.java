@@ -25,4 +25,7 @@ public interface IResourceProperties
 	public static final String PROP_EMAIL_POLL_INTERVAL = "mail.poll.interval";
 	public static final String PROP_EMAIL_FILTER_STARTDATE = "mail.filter.startdate";
 	public static final String PROP_EMAIL_FILTER_ENDDATE = "mail.filter.enddate";
+
+	public static final String PROP_CM_DBA_STARTDATE = "celera.dba.startdate";
+	public static final String PROP_CM_DBA_ENDDATE = "celera.dba.enddate";
 }
