@@ -26,5 +26,8 @@ public interface TradeConfoRepo extends CrudRepository<TradeConfo, String>
 	
 	@Query("{'tradeDate' : { '$gte' : ?0, '$lte' : ?1 }}")
 	public Collection<TradeConfo> findBetween(String startDay, String endDay);
+
+	@Query("{'lastModified' : { '$gt' : ?0 }}")
+	public Collection<TradeConfo> findAfter(Date lastModified);
 	
 }

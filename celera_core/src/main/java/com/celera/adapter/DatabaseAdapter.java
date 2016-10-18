@@ -49,6 +49,7 @@ public class DatabaseAdapter implements IOverrideConfig
 	private final static SimpleDateFormat dbSdf = new SimpleDateFormat(DB_DATE_FORMATTER);
 	
 	private Map<String, TradeConfo> map = new HashMap<String, TradeConfo>();
+	private Date lastModified = null;
 	
 	static 
 	{
@@ -76,6 +77,7 @@ public class DatabaseAdapter implements IOverrideConfig
 	public DatabaseAdapter()
 	{
 		overrideCfg();
+		lastModified = START_DATE;
 	}
 	
 	@Override
@@ -84,12 +86,27 @@ public class DatabaseAdapter implements IOverrideConfig
 		this.overrideCxfSpiProvider();
 	}
 	
-	public void loadTradeConfo() 
+	public void loadHistory() 
 	{
 		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
 		Collection<TradeConfo> l = repo.findBetween(DB_START_DATE, DB_END_DATE);
-		l.forEach(c -> map.put(((TradeConfo)c).key(), c));
-		logger.info("load {} tradeConfo", l.size());
+		l.forEach(c -> {
+			Date lastModified=  c.getLastModified();
+			if (lastModified.after(this.lastModified))
+			{
+				this.lastModified.setTime(lastModified.getTime());
+			}
+			map.put(c.key(), c);
+		});
+		logger.info("loadHistory tradeconfo {}", l.size());
+	}
+	
+	public void load() 
+	{
+		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
+		Collection<TradeConfo> l = repo.findAfter(this.lastModified);
+		l.forEach(c -> map.put(c.key(), c));
+		logger.info("load tradeConfo {}", l.size());
 	}
 	
 	@SuppressWarnings("unused")
@@ -107,7 +124,7 @@ public class DatabaseAdapter implements IOverrideConfig
 	{
 		int interval = 10000;
 		DatabaseAdapter dba = new DatabaseAdapter();
-		dba.loadTradeConfo();
+		dba.loadHistory();
 		
 		for(;;) 
 		{
@@ -115,6 +132,7 @@ public class DatabaseAdapter implements IOverrideConfig
 			{
 				logger.debug("sleep {}", interval);
 				Thread.sleep(interval);
+//				dba.load();
 			} catch (InterruptedException e)
 			{
 				e.printStackTrace();
