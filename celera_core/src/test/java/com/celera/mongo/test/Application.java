@@ -47,7 +47,7 @@ public class Application
 		tradeConfo.setPremium(172500000d);
 		tradeConfo.setPremiumCny("KRW");
 //		tradeConfo.setHedge(Arrays.asList({"Buy 50 MINI FUTURES (KS200 DEC16)"}));
-		tradeConfo.setHedgeFutRef(259.5d);
+//		tradeConfo.setHedgeFutRef(259.5d);
 		tradeConfo.setBrokerageFee(0d);
 		tradeConfo.setBrokerageCny("USD");
 		List<String> legs = tradeConfo.getLegs();

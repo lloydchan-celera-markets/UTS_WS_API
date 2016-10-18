@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
-import com.vectails.common.IResourceProperties;
 import com.vectails.message.UtsMessageBuilder;
 import com.vectails.message.processor.UtsMessageProcessor;
 import com.vectails.xml.IXmlNode;

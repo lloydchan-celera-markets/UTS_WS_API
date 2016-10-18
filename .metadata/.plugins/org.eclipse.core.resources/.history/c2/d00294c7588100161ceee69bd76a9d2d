@@ -1,5 +1,0 @@
-package com.vectails.data;
-
-public interface IGenericFactory<T> {
-	public T build() throws InstantiationException, IllegalAccessException;
-}

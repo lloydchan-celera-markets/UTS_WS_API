@@ -1,9 +1,0 @@
-package com.vectails.data;
-
-public class Currency implements IXmlParser {
-
-	@SuppressWarnings("unchecked")
-	public Currency(Class<Currency> clazz) {
-		super(clazz);
-	}
-}

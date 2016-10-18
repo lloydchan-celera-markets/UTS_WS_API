@@ -7,7 +7,8 @@ import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.uts.tradeconfo.UtsTradeConfoApp;
+import com.celera.adapter.EmailServiceImpl;
+import com.uts.tradeconfo.UtsTradeConfoEmailProcessor;
 
 public class Application
 {
@@ -28,8 +29,9 @@ public class Application
 		cal.add(Calendar.DATE, -18);
 		Date from = cal.getTime();
 		// serv.getBetween(from, to);
-		UtsTradeConfoApp a = new UtsTradeConfoApp(from);
-		logger.info(a.toString());
+		UtsTradeConfoEmailProcessor proc = new UtsTradeConfoEmailProcessor();
+		EmailServiceImpl a = new EmailServiceImpl(proc);
+//		logger.info(a.toString());
 		a.start();
 
 		for (;;)

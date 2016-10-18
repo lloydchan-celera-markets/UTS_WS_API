@@ -36,7 +36,7 @@ public class UtsTradeConfoDetail
 	String premium = null;
 	String premiumCny = null;
 	List<String> legs = new ArrayList<String>();
-	List<Hedge> hedge = new ArrayList<Hedge>();
+	List<Hedge> hedges = new ArrayList<Hedge>();
 //	List<String> hedgeFutRef = null;
 	String brokerageFee = null;
 	String brokerageCny = null;
@@ -49,7 +49,7 @@ public class UtsTradeConfoDetail
 				+ ", delta=" + delta + ", buyQty=" + buyQty + ", sellQty=" + sellQty + ", ptValue=" + ptValue
 				+ ", ptCny=" + ptCny + ", premiumPmt=" + premiumPmt + ", notational=" + notational + ", notationalCny="
 				+ notationalCny + ", rate=" + rate + ", premium=" + premium + ", premiumCny=" + premiumCny + ", legs="
-				+ legs + ", hedge=" + hedge + ", brokerageFee=" + brokerageFee + ", brokerageCny=" + brokerageCny + "]";
+				+ legs + ", hedges=" + hedges + ", brokerageFee=" + brokerageFee + ", brokerageCny=" + brokerageCny + "]";
 	}
 
 	public void parsePdf(String sPdf)
@@ -177,7 +177,7 @@ public class UtsTradeConfoDetail
 					h.setQty(Uts2Dm.toDouble(tokens[1]));
 					h.setPrice(Uts2Dm.toDouble(tokens[12]));
 					h.setFuture(tokens[4] + " " + tokens[5]);
-					this.hedge.add(h);
+					this.hedges.add(h);
 //					this.hedgeFutRef = tokens[2];
 				}
 				else if (isFees & s.startsWith("BROKERAGE FEE"))
@@ -303,9 +303,9 @@ public class UtsTradeConfoDetail
 		return legs;
 	}
 
-	public List<Hedge> getHedge()
+	public List<Hedge> getHedges()
 	{
-		return hedge;
+		return hedges;
 	}
 
 //	public String getHedgeFutRef()
@@ -349,8 +349,8 @@ public class UtsTradeConfoDetail
 		to.setBrokerageFee(Uts2Dm.toDouble(this.brokerageFee));
 		to.setBrokerageCny(this.brokerageCny);
 		
-		List<Hedge> hedges = to.getHedge();
-		hedges.addAll(this.hedge);
+		List<Hedge> hedges = to.getHedges();
+		hedges.addAll(this.hedges);
 		List<String> legs = to.getLegs();
 		legs.addAll(this.legs);
 		

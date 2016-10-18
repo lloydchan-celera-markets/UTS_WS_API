@@ -57,4 +57,5 @@
 <fullyQualifiedTypeName name="com.celera.core.common.IXmlNode"/>
 <fullyQualifiedTypeName name="com.vectails.data.UtsDirectAccessResponse"/>
 <fullyQualifiedTypeName name="com.vectails.data.Legs"/>
+<fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
 </qualifiedTypeNameHistroy>

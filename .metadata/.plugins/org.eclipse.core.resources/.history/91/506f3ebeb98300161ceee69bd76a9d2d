@@ -1,8 +1,0 @@
-package com.vectails.data;
-
-public class DerivativeTypes extends GenericXmlContainer<DerivativeType> {
-
-	public DerivativeTypes() {
-		super(DerivativeType.class);
-	}
-}

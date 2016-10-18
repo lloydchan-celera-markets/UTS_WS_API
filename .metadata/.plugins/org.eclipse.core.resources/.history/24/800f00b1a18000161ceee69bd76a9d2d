@@ -1,9 +1,0 @@
-package com.vectails.data;
-
-public class ElementFactory {
-    public static class ElementFactory implements Factory<Element> {
-        public Element factory() {
-            return new Element();
-        }
-    }
-}

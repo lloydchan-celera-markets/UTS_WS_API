@@ -1,8 +1,0 @@
-package com.vectails.data;
-
-public class DerivativeTypes extends GenericXmlToken<DerivativeType> {
-
-	public DerivativeTypes(Class<DerivativeType> clazz) {
-		super(clazz);
-	}
-}
