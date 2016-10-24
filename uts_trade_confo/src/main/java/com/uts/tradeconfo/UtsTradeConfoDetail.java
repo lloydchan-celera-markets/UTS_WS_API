@@ -1,5 +1,7 @@
 package com.uts.tradeconfo;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,13 +9,17 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.celera.mongo.adapter.ITradeConfoConverter;
 import com.celera.mongo.entity.Hedge;
+import com.celera.mongo.entity.Leg;
 import com.celera.mongo.entity.TradeConfo;
-import com.vectails.message.processor.Uts2Dm;
+import com.uts.tools.Uts2Dm;
 
 public class UtsTradeConfoDetail 
 {
+//	static final String fmt = "dd-mmm-YY";
+//	static final SimpleDateFormat sdf = new SimpleDateFormat(fmt);
+//	static final NumberFormat nfmt = NumberFormat.getInstance();
+	
 	final static Logger logger = LoggerFactory.getLogger(UtsTradeConfoDetail.class);
 	
 	String summary = null;
@@ -35,7 +41,7 @@ public class UtsTradeConfoDetail
 	String rate = null;
 	String premium = null;
 	String premiumCny = null;
-	List<String> legs = new ArrayList<String>();
+	List<Leg> legs = new ArrayList<Leg>();
 	List<Hedge> hedges = new ArrayList<Hedge>();
 //	List<String> hedgeFutRef = null;
 	String brokerageFee = null;
@@ -60,7 +66,7 @@ public class UtsTradeConfoDetail
 		boolean isHedge = false;
 		boolean isFees = false;
 		boolean isSummary = false;
-
+		
 		String[] lines = sPdf.split("\n");
 		int len = lines.length;
 		for (int i = 0; i < len; i++)
@@ -117,19 +123,29 @@ public class UtsTradeConfoDetail
 				if (tokens[0].contains("x"))
 				{
 					String[] qtys = tokens[0].split("x");
-					this.buyQty = qtys[0];
-					this.sellQty = qtys[1];
+					if (this.buyer != null && this.seller != null)
+					{
+						if (this.buyer.contains("-"))
+						{
+							this.seller = null;
+						} else if (this.seller.contains("-"))
+						{
+							this.buyer = null;
+						}
+					}
 				}
 				else
 				{
-					if (this.buyer != null)
+					if (this.buyer != null && this.seller != null)
 					{
-						this.buyQty = tokens[0];
-					}
-					if (this.seller != null)
-					{
-						this.sellQty = tokens[0];
-					}
+						if (this.buyer.contains("-"))
+						{
+							this.seller = null;
+						} else if (this.seller.contains("-"))
+						{
+							this.buyer = null;
+						}
+					} 
 				}
 				this.ptCny = tokens[3];
 				this.ptValue = tokens[2];
@@ -147,7 +163,21 @@ public class UtsTradeConfoDetail
 			}
 			else if (s.startsWith("Leg"))
 			{
-				this.legs.add(s);
+				String[] tokens = s.split(" ");
+				int lenLeg = tokens.length;
+				
+				String side = tokens[2];
+				Double size = Uts2Dm.toDouble(tokens[3]);
+				String expiry = tokens[4];
+				String strike = tokens[5];
+				String product = "";
+				for (int j = 6; j<lenLeg-2; j++) {
+					product += tokens[j] + " ";
+				}
+				String price = tokens[lenLeg - 2];
+				String premium = tokens[lenLeg - 1];
+				
+				this.legs.add(new Leg(side, size, expiry, strike, price, premium, product));
 			}
 			else if (s.startsWith("HEDGE"))
 			{
@@ -185,6 +215,35 @@ public class UtsTradeConfoDetail
 					this.brokerageCny = s.substring(14, 17);
 					this.brokerageFee = s.substring(18);
 					isFees = false;
+					
+					Double buyQty = 0d;
+					Double sellQty = 0d;
+					for (Leg leg : legs) 
+					{
+						if ("Buy".equals(leg.getSide()))
+						{
+							buyQty += Double.valueOf(leg.getQty()); 
+						}
+						else 
+						{
+							sellQty += Double.valueOf(leg.getQty());
+						}
+					}
+					for (Hedge h : hedges) 
+					{
+						if ("Buy".equals(h.getSide()))
+						{
+							buyQty += h.getQty(); 
+						}
+						else 
+						{
+							sellQty += h.getQty();
+						}
+					}
+					if (buyQty > 0d)
+						this.buyQty = buyQty.toString();
+					if (sellQty > 0d)
+						this.sellQty = sellQty.toString();
 				}
 				else if (s.contains("RATE")) {
 					this.rate = s.substring(13);
@@ -298,7 +357,7 @@ public class UtsTradeConfoDetail
 		return premiumCny;
 	}
 
-	public List<String> getLegs()
+	public List<Leg> getLegs()
 	{
 		return legs;
 	}
@@ -351,7 +410,7 @@ public class UtsTradeConfoDetail
 		
 		List<Hedge> hedges = to.getHedges();
 		hedges.addAll(this.hedges);
-		List<String> legs = to.getLegs();
+		List<Leg> legs = to.getLegs();
 		legs.addAll(this.legs);
 		
 		to.setLastModified(new Date(System.currentTimeMillis()));

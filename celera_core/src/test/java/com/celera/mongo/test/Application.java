@@ -50,9 +50,9 @@ public class Application
 //		tradeConfo.setHedgeFutRef(259.5d);
 		tradeConfo.setBrokerageFee(0d);
 		tradeConfo.setBrokerageCny("USD");
-		List<String> legs = tradeConfo.getLegs();
-		legs.add("Leg1 Buy 100 28-Dec-17 10,800 EuropeanCall 523.00 +2,615,000.00");
-		legs.add("Leg2 Sell 200 29-Dec-16 10,800 EuropeanCall 100.00 -1,000,000.00");
+//		List<String> legs = tradeConfo.getLegs();
+//		legs.add(new Leg("Buy", 100, new Date(28-Dec-17 10),800 EuropeanCall 523.00 +2,615,000.00");
+//		legs.add("Leg2 Sell 200 29-Dec-16 10,800 EuropeanCall 100.00 -1,000,000.00");
 
 		tradeConfoRepo.save(tradeConfo);
 

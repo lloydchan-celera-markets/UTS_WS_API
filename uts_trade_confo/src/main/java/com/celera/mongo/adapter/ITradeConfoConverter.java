@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.celera.mongo.entity.TradeConfo;
+import com.uts.tools.Uts2Dm;
 import com.uts.tradeconfo.UtsTradeConfoDetail;
-import com.vectails.message.processor.Uts2Dm;
 
 /**
  * @author idbs

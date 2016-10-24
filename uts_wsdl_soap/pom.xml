@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	you under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>uts_wsdl_soap</artifactId>
+	<name>WSDL first demo using SOAP12 in Document/Literal Style</name>
+	<description>WSDL first demo using SOAP12 in Document/Literal Style</description>
+	<parent>
+		<groupId>org.apache.cxf.samples</groupId>
+		<artifactId>cxf-samples</artifactId>
+		<version>3.1.7</version>
+	</parent>
+	<properties>
+		<cxf.version>${project.version}</cxf.version>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+				<version>${project.version}</version>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<source>1.8</source>
+							<target>1.8</target>
+							<wsdlOptions>
+								<wsdlOption>
+									<faultSerialVersionUID>1</faultSerialVersionUID>
+									<wsdl>${basedir}/src/main/resources/wsdl/MainServer_DirectAccess__Broker.wsdl</wsdl>
+								</wsdlOption>
+							</wsdlOptions>
+						</configuration>
+						<goals>
+							<goal>wsdl2java</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<shadedGroupFilter>org.apache.cxf</shadedGroupFilter>
+							<shadedArtifactAttached>false</shadedArtifactAttached>
+							<createSourcesJar>${createSourcesJar}</createSourcesJar>
+							<promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+							<createDependencyReducedPom>true</createDependencyReducedPom>
+							<dependencyReducedPomLocation>${basedir}/target/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+							<filters>
+								<filter>
+									<artifact>${project.groupId}:${project.artifactId}</artifact>
+									<excludes>
+										<exclude>org/**</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+									<projectName>Apache CXF</projectName>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.handlers</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/services/javax.xml.ws.spi.Provider</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/services/com.sun.tools.xjc.Plugin</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.schemas</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/cxf/cxf.extension</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/extensions.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/cxf/extensions.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/cxf/bus-extensions.txt</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/cxf/bus-extensions.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/wsdl.plugin.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/tools.service.validator.xml</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+									<resource>META-INF/cxf/java2wsbeans.xml</resource>
+								</transformer>
+								<!-- 
+								<transformer implementation="org.apache.cxf.maven.PluginTransformer">
+									<resource>META-INF/tools-plugin.xml</resource>
+								</transformer>
+								<transformer implementation="org.apache.cxf.maven.CXFAllTransformer" />
+								-->
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<!-- <profiles> <profile> <id>server</id> <build> <defaultGoal>test</defaultGoal> 
+		<plugins> <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>exec-maven-plugin</artifactId> 
+		<executions> <execution> <phase>test</phase> <goals> <goal>java</goal> </goals> 
+		<configuration> <source>1.8</source> <target>1.8</target> <mainClass>demo.hw.server.Server</mainClass> 
+		<arguments> <argument>${basedir}/src/main/resources/wsdl/MainServer_DirectAccess__Broker.wsdl</argument> 
+		</arguments> </configuration> </execution> </executions> </plugin> </plugins> 
+		</build> </profile> <profile> <id>client</id> <build> <defaultGoal>test</defaultGoal> 
+		<plugins> <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>exec-maven-plugin</artifactId> 
+		<executions> <execution> <phase>test</phase> <goals> <goal>java</goal> </goals> 
+		<configuration> <source>1.8</source> <target>1.8</target> <mainClass>demo.hw.client.Client</mainClass> 
+		<arguments> <argument>${basedir}/src/main/resources/wsdl/MainServer_DirectAccess__Broker.wsdl</argument> 
+		</arguments> </configuration> </execution> </executions> </plugin> </plugins> 
+		</build> </profile> </profiles> -->
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>3.1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>3.1.7</version>
+		</dependency>
+		<!-- Jetty is needed if you're using the CXFServlet -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http-jetty</artifactId>
+			<version>3.1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf.samples</groupId>
+			<artifactId>celera_core</artifactId>
+			<version>3.1.7</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf.samples</groupId>
+			<artifactId>uts_core</artifactId>
+			<version>3.1.7</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+</project>

@@ -14,6 +14,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -250,7 +254,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 		switch (cmd)
 		{
 		case QUERY_ALL_TRADES:
-			msg = getTradeConfo();
+			msg = queryTradeConfo();
 			break;
 		case QUERY_TRADE_BETWEEN:
 			String start = new String(data, 3, 8);
@@ -268,8 +272,9 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 		}
 		if (msg != null)
 		{
-			byte[] res = CmmfBuilder.buildMessage(this.me, EMessageType.RESPONSE, cmd, msg.getBytes());
-			return res;
+//			byte[] res = CmmfBuilder.buildMessage(this.me, EMessageType.RESPONSE, cmd, msg.getBytes());
+			
+			return msg.getBytes();
 		}
 		logger.debug(data.toString());
 
@@ -282,32 +287,49 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 		// TODO Auto-generated method stub
 	}
 
-	public String getTradeConfo()
+	public String queryTradeConfo()
 	{
-		StringBuilder sb = new StringBuilder(0);
+		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+//		StringBuilder sb = new StringBuilder(0);
 		for (TradeConfo t : map.values())
 		{
-			sb.append(t.toString());
+			JsonObject o = t.json();
+			arrayBuilder.add(o);
+//			sb.append(o.toString());
 		}
-		return sb.toString();
+		ansBuilder.add("sender", "D");
+		ansBuilder.add("message_type", "R");
+		ansBuilder.add("command", "A");
+		ansBuilder.add("tradeconf", arrayBuilder);
+		return ansBuilder.build().toString();
+//		return sb.toString();
 	}
 
 	public String getTradeConfo(Date start, Date end)
 	{
 		StringBuilder sb = new StringBuilder(0);
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		
 		for (TradeConfo t : map.values())
 		{
 			try
 			{
 				Date tradeDate = dbSdf.parse(t.getTradeDate());
 				if (tradeDate.after(start) && tradeDate.before(end))
-					sb.append(t.toString());
+				{
+					JsonObject o = t.json();
+					arrayBuilder.add(o);
+//					sb.append(o.toString());
+				}
 			} catch (Exception e)
 			{
 				logger.error("", e);
 			}
 		}
-		return sb.toString();
+//		return sb.toString();
+		return arrayBuilder.toString();
 	}
 
+	
 }

@@ -26,7 +26,7 @@ public class Application
 		cal.set(Calendar.MILLISECOND, 0);
 		//
 		// Date to = cal.getTime();
-		cal.add(Calendar.DATE, -18);
+		cal.add(Calendar.DATE, -25);
 		Date from = cal.getTime();
 		// serv.getBetween(from, to);
 		UtsEmailProcessor proc = new UtsEmailProcessor();
