@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum ECommand
 {
-	QUERY_ALL_TRADES('A'), QUERY_TRADE_BETWEEN('B');
+	QUERY_ALL_TRADES('A'), QUERY_TRADE_BETWEEN('B'), EMAIL_INVOICE('E'), CREATE_INVOICE('G'), UPDATE_CLIENT('C');
 
 	private static final Map<Character, ECommand> map = new LinkedHashMap<Character, ECommand>();
 	static

@@ -5,7 +5,10 @@ import java.util.Map;
 
 public enum EMessageType 
 {
-	ADMIN('A'), QUERY('Q'), RESPONSE('R');
+	ADMIN('A'), 
+	QUERY('Q'), 
+	RESPONSE('R'),
+	TASK('T');
 	
 	private static final Map<Character, EMessageType> map = new LinkedHashMap<Character, EMessageType>();
 	static

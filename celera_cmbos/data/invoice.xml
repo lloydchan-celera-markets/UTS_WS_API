@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<invoice>
+<company>Vivienne Court Ptrading Pty Limited</company>
+<address>Suite 304, 24-30 Springfield Avenue Potts Point, Sydney, NSW 2011, Australia.</address>
+<attn>midoffice@vivcourt.com</attn>
+<invoice_number>CEL-160055</invoice_number>
+<invoice_date>11 Jul 2016</invoice_date>
+<account_number>CEL0004</account_number>
+<due_date>28 July, 2016</due_date>
+<amount_due>HK$7,308.00</amount_due>
+<description>June 2016 Brokerage Fee</description>
+<amount>HK$7,308.00</amount>
+<payment_bank_name>DBS Bank (Hong Kong) Limited</payment_bank_name>
+<payment_bank_address>Floor 16, The Center, 99 Queen's Road Central, Central, Hong Kong</payment_bank_address>
+<payment_bank_code>016</payment_bank_code>
+<payment_branch_code>478</payment_branch_code>
+<account_number>7883658530</account_number>
+<account_beneficiary>Celera Markets Limited</account_beneficiary>
+<swift>DHBKHKHH</swift>
+</invoice>

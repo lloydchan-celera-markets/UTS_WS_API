@@ -28,9 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
+import com.celera.message.cmmf.ICmmfMessageListener;
+import com.celera.message.cmmf.AbstractCmmfService;
 import com.celera.thread.AbstractTask;
 
-public class RrServer extends AbstractTask implements ITcpServer, ILifeCycle
+public class RrServer extends AbstractCmmfService implements ILifeCycle
 {
 	private static final Logger logger = LoggerFactory.getLogger(RrServer.class);
 	
@@ -43,28 +45,30 @@ public class RrServer extends AbstractTask implements ITcpServer, ILifeCycle
 	private final int ioThread;
 	private final String ip;
 	private final int port;
-	private final ITcpServerListener listener;
+//	private final ICmmfMessageListener listener;
 
 //	private final ExecutorService exec = Executors.newFixedThreadPool(1);
 //	private Future future;
 	
-	public RrServer()
+	public RrServer(ICmmfMessageListener listener)
 	{
+		super(listener);
+		
 		this.ioThread = 1;
 		this.ip = null;
 		this.port = 6555;
-		this.listener = null;
 		
 //		init();
 //		bind();
 	}
 	
-	public RrServer(int ioThread, String ip, int port, ITcpServerListener listener)
+	public RrServer(int ioThread, String ip, int port, ICmmfMessageListener listener)
 	{
+		super(listener);
+		
 		this.ioThread = ioThread;
 		this.ip = ip;
 		this.port = port;
-		this.listener = listener;
 	}
 
 	private void bind()
@@ -92,12 +96,6 @@ public class RrServer extends AbstractTask implements ITcpServer, ILifeCycle
 		ctx.term();
 	}
 	
-	@Override
-	public void setTcpListener(ITcpServerListener listener)
-	{
-//		this.listener = listener;
-	}
-
 	@Override
 	public void run()
 	{
@@ -145,13 +143,13 @@ public class RrServer extends AbstractTask implements ITcpServer, ILifeCycle
 		}
 	}
 	
-	public static void main(String[] args)
-	{
-//		Miniserver srv = new Miniserver();
-		RrServer srv = new RrServer();
-		ExecutorService exec = Executors.newFixedThreadPool(1);
-		exec.submit(srv);
-	}
+//	public static void main(String[] args)
+//	{
+////		Miniserver srv = new Miniserver();
+//		RrServer srv = new RrServer();
+//		ExecutorService exec = Executors.newFixedThreadPool(1);
+//		exec.submit(srv);
+//	}
 	
 	public static void main1(String[] args)
 	{

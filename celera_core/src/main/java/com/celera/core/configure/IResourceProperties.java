@@ -28,4 +28,12 @@ public interface IResourceProperties
 
 	public static final String PROP_CM_DBA_STARTDATE = "celera.dba.startdate";
 	public static final String PROP_CM_DBA_ENDDATE = "celera.dba.enddate";
+
+	public static final String PROP_CMBOS_CHL_PULL_PROT = "cmbos.channel.pull.protocol";
+	public static final String PROP_CMBOS_CHL_PULL_IP = "cmbos.channel.pull.ip";
+	public static final String PROP_CMBOS_CHL_PULL_PORT = "cmbos.channel.pull.port";
+	public static final String PROP_CMBOS_CHL_SINK_PROT = "cmbos.channel.sink.protocol";
+	public static final String PROP_CMBOS_CHL_SINK_IP = "cmbos.channel.sink.ip";
+	public static final String PROP_CMBOS_CHL_SINK_PORT = "cmbos.channel.sink.port";
+	
 }

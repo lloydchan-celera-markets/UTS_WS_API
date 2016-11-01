@@ -1,47 +1,30 @@
 package com.celera.adapter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.internet.MimeBodyPart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.CrudRepository;
 
-import com.celera.adapter.EmailServiceImpl;
 import com.celera.core.configure.IOverrideConfig;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
 import com.celera.ipc.ILifeCycle;
-import com.celera.ipc.IMulticastClient;
-import com.celera.ipc.ITcpServer;
-import com.celera.ipc.ITcpServerListener;
-import com.celera.ipc.MulticastClient;
 import com.celera.ipc.RrServer;
-import com.celera.library.javamail.IMailListener;
 import com.celera.message.cmmf.CmmfApp;
-import com.celera.message.cmmf.CmmfBuilder;
 import com.celera.message.cmmf.EApp;
 import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
@@ -49,10 +32,8 @@ import com.celera.message.cmmf.ICmmfConst;
 import com.celera.mongo.MongoDbAdapter;
 import com.celera.mongo.entity.TradeConfo;
 import com.celera.mongo.repo.TradeConfoRepo;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 
-public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpServerListener
+public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 {
 	final static Logger logger = LoggerFactory.getLogger(DatabaseAdapter.class);
 
@@ -73,14 +54,14 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 
 	private final static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMATTER);
 	private final static SimpleDateFormat dbSdf = new SimpleDateFormat(DB_DATE_FORMATTER);
-	private final static SimpleDateFormat cmmfSdf = new SimpleDateFormat(ICmmfConst.CMMF_QUERY_DATE_FMT);
+	private final static SimpleDateFormat cmmfSdf = new SimpleDateFormat(ICmmfConst.DATE_FMT);
 
-	private Map<String, TradeConfo> map = new HashMap<String, TradeConfo>();
+	private static Map<String, TradeConfo> map = new ConcurrentHashMap<String, TradeConfo>();
 	private Date lastModified = null;
 
 	private ILifeCycle serv = null;
-//	private IMulticastClient mcClient = null;
-//	private ExecutorService pool = Executors.newFixedThreadPool(1);
+	// private IMulticastClient mcClient = null;
+	// private ExecutorService pool = Executors.newFixedThreadPool(1);
 
 	static
 	{
@@ -113,8 +94,8 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 		lastModified = START_DATE;
 		serv = new RrServer(IO_THREAD, IP, TCP_PORT, this);
 		serv.init();
-//		mcClient = new MulticastClient(IO_THREAD, IP, MC_PORT, this);
-//		mcClient.setTcpListener(this);
+		// mcClient = new MulticastClient(IO_THREAD, IP, MC_PORT, this);
+		// mcClient.setTcpListener(this);
 	}
 
 	@Override
@@ -125,41 +106,41 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 
 	public void start()
 	{
-//		mcClient.subscribe(EApp.DBA);
-//
-//		try
-//		{
-//			pool.execute(mcClient);
-//		} catch (Exception e)
-//		{
-//			pool.shutdown();
-//		}
-		
+		// mcClient.subscribe(EApp.DBA);
+		//
+		// try
+		// {
+		// pool.execute(mcClient);
+		// } catch (Exception e)
+		// {
+		// pool.shutdown();
+		// }
+
 		serv.start();
 	}
 
 	public void stop()
 	{
-//		mcClient.unsubscribe(EApp.DBA);
-//		pool.shutdown(); // Disable new tasks from being submitted
-//		try
-//		{
-//			// Wait a while for existing tasks to terminate
-//			if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-//			{
-//				pool.shutdownNow(); // Cancel currently executing tasks
-//				// Wait a while for tasks to respond to being cancelled
-//				if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-//					logger.error("multicast client did not terminate");
-//			}
-//		} catch (InterruptedException ie)
-//		{
-//			// (Re-)Cancel if current thread also interrupted
-//			pool.shutdownNow();
-//			// Preserve interrupt status
-//			Thread.currentThread().interrupt();
-//		}
-		
+		// mcClient.unsubscribe(EApp.DBA);
+		// pool.shutdown(); // Disable new tasks from being submitted
+		// try
+		// {
+		// // Wait a while for existing tasks to terminate
+		// if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+		// {
+		// pool.shutdownNow(); // Cancel currently executing tasks
+		// // Wait a while for tasks to respond to being cancelled
+		// if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+		// logger.error("multicast client did not terminate");
+		// }
+		// } catch (InterruptedException ie)
+		// {
+		// // (Re-)Cancel if current thread also interrupted
+		// pool.shutdownNow();
+		// // Preserve interrupt status
+		// Thread.currentThread().interrupt();
+		// }
+
 		serv.stop();
 	}
 
@@ -199,23 +180,27 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 		logger.info("save {}", tradeConfo);
 	}
 
-	@Override
-	public byte[] onMessage(byte[] data)
-	{
-		EMessageType type = EMessageType.get((char) data[1]);
-		byte[] b = null;
-		
-		switch (type)
-		{
-		case ADMIN:
-			onAdmin(data);
-			break;
-		case QUERY:
-			b = onQuery(data);
-			break;
-		}
-		return b;
-	}
+	// @Override
+	// public byte[] onMessage(byte[] data)
+	// {
+	// EMessageType type = EMessageType.get((char)
+	// data[ICmmfConst.HEADER_MESSAGE_TYPE_POS]);
+	// byte[] b = null;
+	//
+	// switch (type)
+	// {
+	// case ADMIN:
+	// onAdmin(data);
+	// break;
+	// case QUERY:
+	// b = onQuery(data);
+	// break;
+	// case TASK:
+	// onTask(data);
+	// break;
+	// }
+	// return b;
+	// }
 
 	public static void main(String[] args)
 	{
@@ -248,22 +233,22 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 	@Override
 	public byte[] onQuery(byte[] data)
 	{
-// 		ECommand sender = ECommand.get((char)data[1]);
-		ECommand cmd = ECommand.get((char) data[2]);
+		// ECommand sender = ECommand.get((char)data[1]);
+		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
 		String msg = null;
 		switch (cmd)
 		{
 		case QUERY_ALL_TRADES:
-			msg = queryTradeConfo();
+			msg = jsonHistTradeConfo();
 			break;
 		case QUERY_TRADE_BETWEEN:
-			String start = new String(data, 3, 8);
-			String end = new String(data, 11, 8);
+			String start = new String(data, ICmmfConst.HEADER_SIZE, ICmmfConst.DATE_LENGTH);
+			String end = new String(data, ICmmfConst.HEADER_SIZE + ICmmfConst.DATE_LENGTH, ICmmfConst.DATE_LENGTH);
 			try
 			{
 				Date dStart = cmmfSdf.parse(start);
 				Date dEnd = cmmfSdf.parse(end);
-				msg = getTradeConfo(dStart, dEnd);
+				msg = jsonHistTradeConfo(dStart, dEnd);
 			} catch (ParseException e)
 			{
 				logger.error("", e);
@@ -272,8 +257,9 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 		}
 		if (msg != null)
 		{
-//			byte[] res = CmmfBuilder.buildMessage(this.me, EMessageType.RESPONSE, cmd, msg.getBytes());
-			
+			// byte[] res = CmmfBuilder.buildMessage(this.me,
+			// EMessageType.RESPONSE, cmd, msg.getBytes());
+
 			return msg.getBytes();
 		}
 		logger.debug(data.toString());
@@ -282,35 +268,100 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 	}
 
 	@Override
+	public void onTask(byte[] data)
+	{
+		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
+		String msg = null;
+		String start = null;
+		String end = null;
+		switch (cmd)
+		{
+		case EMAIL_INVOICE:
+			msg = new String(data);
+			start = msg.substring(ICmmfConst.HEADER_SIZE, ICmmfConst.HEADER_SIZE + ICmmfConst.DATE_LENGTH);
+			end = msg.substring(ICmmfConst.HEADER_SIZE + ICmmfConst.DATE_LENGTH,
+					ICmmfConst.HEADER_SIZE + ICmmfConst.DATE_LENGTH + ICmmfConst.DATE_LENGTH);
+			String client = msg.substring(ICmmfConst.HEADER_SIZE + ICmmfConst.DATE_LENGTH + ICmmfConst.DATE_LENGTH);
+			logger.info(start + "," + end + "," + client);
+			try
+			{
+				Date dStart = cmmfSdf.parse(start);
+				Date dEnd = cmmfSdf.parse(end);
+
+				// msg = getTradeConfo(dStart, dEnd);
+			} catch (ParseException e)
+			{
+				logger.error("", e);
+			}
+			break;
+		case UPDATE_CLIENT:
+			msg = new String(data, ICmmfConst.HEADER_SIZE);
+			JsonObject jsnobject = Json.createObjectBuilder().build().getJsonObject(msg);
+			JsonArray jsonArray = jsnobject.getJsonArray("accounts");
+			for (int i = 0; i < jsonArray.size(); i++)
+			{
+				JsonObject o = jsonArray.getJsonObject(i);
+				System.out.println(o.toString());
+			}
+			// String client = msg.substring(ICmmfConst.HEADER_SIZE +
+			// ICmmfConst.DATE_LENGTH + ICmmfConst.DATE_LENGTH);
+			// logger.info(start +"," + end + "," + client);
+			break;
+		case QUERY_ALL_TRADES:
+			msg = jsonHistTradeConfo();
+			break;
+		case QUERY_TRADE_BETWEEN:
+			start = new String(data, ICmmfConst.HEADER_SIZE, ICmmfConst.DATE_LENGTH);
+			end = new String(data, ICmmfConst.HEADER_SIZE + ICmmfConst.DATE_LENGTH, ICmmfConst.DATE_LENGTH);
+			try
+			{
+				Date dStart = cmmfSdf.parse(start);
+				Date dEnd = cmmfSdf.parse(end);
+				msg = jsonHistTradeConfo(dStart, dEnd);
+			} catch (ParseException e)
+			{
+				logger.error("", e);
+			}
+			break;
+		}
+	}
+
+	@Override
 	public void onResponse(byte[] data)
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public String queryTradeConfo()
+	public void emailInvoice()
+	{
+
+	}
+
+	public static String jsonHistTradeConfo()
 	{
 		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-//		StringBuilder sb = new StringBuilder(0);
+		// StringBuilder sb = new StringBuilder(0);
 		for (TradeConfo t : map.values())
 		{
 			JsonObject o = t.json();
 			arrayBuilder.add(o);
-//			sb.append(o.toString());
+			// sb.append(o.toString());
 		}
 		ansBuilder.add("sender", "D");
+		ansBuilder.add("receiver", "W");
 		ansBuilder.add("message_type", "R");
 		ansBuilder.add("command", "A");
 		ansBuilder.add("tradeconf", arrayBuilder);
 		return ansBuilder.build().toString();
-//		return sb.toString();
+		// return sb.toString();
 	}
 
-	public String getTradeConfo(Date start, Date end)
+	public static String jsonHistTradeConfo(Date start, Date end)
 	{
 		StringBuilder sb = new StringBuilder(0);
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-		
+
 		for (TradeConfo t : map.values())
 		{
 			try
@@ -320,16 +371,33 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig, ITcpSer
 				{
 					JsonObject o = t.json();
 					arrayBuilder.add(o);
-//					sb.append(o.toString());
 				}
 			} catch (Exception e)
 			{
 				logger.error("", e);
 			}
 		}
-//		return sb.toString();
-		return arrayBuilder.toString();
+		return sb.toString();
 	}
 
-	
+	public static List getHistTradeConfo(Date start, Date end)
+	{
+		List<TradeConfo> l = new ArrayList<TradeConfo>();
+
+		for (TradeConfo t : map.values())
+		{
+			try
+			{
+				Date tradeDate = dbSdf.parse(t.getTradeDate());
+				if (tradeDate.after(start) && tradeDate.before(end))
+				{
+					l.add(t);
+				}
+			} catch (Exception e)
+			{
+				logger.error("", e);
+			}
+		}
+		return l;
+	}
 }

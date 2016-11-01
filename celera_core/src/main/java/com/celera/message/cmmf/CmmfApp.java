@@ -2,7 +2,7 @@ package com.celera.message.cmmf;
 
 import java.util.UUID;
 
-public abstract class CmmfApp
+public abstract class CmmfApp implements ICmmfMessageListener
 {
 	String uniqueID = UUID.randomUUID().toString();
 
@@ -20,10 +20,28 @@ public abstract class CmmfApp
 
 	public String id()
 	{
+	
 		return uniqueID;
 	}
 	
-	public abstract byte[] onQuery(byte[] data);
-	public abstract void onAdmin(byte[] data);
-	public abstract void onResponse(byte[] data);
+	@Override
+	public byte[] onMessage(byte[] data)
+	{
+		EMessageType type = EMessageType.get((char) data[ICmmfConst.HEADER_MESSAGE_TYPE_POS]);
+		byte[] b = null;
+		
+		switch (type)
+		{
+		case ADMIN:
+			onAdmin(data);
+			break;
+		case QUERY:
+			b = onQuery(data);
+			break;
+		case TASK:
+			onTask(data);
+			break;
+		}
+		return b;
+	}
 }
