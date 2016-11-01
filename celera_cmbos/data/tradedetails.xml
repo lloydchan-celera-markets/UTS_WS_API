@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<TradeDetails>
+    <period>JUNE, 2016</period>
+	<company>Vivienne Court Ptrading Pty Limited</company>
+	<description>June 2016 Total</description>
+	<size>518</size>
+	<hedge>66</hedge>
+	<total_fee>HK$7,308</total_fee>
+	
+	<TradeDetail>
+		<date>10-Jun-16</date>
+		<id>CELERAEQ-2016-12907</id>
+		<description>Listed HSCEI JUN16 8800/9200 European Call Spread REF 8,625 (JUN16)</description>
+		<size>104</size>
+		<hedge>12</hedge>
+		<reference>Buyer - Jeroen Plooster</reference>
+		<fee>HK$1,368</fee>
+    </TradeDetail>
+	
+	<TradeDetail>
+		<date>14-Jun-16</date>
+		<id>CELERAEQ-2016-12909</id>
+		<description>Listed HSCEI SEP16 8800 European Call REF 8,350 (JUN16)</description>
+		<size>81</size>
+		<hedge>30</hedge>
+		<reference>Buyer - Jeroen Plooster</reference>
+		<fee>HK$1,920</fee>
+    </TradeDetail>
+
+	<TradeDetail>
+		<date>23-Jun-16</date>
+		<id>CELERAEQ-2016-12929</id>
+		<description>Listed HSI JUL16 22000/23200 1/-3 European Call ratio REF 20,800 (JUN16)</description>
+		<size>160</size>
+		<hedge>2</hedge>
+		<reference>Seller - Jeroen Plooster</reference>
+		<fee>HK$1,300</fee>
+    </TradeDetail>
+
+	<TradeDetail>
+		<date>27-Jun-16</date>
+		<id>CELERAEQ-2016-12935</id>
+		<description>Listed HSCEI DEC16 9000/10400 European Call Spread REF 8,325 (JUN16)</description>
+		<size>120</size>
+		<hedge>15</hedge>
+		<reference>Buyer - Jeroen Plooster</reference>
+		<fee>HK$1,590</fee>
+    </TradeDetail>
+
+	<TradeDetail>
+		<date>30-Jun-16</date>
+		<id>CELERAEQ-2016-12942</id>
+		<description>Listed HSI DEC16 24000 European Call REF 20,775 (JUN16)</description>
+		<size>28</size>
+		<hedge>4</hedge>
+		<reference>Seller - Jeroen Plooster</reference>
+		<fee>HK$600</fee>
+    </TradeDetail>
+
+	<TradeDetail>
+		<date>30-Jun-16</date>
+		<id>CELERAEQ-2016-12943</id>
+		<description>Listed HSI DEC16 240000 European Call REF 20,775 (JUN16)</description>
+		<size>25</size>
+		<hedge>3</hedge>
+		<reference>Seller - Jeroen Plooster</reference>
+		<fee>HK$530</fee>
+    </TradeDetail>	
+</TradeDetails>

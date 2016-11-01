@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
+<xsl:attribute-set name="myChop">
+  <xsl:attribute name="src">images/chop.png</xsl:attribute>
+  <xsl:attribute name="content-height">scale-to-fit</xsl:attribute>
+  <xsl:attribute name="content-width">20mm</xsl:attribute>
+  <xsl:attribute name="scaling">non-uniform</xsl:attribute>
+  <xsl:attribute name="margin">0mm</xsl:attribute>
+</xsl:attribute-set>
 <xsl:template match="Invoice">
     <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
       <fo:layout-master-set>
@@ -56,27 +63,20 @@
             </fo:table-body>
         </fo:table>
 		  
+		  <fo:block font-size="16pt" text-decoration="underline" font-weight="bold" text-align="center" space-after="5mm">INVOICE</fo:block>
+		  
 		  <fo:table table-layout="fixed" margin="2pt 1pt 1pt 1pt" width="100%" border-collapse="separate" border-separation="3pt">    
             <fo:table-column column-width="5cm"/>
 			<fo:table-column column-width="5cm"/>
 			<fo:table-column column-width="8cm"/>
             <fo:table-body>
-				<fo:table-row  height="2cm">  
-					<fo:table-cell number-columns-spanned="3">
-						<!--<fo:block>CELERA</fo:block>-->
-						<fo:block font-weight="bold" font-size="16pt" text-decoration="underline" text-align="center" display-align="bottom">INVOICE</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
 			    <fo:table-row>  
 					<fo:table-cell border="inherit" background-color="#D9D9D9"  >
 						<!--<fo:block>CELERA</fo:block>-->
 						<fo:block  margin="0mm" padding-left="2mm">Bill To</fo:block>
 					</fo:table-cell>
-					<fo:table-cell>
+					<fo:table-cell number-columns-spanned="2">
 						<fo:block><fo:leader/></fo:block>
-					</fo:table-cell>
-					<fo:table-cell >
-						<fo:block>Invoice # <xsl:value-of select="invoice_number"/></fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 				<fo:table-row>  
@@ -84,42 +84,45 @@
 						<fo:block margin="0mm" padding-left="2mm"><xsl:value-of select="company"/></fo:block>
 					</fo:table-cell>
 					<fo:table-cell >
-						<fo:block>Invoice Date: <xsl:value-of select="invoice_date"/></fo:block>
+						<fo:block>Invoice # <xsl:value-of select="invoice_number"/></fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 				<fo:table-row>
-					<fo:table-cell number-rows-spanned="4" number-columns-spanned="2">
+					<fo:table-cell number-rows-spanned="3" number-columns-spanned="2">
 						<fo:block  margin="0mm" padding-left="2mm"><xsl:value-of select="address"/></fo:block>
 					</fo:table-cell>
+					<fo:table-cell >
+						<fo:block>Invoice Date: <xsl:value-of select="invoice_date"/></fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			
+				<fo:table-row>
 					<fo:table-cell>
 						<fo:block>Account number: <xsl:value-of select="account_number"/></fo:block>
 					</fo:table-cell>
 				</fo:table-row>
-
-				<fo:table-row>
-					<fo:table-cell>
-						<fo:block><fo:leader/></fo:block>
-					</fo:table-cell>
-				</fo:table-row>
-
 				
 				<fo:table-row>
 					<fo:table-cell >
-						<fo:block>Due date: <xsl:value-of select="due_date"/></fo:block>
+						<fo:block><fo:leader/></fo:block>
 					</fo:table-cell>
 				</fo:table-row>
+						
 				<fo:table-row>
+					<fo:table-cell number-columns-spanned="2">
+						<fo:block  margin="0mm" padding-left="2mm">Attn: <xsl:value-of select="attn"/></fo:block>
+					</fo:table-cell>
 					<fo:table-cell >
-						<fo:block>Amount Due: <xsl:value-of select="amount_due"/></fo:block>
+						<fo:block>Due date: <xsl:value-of select="due_date"/></fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 				
 				<fo:table-row>
 					<fo:table-cell number-columns-spanned="2">
-						<fo:block  margin="0mm" padding-left="2mm">Attn: <xsl:value-of select="attn"/></fo:block>
-					</fo:table-cell>
-					<fo:table-cell>
 						<fo:block><fo:leader/></fo:block>
+					</fo:table-cell>
+					<fo:table-cell >
+						<fo:block>Amount Due: <xsl:value-of select="amount_due"/></fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 				
@@ -170,7 +173,7 @@
 					</fo:table-cell>
 					<fo:table-cell number-rows-spanned="3">
 						<fo:block >
-							<fo:external-graphic src="images/chop.png"  content-height="scale-to-fit" height="1.00cm"  content-width="1.00cm" scaling="non-uniform" padding="2cm" margin="0mm" />
+							<fo:external-graphic xsl:use-attribute-sets="myChop" padding="2cm"/>
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>

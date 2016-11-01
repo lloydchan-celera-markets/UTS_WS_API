@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="Invoice")
 public class Invoice
 {
-	String id;
-	
 	String company;
 	String address;
 	String attn;
@@ -29,15 +27,6 @@ public class Invoice
 	String payment_account_beneficiary = "Celera Markets Limited";
 	String payment_swift = "DHBKHKHH";
 
-	public String getId()
-	{
-		return id;
-	}
-	@XmlElement
-	public void setId(String id)
-	{
-		this.id = id;
-	}
 	@XmlElement
 	public void setCompany(String company)
 	{
