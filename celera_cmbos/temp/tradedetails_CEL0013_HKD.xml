@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Celera Financial Limited</company>
+    <description>October 2016 Total</description>
+    <hedge>3,628</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>44,629</size>
+    <total_fee>HK$483,656</total_fee>
+    <TradeDetail>
+        <date>28-Oct-16</date>
+        <description>Listed HSCEI DEC17 6600 European Put REF 9,625 (NOV16)</description>
+        <fee>HK$1,860</fee>
+        <hedge>24</hedge>
+        <id>CELERAEQ-2016-13194</id>
+        <reference>Buyer - Celera Financial Limited - Xinli Song</reference>
+        <size>100</size>
+    </TradeDetail>
+</TradeDetails>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>BNP Paribas Arbitrage S.N.C.*</company>
+    <description>October 2016 Total</description>
+    <hedge>1,687</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>30,751</size>
+    <total_fee>HK$348,246</total_fee>
+    <TradeDetail>
+        <date>11-Oct-16</date>
+        <description>Listed HSCEI DEC16 9400 European Straddle REF 9,750 (OCT16)</description>
+        <fee>HK$2,400</fee>
+        <hedge>48</hedge>
+        <id>CELERAEQ-2016-13159</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>05-Oct-16</date>
+        <description>Listed HSI SEP17 21000/26200 1/-1 European Risk Reversal REF 23,575 (OCT16)</description>
+        <fee>HK$464</fee>
+        <hedge>16</hedge>
+        <id>CELERAEQ-2016-13156</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>58</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>05-Oct-16</date>
+        <description>Listed HSCEI DEC17/DEC16 10800 1/-2 European Call Time Ratio REF 9,850 (OCT16)</description>
+        <fee>HK$700</fee>
+        <hedge>1</hedge>
+        <id>CELERAEQ-2016-13157</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>150</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,775 (OCT16)</description>
+        <fee>HK$1,300</fee>
+        <hedge>5</hedge>
+        <id>CELERAEQ-2016-13183</id>
+        <reference>Seller - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>100</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,775 (OCT16)</description>
+        <fee>HK$1,300</fee>
+        <hedge>5</hedge>
+        <id>CELERAEQ-2016-13184</id>
+        <reference>Seller - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>100</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI MAR17 6000/7600 -2/1 European Put Ratio REF 9,725 (OCT16)</description>
+        <fee>HK$2,100</fee>
+        <hedge>6</hedge>
+        <id>CELERAEQ-2016-13154</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>450</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI DEC17 8400/9600 European Put Spread REF 9,700 (OCT16)</description>
+        <fee>HK$8,000</fee>
+        <hedge>95</hedge>
+        <id>CELERAEQ-2016-13152</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>1000</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI DEC17 8000/9600 European Put Spread REF 9,700 (OCT16)</description>
+        <fee>HK$1,600</fee>
+        <hedge>27</hedge>
+        <id>CELERAEQ-2016-13153</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>12-Oct-16</date>
+        <description>Listed HSCEI MAR17 9800 European Straddle REF 9,750 (OCT16)</description>
+        <fee>HK$800</fee>
+        <hedge>3</hedge>
+        <id>CELERAEQ-2016-13160</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>100</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17/JUN18 10400 European Call Time Spread REF 9,725 (OCT16)</description>
+        <fee>HK$3,200</fee>
+        <hedge>12</hedge>
+        <id>CELERAEQ-2016-13165</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,725 (OCT16)</description>
+        <fee>HK$2,600</fee>
+        <hedge>9</hedge>
+        <id>CELERAEQ-2016-13166</id>
+        <reference>Seller - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>18-Oct-16</date>
+        <description>Listed HSCEI DEC17 6600/8400 -1.5/1 European Put Ratio REF 9,600 (OCT16)</description>
+        <fee>HK$4,375</fee>
+        <hedge>30</hedge>
+        <id>CELERAEQ-2016-13164</id>
+        <reference>Seller - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>625</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>24-Oct-16</date>
+        <description>Listed HSCEI MAR17/DEC17 10400 European Call Time Spread REF 9,800 (OCT16)</description>
+        <fee>HK$10,340</fee>
+        <hedge>47</hedge>
+        <id>CELERAEQ-2016-13177</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>1880</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed HSI NOV16 23200 European Straddle REF 23,300 (OCT16)</description>
+        <fee>HK$2,600</fee>
+        <hedge>8</hedge>
+        <id>CELERAEQ-2016-13188</id>
+        <reference>Buyer - BNP Paribas Arbitrage S.N.C.* - Nicolas Dujardin</reference>
+        <size>200</size>
+    </TradeDetail>
+</TradeDetails>

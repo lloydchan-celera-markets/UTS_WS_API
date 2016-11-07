@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Invoice>
+    <account_number>CEL0001</account_number>
+    <address>7th Floor, Winchester, Hiranandani Business Park, Powai, Mumbai, Maharashtra 400 076, India.</address>
+    <amount>HK$269,971</amount>
+    <amount_due>HK$269,971</amount_due>
+    <attn>Santosh Dange</attn>
+    <company>Nomura International Plc</company>
+    <description>October 2016 Brokerage Fee</description>
+    <due_date>28 November, 2016</due_date>
+    <invoice_date>01 Nov 2016</invoice_date>
+    <invoice_number></invoice_number>
+    <payment_account_beneficiary>Celera Markets Limited</payment_account_beneficiary>
+    <payment_account_number>7883658530</payment_account_number>
+    <payment_bank_address>Floor 16, The Center, 99 Queen's Road Central, Central, Hong Kong</payment_bank_address>
+    <payment_bank_code>016</payment_bank_code>
+    <payment_bank_name>DBS Bank (Hong Kong) Limited</payment_bank_name>
+    <payment_branch_code>478</payment_branch_code>
+    <payment_swift>DHBKHKHH</payment_swift>
+    <sentTo>santosh.dange@nomura.com</sentTo>
+    <tradeDetails>
+        <company>Nomura International Plc</company>
+        <description>October 2016 Total</description>
+        <hedge>1,141</hedge>
+        <period>OCTOBER, 2016</period>
+        <size>22,058</size>
+        <total_fee>HK$269,971</total_fee>
+        <TradeDetail>
+            <date>27-Oct-16</date>
+            <description>Listed HSI JUN17 19200/24800 1/1 European Strangle REF 23,000 (NOV16)</description>
+            <fee>HK$2,544</fee>
+            <hedge>12</hedge>
+            <id>CELERAEQ-2016-13191</id>
+            <reference>Buyer - Nomura International Plc - Nadjib Ezziane</reference>
+            <size>200</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>03-Oct-16</date>
+            <description>Listed HSI JUN17 23400 European Straddle REF 23,375 (OCT16)</description>
+            <fee>HK$600</fee>
+            <hedge>0</hedge>
+            <id>CELERAEQ-2016-13150</id>
+            <reference>Buyer - Nomura International Plc - Nadjib Ezziane</reference>
+            <size>50</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>04-Oct-16</date>
+            <description>Listed HSCEI DEC17 8400/9600 European Put Spread REF 9,700 (OCT16)</description>
+            <fee>HK$5,256</fee>
+            <hedge>38</hedge>
+            <id>CELERAEQ-2016-13152</id>
+            <reference>Buyer - Nomura International Plc - Nadjib Ezziane</reference>
+            <size>400</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>04-Oct-16</date>
+            <description>Listed HSCEI MAR17 6000/7600 -2/1 European Put Ratio REF 9,725 (OCT16)</description>
+            <fee>HK$3,648</fee>
+            <hedge>4</hedge>
+            <id>CELERAEQ-2016-13154</id>
+            <reference>Buyer - Nomura International Plc - Nadjib Ezziane</reference>
+            <size>300</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>19-Oct-16</date>
+            <description>Listed HSCEI DEC16/JUN17 10000 -2/1 European Call Time Ratio REF 9,675 (OCT16)</description>
+            <fee>HK$3,996</fee>
+            <hedge>33</hedge>
+            <id>CELERAEQ-2016-13167</id>
+            <reference>Buyer - Nomura International Plc - Nadjib Ezziane</reference>
+            <size>300</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>27-Oct-16</date>
+            <description>Listed HSCEI JUN18 9200 European Straddle REF 9,600 (NOV16)</description>
+            <fee>HK$2,544</fee>
+            <hedge>12</hedge>
+            <id>CELERAEQ-2016-13192</id>
+            <reference>Seller - Nomura International Plc - Nadjib Ezziane</reference>
+            <size>200</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>26-Oct-16</date>
+            <description>Listed HSCEI DEC18 9600 European Straddle REF 9,775 (OCT16)</description>
+            <fee>HK$0</fee>
+            <hedge>1</hedge>
+            <id>CELERAEQ-2016-13184</id>
+            <reference>Seller - Nomura International Plc - Nadjib Ezziane</reference>
+            <size>20</size>
+        </TradeDetail>
+    </tradeDetails>
+</Invoice>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Barclays Bank PLC</company>
+    <description>October 2016 Total</description>
+    <hedge>2,680</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>39,251</size>
+    <total_fee>HK$462,905</total_fee>
+    <TradeDetail>
+        <date>07-Oct-16</date>
+        <description>Listed HSCEI DEC16/DEC17 10000 -1/1 European Straddle Time Spread REF 9,950 (OCT16)</description>
+        <fee>HK$60,195</fee>
+        <hedge>13</hedge>
+        <id>CELERAEQ-2016-13158</id>
+        <reference>Buyer - Barclays Bank PLC - Jean-Guy Renard</reference>
+        <size>4000</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>28-Oct-16</date>
+        <description>Listed HSCEI DEC17 6600 European Put REF 9,625 (NOV16)</description>
+        <fee>HK$1,605</fee>
+        <hedge>7</hedge>
+        <id>CELERAEQ-2016-13194</id>
+        <reference>Seller - Barclays Bank PLC - Jean-Guy Renard</reference>
+        <size>100</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>27-Oct-16</date>
+        <description>Listed HSI JUN17 19200/24800 1/1 European Strangle REF 23,000 (NOV16)</description>
+        <fee>HK$6,360</fee>
+        <hedge>24</hedge>
+        <id>CELERAEQ-2016-13191</id>
+        <reference>Seller - Barclays Bank PLC - Jean-Guy Renard</reference>
+        <size>400</size>
+    </TradeDetail>
+</TradeDetails>

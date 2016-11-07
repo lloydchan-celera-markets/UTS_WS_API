@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>NH Investment &amp; Securities Co Ltd</company>
+    <description>October 2016 Total</description>
+    <hedge>2,636</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>34,751</size>
+    <total_fee>HK$394,745</total_fee>
+    <TradeDetail>
+        <date>25-Oct-16</date>
+        <description>Listed HSCEI DEC17 10400 European Call REF 9,825 (OCT16)</description>
+        <fee>HK$6,345</fee>
+        <hedge>123</hedge>
+        <id>CELERAEQ-2016-13181</id>
+        <reference>Buyer - NH Investment &amp; Securities Co Ltd - Daehyuk Yoo</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>25-Oct-16</date>
+        <description>Listed HSCEI DEC17 10400 European Call REF 9,825 (OCT16)</description>
+        <fee>HK$21,150</fee>
+        <hedge>410</hedge>
+        <id>CELERAEQ-2016-13180</id>
+        <reference>Buyer - NH Investment &amp; Securities Co Ltd - Daehyuk Yoo</reference>
+        <size>1000</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>20-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,725 (OCT16)</description>
+        <fee>HK$15,600</fee>
+        <hedge>40</hedge>
+        <id>CELERAEQ-2016-13171</id>
+        <reference>Seller - NH Investment &amp; Securities Co Ltd - Daehyuk Yoo</reference>
+        <size>1000</size>
+    </TradeDetail>
+</TradeDetails>

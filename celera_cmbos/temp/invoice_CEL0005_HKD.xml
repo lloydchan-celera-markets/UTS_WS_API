@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Invoice>
+    <account_number>CEL0005</account_number>
+    <address>United Kindom</address>
+    <amount>HK$542,474</amount>
+    <amount_due>HK$542,474</amount_due>
+    <attn>Robert Wickham</attn>
+    <company>Liquid Capital Australia Pty Ltd.</company>
+    <description>October 2016 Brokerage Fee</description>
+    <due_date>28 November, 2016</due_date>
+    <invoice_date>01 Nov 2016</invoice_date>
+    <invoice_number></invoice_number>
+    <payment_account_beneficiary>Celera Markets Limited</payment_account_beneficiary>
+    <payment_account_number>7883658530</payment_account_number>
+    <payment_bank_address>Floor 16, The Center, 99 Queen's Road Central, Central, Hong Kong</payment_bank_address>
+    <payment_bank_code>016</payment_bank_code>
+    <payment_bank_name>DBS Bank (Hong Kong) Limited</payment_bank_name>
+    <payment_branch_code>478</payment_branch_code>
+    <payment_swift>DHBKHKHH</payment_swift>
+    <sentTo>brokerage@liquidcapital.com</sentTo>
+    <tradeDetails>
+        <company>Liquid Capital Australia Pty Ltd.</company>
+        <description>October 2016 Total</description>
+        <hedge>4,415</hedge>
+        <period>OCTOBER, 2016</period>
+        <size>51,164</size>
+        <total_fee>HK$542,474</total_fee>
+        <TradeDetail>
+            <date>18-Oct-16</date>
+            <description>Listed HSCEI DEC17 6600/8400 -1.5/1 European Put Ratio REF 9,600 (OCT16)</description>
+            <fee>HK$1,834</fee>
+            <hedge>6</hedge>
+            <id>CELERAEQ-2016-13164</id>
+            <reference>Buyer - Liquid Capital Australia Pty Ltd. - Julian Hoefflin</reference>
+            <size>125</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>28-Oct-16</date>
+            <description>Listed HSCEI DEC16 8800/9600 -1.5/1 European Put Ratio REF 9,575 (NOV16)</description>
+            <fee>HK$3,780</fee>
+            <hedge>20</hedge>
+            <id>CELERAEQ-2016-13197</id>
+            <reference>Buyer - Liquid Capital Australia Pty Ltd. - Julian Hoefflin</reference>
+            <size>250</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>20-Oct-16</date>
+            <description>Listed HSCEI MAR17 9800 European Straddle REF 9,725 (OCT16)</description>
+            <fee>HK$714</fee>
+            <hedge>1</hedge>
+            <id>CELERAEQ-2016-13170</id>
+            <reference>Seller - Liquid Capital Australia Pty Ltd. - Julian Hoefflin</reference>
+            <size>50</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>28-Oct-16</date>
+            <description>Listed HSCEI DEC17 9600 European Straddle REF 9,575 (NOV16)</description>
+            <fee>HK$938</fee>
+            <hedge>1</hedge>
+            <id>CELERAEQ-2016-13195</id>
+            <reference>Seller - Liquid Capital Australia Pty Ltd. - Julian Hoefflin</reference>
+            <size>66</size>
+        </TradeDetail>
+    </tradeDetails>
+</Invoice>

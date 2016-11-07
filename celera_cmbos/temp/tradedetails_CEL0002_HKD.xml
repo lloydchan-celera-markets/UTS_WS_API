@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Deutsche Bank AG London Branch</company>
+    <description>October 2016 Total</description>
+    <hedge>670</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>12,122</size>
+    <total_fee>HK$133,163</total_fee>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17/JUN18 10400 European Call Time Spread REF 9,725 (OCT16)</description>
+        <fee>HK$3,090</fee>
+        <hedge>6</hedge>
+        <id>CELERAEQ-2016-13165</id>
+        <reference>Seller - Deutsche Bank AG London Branch - Payton Ong</reference>
+        <size>200</size>
+    </TradeDetail>
+</TradeDetails>

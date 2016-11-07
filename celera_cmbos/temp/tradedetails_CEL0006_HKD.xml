@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>J.P. Morgan Securities PLC</company>
+    <description>October 2016 Total</description>
+    <hedge>850</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>16,382</size>
+    <total_fee>HK$186,443</total_fee>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI DEC17 8000/9600 European Put Spread REF 9,700 (OCT16)</description>
+        <fee>HK$2,724</fee>
+        <hedge>27</hedge>
+        <id>CELERAEQ-2016-13153</id>
+        <reference>Seller - J.P. Morgan Securities PLC - Franck Cornille</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>07-Oct-16</date>
+        <description>Listed HSCEI DEC16/DEC17 10000 -1/1 European Straddle Time Spread REF 9,950 (OCT16)</description>
+        <fee>HK$12,060</fee>
+        <hedge>5</hedge>
+        <id>CELERAEQ-2016-13158</id>
+        <reference>Seller - J.P. Morgan Securities PLC - Franck Cornille</reference>
+        <size>1000</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,775 (OCT16)</description>
+        <fee>HK$756</fee>
+        <hedge>3</hedge>
+        <id>CELERAEQ-2016-13183</id>
+        <reference>Buyer - J.P. Morgan Securities PLC - Calvin Ko</reference>
+        <size>60</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI MAR17 6000/7600 -2/1 European Put Ratio REF 9,725 (OCT16)</description>
+        <fee>HK$18,240</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13154</id>
+        <reference>Buyer - J.P. Morgan Securities PLC - Franck Cornille</reference>
+        <size>1500</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI DEC17 8400/9600 European Put Spread REF 9,700 (OCT16)</description>
+        <fee>HK$13,140</fee>
+        <hedge>95</hedge>
+        <id>CELERAEQ-2016-13152</id>
+        <reference>Seller - J.P. Morgan Securities PLC - Franck Cornille</reference>
+        <size>1000</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>27-Oct-16</date>
+        <description>Listed HSCEI JUN18 9200 European Straddle REF 9,600 (NOV16)</description>
+        <fee>HK$6,360</fee>
+        <hedge>30</hedge>
+        <id>CELERAEQ-2016-13192</id>
+        <reference>Buyer - J.P. Morgan Securities PLC - Calvin Ko</reference>
+        <size>500</size>
+    </TradeDetail>
+</TradeDetails>

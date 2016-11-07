@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Optiver Australia Pty Ltd</company>
+    <description>October 2016 Total</description>
+    <hedge>4,249</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>49,623</size>
+    <total_fee>HK$526,698</total_fee>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI DEC17 8400/9600 European Put Spread REF 9,700 (OCT16)</description>
+        <fee>HK$0</fee>
+        <hedge>29</hedge>
+        <id>CELERAEQ-2016-13152</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>306</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>25-Oct-16</date>
+        <description>Listed HSCEI DEC17 10400 European Call REF 9,825 (OCT16)</description>
+        <fee>HK$12,690</fee>
+        <hedge>246</hedge>
+        <id>CELERAEQ-2016-13180</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>600</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>20-Oct-16</date>
+        <description>Listed HSCEI MAR17 9800 European Straddle REF 9,725 (OCT16)</description>
+        <fee>HK$765</fee>
+        <hedge>1</hedge>
+        <id>CELERAEQ-2016-13170</id>
+        <reference>Buyer - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>50</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed HSI NOV16 23200 European Straddle REF 23,300 (OCT16)</description>
+        <fee>HK$3,120</fee>
+        <hedge>8</hedge>
+        <id>CELERAEQ-2016-13188</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>25-Oct-16</date>
+        <description>Listed HSCEI JUN17 9600/10400 European Call Spread REF 9,850 (OCT16)</description>
+        <fee>HK$6,540</fee>
+        <hedge>36</hedge>
+        <id>CELERAEQ-2016-13182</id>
+        <reference>Buyer - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,775 (OCT16)</description>
+        <fee>HK$945</fee>
+        <hedge>3</hedge>
+        <id>CELERAEQ-2016-13183</id>
+        <reference>Buyer - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>60</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>27-Oct-16</date>
+        <description>Listed HSI NOV16 23200 European Straddle REF 23,200 (NOV16)</description>
+        <fee>HK$765</fee>
+        <hedge>1</hedge>
+        <id>CELERAEQ-2016-13189</id>
+        <reference>Buyer - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>50</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>17-Oct-16</date>
+        <description>Listed HSCEI DEC16 8400/9800 -2/1 European Put Ratio REF 9,550 (OCT16)</description>
+        <fee>HK$0</fee>
+        <hedge>93</hedge>
+        <id>CELERAEQ-2016-13163</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>900</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17/JUN18 10400 European Call Time Spread REF 9,725 (OCT16)</description>
+        <fee>HK$0</fee>
+        <hedge>12</hedge>
+        <id>CELERAEQ-2016-13165</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>12-Oct-16</date>
+        <description>Listed HSCEI MAR17 9800 European Straddle REF 9,750 (OCT16)</description>
+        <fee>HK$0</fee>
+        <hedge>12</hedge>
+        <id>CELERAEQ-2016-13160</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>28-Oct-16</date>
+        <description>Listed HSCEI DEC17 6600 European Put REF 9,625 (NOV16)</description>
+        <fee>HK$3,210</fee>
+        <hedge>14</hedge>
+        <id>CELERAEQ-2016-13196</id>
+        <reference>Buyer - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>05-Oct-16</date>
+        <description>Listed HSI SEP17 21000/26200 1/-1 European Risk Reversal REF 23,575 (OCT16)</description>
+        <fee>HK$0</fee>
+        <hedge>16</hedge>
+        <id>CELERAEQ-2016-13156</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>58</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>11-Oct-16</date>
+        <description>Listed HSCEI DEC16 9400 European Straddle REF 9,750 (OCT16)</description>
+        <fee>HK$0</fee>
+        <hedge>16</hedge>
+        <id>CELERAEQ-2016-13159</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>100</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17 8000/11000 1/-1 European Risk Reversal REF 9,675 (OCT16)</description>
+        <fee>HK$2,547</fee>
+        <hedge>41</hedge>
+        <id>CELERAEQ-2016-13168</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN18 9200 European Straddle REF 9,675 (OCT16)</description>
+        <fee>HK$3,255</fee>
+        <hedge>17</hedge>
+        <id>CELERAEQ-2016-13169</id>
+        <reference>Seller - Optiver Australia Pty Ltd - William Funnell</reference>
+        <size>200</size>
+    </TradeDetail>
+</TradeDetails>

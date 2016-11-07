@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Invoice>
+    <account_number>CEL0021</account_number>
+    <address></address>
+    <amount>HK$462,905</amount>
+    <amount_due>HK$462,905</amount_due>
+    <attn></attn>
+    <company>Barclays Bank PLC</company>
+    <description>October 2016 Brokerage Fee</description>
+    <due_date>28 November, 2016</due_date>
+    <invoice_date>01 Nov 2016</invoice_date>
+    <invoice_number></invoice_number>
+    <payment_account_beneficiary>Celera Markets Limited</payment_account_beneficiary>
+    <payment_account_number>7883658530</payment_account_number>
+    <payment_bank_address>Floor 16, The Center, 99 Queen's Road Central, Central, Hong Kong</payment_bank_address>
+    <payment_bank_code>016</payment_bank_code>
+    <payment_bank_name>DBS Bank (Hong Kong) Limited</payment_bank_name>
+    <payment_branch_code>478</payment_branch_code>
+    <payment_swift>DHBKHKHH</payment_swift>
+    <sentTo>gupdocs@barclayscapital.com </sentTo>
+    <tradeDetails>
+        <company>Barclays Bank PLC</company>
+        <description>October 2016 Total</description>
+        <hedge>2,680</hedge>
+        <period>OCTOBER, 2016</period>
+        <size>39,251</size>
+        <total_fee>HK$462,905</total_fee>
+        <TradeDetail>
+            <date>07-Oct-16</date>
+            <description>Listed HSCEI DEC16/DEC17 10000 -1/1 European Straddle Time Spread REF 9,950 (OCT16)</description>
+            <fee>HK$60,195</fee>
+            <hedge>13</hedge>
+            <id>CELERAEQ-2016-13158</id>
+            <reference>Buyer - Barclays Bank PLC - Jean-Guy Renard</reference>
+            <size>4000</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>28-Oct-16</date>
+            <description>Listed HSCEI DEC17 6600 European Put REF 9,625 (NOV16)</description>
+            <fee>HK$1,605</fee>
+            <hedge>7</hedge>
+            <id>CELERAEQ-2016-13194</id>
+            <reference>Seller - Barclays Bank PLC - Jean-Guy Renard</reference>
+            <size>100</size>
+        </TradeDetail>
+        <TradeDetail>
+            <date>27-Oct-16</date>
+            <description>Listed HSI JUN17 19200/24800 1/1 European Strangle REF 23,000 (NOV16)</description>
+            <fee>HK$6,360</fee>
+            <hedge>24</hedge>
+            <id>CELERAEQ-2016-13191</id>
+            <reference>Seller - Barclays Bank PLC - Jean-Guy Renard</reference>
+            <size>400</size>
+        </TradeDetail>
+    </tradeDetails>
+</Invoice>

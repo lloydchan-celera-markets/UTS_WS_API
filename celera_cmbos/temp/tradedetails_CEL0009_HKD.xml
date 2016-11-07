@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Citigroup Global Markets Hong Kong Limited</company>
+    <description>October 2016 Total</description>
+    <hedge>1,041</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>20,588</size>
+    <total_fee>HK$251,383</total_fee>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN18 9200 European Straddle REF 9,675 (OCT16)</description>
+        <fee>HK$4,980</fee>
+        <hedge>26</hedge>
+        <id>CELERAEQ-2016-13169</id>
+        <reference>Buyer - Citigroup Global Markets Hong Kong Limited - Mohamed Lemsitef</reference>
+        <size>306</size>
+    </TradeDetail>
+</TradeDetails>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Yuanta Securities Korea Co., Ltd</company>
+    <description>October 2016 Total</description>
+    <hedge>1,375</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>24,988</size>
+    <total_fee>HK$306,467</total_fee>
+    <TradeDetail>
+        <date>28-Oct-16</date>
+        <description>Listed HSCEI DEC16 8800/9600 -1.5/1 European Put Ratio REF 9,575 (NOV16)</description>
+        <fee>HK$5,400</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13197</id>
+        <reference>Seller - Yuanta Securities Korea Co., Ltd - Gue-yoon Kim</reference>
+        <size>250</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17/JUN18 10400 European Call Time Spread REF 9,725 (OCT16)</description>
+        <fee>HK$24,720</fee>
+        <hedge>36</hedge>
+        <id>CELERAEQ-2016-13165</id>
+        <reference>Buyer - Yuanta Securities Korea Co., Ltd - Seungwoo Hwangbo</reference>
+        <size>1200</size>
+    </TradeDetail>
+</TradeDetails>

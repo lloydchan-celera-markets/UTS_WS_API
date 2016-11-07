@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>UBS AG London Branch</company>
+    <description>October 2016 Total</description>
+    <hedge>198</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>1,366</size>
+    <total_fee>HK$31,075</total_fee>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17/JUN18 10400 European Call Time Spread REF 9,725 (OCT16)</description>
+        <fee>HK$3,636</fee>
+        <hedge>12</hedge>
+        <id>CELERAEQ-2016-13165</id>
+        <reference>Buyer - UBS AG London Branch - David Best</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>12-Oct-16</date>
+        <description>Listed HSCEI MAR17 9800 European Straddle REF 9,750 (OCT16)</description>
+        <fee>HK$5,119</fee>
+        <hedge>9</hedge>
+        <id>CELERAEQ-2016-13160</id>
+        <reference>Buyer - UBS AG London Branch - Adrien Bordat</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>28-Oct-16</date>
+        <description>Listed HSCEI DEC17 9600 European Straddle REF 9,575 (NOV16)</description>
+        <fee>HK$995</fee>
+        <hedge>1</hedge>
+        <id>CELERAEQ-2016-13195</id>
+        <reference>Buyer - UBS AG London Branch - Adrien Bordat</reference>
+        <size>66</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>27-Oct-16</date>
+        <description>Listed HSI JUN17 19200/24800 1/1 European Strangle REF 23,000 (NOV16)</description>
+        <fee>HK$11,500</fee>
+        <hedge>12</hedge>
+        <id>CELERAEQ-2016-13191</id>
+        <reference>Seller - UBS AG London Branch - Adrien Bordat</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>25-Oct-16</date>
+        <description>Listed HSCEI DEC17 10400 European Call REF 9,825 (OCT16)</description>
+        <fee>HK$9,825</fee>
+        <hedge>164</hedge>
+        <id>CELERAEQ-2016-13180</id>
+        <reference>Seller - UBS AG London Branch - Adrien Bordat</reference>
+        <size>400</size>
+    </TradeDetail>
+</TradeDetails>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Morgan Stanley &amp; Co. International PLC</company>
+    <description>October 2016 Total</description>
+    <hedge>1,305</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>23,338</size>
+    <total_fee>KRW272,067</total_fee>
+    <TradeDetail>
+        <date>05-Oct-16</date>
+        <description>Listed KS200 DEC16 270/290 1/-2 European Call Ratio REF 257.50 (DEC16)</description>
+        <fee>KRW740</fee>
+        <hedge>24</hedge>
+        <id>CELERAEQ-2016-13155</id>
+        <reference>Buyer - Morgan Stanley &amp; Co. International PLC - Andre Pinto</reference>
+        <size>480</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed KS200 DEC17 200/240 -2/1 European Put Ratio REF 259.50 (DEC16)</description>
+        <fee>KRW0</fee>
+        <hedge>50</hedge>
+        <id>CELERAEQ-2016-13151</id>
+        <reference>Seller - Morgan Stanley &amp; Co. International PLC - Andre Pinto</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>21-Oct-16</date>
+        <description>Listed KS200 DEC16/DEC17 240 European Put Time Spread REF 257.50 (DEC16)</description>
+        <fee>KRW907</fee>
+        <hedge>40</hedge>
+        <id>CELERAEQ-2016-13175</id>
+        <reference>Seller - Morgan Stanley &amp; Co. International PLC - Sirus Pishvaie</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>28-Oct-16</date>
+        <description>Listed KS200 DEC17 200 European Put REF 257 (DEC16)</description>
+        <fee>KRW449</fee>
+        <hedge>50</hedge>
+        <id>CELERAEQ-2016-13193</id>
+        <reference>Buyer - Morgan Stanley &amp; Co. International PLC - Andre Pinto</reference>
+        <size>100</size>
+    </TradeDetail>
+</TradeDetails>

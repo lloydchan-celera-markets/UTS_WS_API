@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Société Générale (HK) Limited</company>
+    <description>October 2016 Total</description>
+    <hedge>664</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>11,922</size>
+    <total_fee>HK$130,073</total_fee>
+    <TradeDetail>
+        <date>07-Oct-16</date>
+        <description>Listed HSCEI DEC16/DEC17 10000 -1/1 European Straddle Time Spread REF 9,950 (OCT16)</description>
+        <fee>HK$22,388</fee>
+        <hedge>8</hedge>
+        <id>CELERAEQ-2016-13158</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>3000</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>17-Oct-16</date>
+        <description>Listed HSCEI DEC16 8400/9800 -2/1 European Put Ratio REF 9,550 (OCT16)</description>
+        <fee>HK$5,730</fee>
+        <hedge>124</hedge>
+        <id>CELERAEQ-2016-13163</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>1200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,725 (OCT16)</description>
+        <fee>HK$2,918</fee>
+        <hedge>9</hedge>
+        <id>CELERAEQ-2016-13166</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>18-Oct-16</date>
+        <description>Listed HSCEI DEC17 6600/8400 -1.5/1 European Put Ratio REF 9,600 (OCT16)</description>
+        <fee>HK$1,440</fee>
+        <hedge>12</hedge>
+        <id>CELERAEQ-2016-13164</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>250</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>24-Oct-16</date>
+        <description>Listed HSCEI MAR17/DEC17 10400 European Call Time Spread REF 9,800 (OCT16)</description>
+        <fee>HK$14,700</fee>
+        <hedge>50</hedge>
+        <id>CELERAEQ-2016-13177</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>2000</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>05-Oct-16</date>
+        <description>Listed HSCEI DEC17/DEC16 10800 1/-2 European Call Time Ratio REF 9,850 (OCT16)</description>
+        <fee>HK$1,478</fee>
+        <hedge>2</hedge>
+        <id>CELERAEQ-2016-13157</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17/JUN18 10400 European Call Time Spread REF 9,725 (OCT16)</description>
+        <fee>HK$10,211</fee>
+        <hedge>42</hedge>
+        <id>CELERAEQ-2016-13165</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>1400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN18 9200 European Straddle REF 9,675 (OCT16)</description>
+        <fee>HK$1,538</fee>
+        <hedge>9</hedge>
+        <id>CELERAEQ-2016-13169</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>106</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>27-Oct-16</date>
+        <description>Listed HSCEI JUN18 9200 European Straddle REF 9,600 (NOV16)</description>
+        <fee>HK$4,320</fee>
+        <hedge>18</hedge>
+        <id>CELERAEQ-2016-13192</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>27-Oct-16</date>
+        <description>Listed HSI JUN17 19200/24800 1/1 European Strangle REF 23,000 (NOV16)</description>
+        <fee>HK$13,800</fee>
+        <hedge>24</hedge>
+        <id>CELERAEQ-2016-13191</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,775 (OCT16)</description>
+        <fee>HK$1,466</fee>
+        <hedge>5</hedge>
+        <id>CELERAEQ-2016-13183</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>100</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>25-Oct-16</date>
+        <description>Listed HSCEI DEC17 10400 European Call REF 9,825 (OCT16)</description>
+        <fee>HK$4,421</fee>
+        <hedge>123</hedge>
+        <id>CELERAEQ-2016-13181</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>20-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,725 (OCT16)</description>
+        <fee>HK$8,753</fee>
+        <hedge>24</hedge>
+        <id>CELERAEQ-2016-13171</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>600</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>20-Oct-16</date>
+        <description>Listed HSCEI DEC18 9600 European Straddle REF 9,725 (OCT16)</description>
+        <fee>HK$5,835</fee>
+        <hedge>16</hedge>
+        <id>CELERAEQ-2016-13172</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>400</size>
+    </TradeDetail>
+</TradeDetails>

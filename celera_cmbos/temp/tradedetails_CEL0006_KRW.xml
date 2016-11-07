@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>J.P. Morgan Securities PLC</company>
+    <description>October 2016 Total</description>
+    <hedge>3,105</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>42,205</size>
+    <total_fee>KRW469,775</total_fee>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed KS200 DEC17 200 European Put REF 256 (DEC16)</description>
+        <fee>KRW1,131</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13186</id>
+        <reference>Buyer - J.P. Morgan Securities PLC - Franck Cornille</reference>
+        <size>250</size>
+    </TradeDetail>
+</TradeDetails>

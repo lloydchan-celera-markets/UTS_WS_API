@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Yuanta Securities Korea Co., Ltd</company>
+    <description>October 2016 Total</description>
+    <hedge>4,387</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>50,673</size>
+    <total_fee>KRW535,208</total_fee>
+    <TradeDetail>
+        <date>21-Oct-16</date>
+        <description>Listed KS200 DEC16/DEC17 240 European Put Time Spread REF 257.50 (DEC16)</description>
+        <fee>KRW1,134</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13176</id>
+        <reference>Seller - Yuanta Securities Korea Co., Ltd - Gue-yoon Kim</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>24-Oct-16</date>
+        <description>Listed KS200 DEC16/MAR17 270 European Call Time Spread REF 259 (DEC16)</description>
+        <fee>KRW2,288</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13178</id>
+        <reference>Buyer - Yuanta Securities Korea Co., Ltd - Gue-yoon Kim</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed KS200 DEC17 270 European Call REF 256 (DEC16)</description>
+        <fee>KRW2,261</fee>
+        <hedge>78</hedge>
+        <id>CELERAEQ-2016-13185</id>
+        <reference>Seller - Yuanta Securities Korea Co., Ltd - Gue-yoon Kim</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed KS200 DEC17 200 European Put REF 256 (DEC16)</description>
+        <fee>KRW2,827</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13186</id>
+        <reference>Seller - Yuanta Securities Korea Co., Ltd - Gue-yoon Kim</reference>
+        <size>250</size>
+    </TradeDetail>
+</TradeDetails>

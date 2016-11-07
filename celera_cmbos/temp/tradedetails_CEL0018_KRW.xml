@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Société Générale (HK) Limited</company>
+    <description>October 2016 Total</description>
+    <hedge>2,063</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>32,451</size>
+    <total_fee>KRW351,650</total_fee>
+    <TradeDetail>
+        <date>24-Oct-16</date>
+        <description>Listed KS200 DEC16/MAR17 270 European Call Time Spread REF 259 (DEC16)</description>
+        <fee>KRW686</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13178</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>14-Oct-16</date>
+        <description>Listed KS200 DEC17 270 European Call REF 256 (DEC16)</description>
+        <fee>KRW1,021</fee>
+        <hedge>120</hedge>
+        <id>CELERAEQ-2016-13162</id>
+        <reference>Seller - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed KS200 JUN17 240/270 1/-1 European Risk Reversal REF 255 (DEC16)</description>
+        <fee>KRW1,014</fee>
+        <hedge>174</hedge>
+        <id>CELERAEQ-2016-13187</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>600</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>21-Oct-16</date>
+        <description>Listed KS200 DEC16/MAR17 255/220 1/-1 European Put Diagonal REF 257.50 (DEC16)</description>
+        <fee>KRW683</fee>
+        <hedge>62</hedge>
+        <id>CELERAEQ-2016-13174</id>
+        <reference>Buyer - Société Générale (HK) Limited - Sourabh Shaha</reference>
+        <size>400</size>
+    </TradeDetail>
+</TradeDetails>

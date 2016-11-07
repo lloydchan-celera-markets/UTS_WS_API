@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>Eclipse Futures (HK) Limited</company>
+    <description>October 2016 Total</description>
+    <hedge>3,704</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>45,499</size>
+    <total_fee>HK$492,861</total_fee>
+    <TradeDetail>
+        <date>27-Oct-16</date>
+        <description>Listed HSI NOV16 23200 European Straddle REF 23,200 (NOV16)</description>
+        <fee>HK$255</fee>
+        <hedge>1</hedge>
+        <id>CELERAEQ-2016-13189</id>
+        <reference>Seller - Eclipse Futures (HK) Limited - Traders</reference>
+        <size>50</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>24-Oct-16</date>
+        <description>Listed HSCEI MAR17/DEC17 10400 European Call Time Spread REF 9,800 (OCT16)</description>
+        <fee>HK$1,230</fee>
+        <hedge>3</hedge>
+        <id>CELERAEQ-2016-13177</id>
+        <reference>Buyer - Eclipse Futures (HK) Limited - Traders</reference>
+        <size>120</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>03-Oct-16</date>
+        <description>Listed HSI JUN17 23400 European Straddle REF 23,375 (OCT16)</description>
+        <fee>HK$500</fee>
+        <hedge>0</hedge>
+        <id>CELERAEQ-2016-13150</id>
+        <reference>Seller - Eclipse Futures (HK) Limited - Traders</reference>
+        <size>50</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>04-Oct-16</date>
+        <description>Listed HSCEI DEC17 8400/9600 European Put Spread REF 9,700 (OCT16)</description>
+        <fee>HK$2,190</fee>
+        <hedge>19</hedge>
+        <id>CELERAEQ-2016-13152</id>
+        <reference>Seller - Eclipse Futures (HK) Limited - Traders</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>19-Oct-16</date>
+        <description>Listed HSCEI JUN17 8000/11000 1/-1 European Risk Reversal REF 9,675 (OCT16)</description>
+        <fee>HK$2,410</fee>
+        <hedge>41</hedge>
+        <id>CELERAEQ-2016-13168</id>
+        <reference>Buyer - Eclipse Futures (HK) Limited - Traders</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>18-Oct-16</date>
+        <description>Listed HSCEI DEC17 6600/8400 -1.5/1 European Put Ratio REF 9,600 (OCT16)</description>
+        <fee>HK$2,620</fee>
+        <hedge>12</hedge>
+        <id>CELERAEQ-2016-13164</id>
+        <reference>Buyer - Eclipse Futures (HK) Limited - Traders</reference>
+        <size>250</size>
+    </TradeDetail>
+</TradeDetails>

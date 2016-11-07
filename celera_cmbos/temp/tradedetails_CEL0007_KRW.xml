@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>UBS AG London Branch</company>
+    <description>October 2016 Total</description>
+    <hedge>3,604</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>44,529</size>
+    <total_fee>KRW481,796</total_fee>
+    <TradeDetail>
+        <date>25-Oct-16</date>
+        <description>Listed KS200 DEC17 240/260 European Put Spread REF 258.50 (DEC16)</description>
+        <fee>KRW957</fee>
+        <hedge>20</hedge>
+        <id>CELERAEQ-2016-13179</id>
+        <reference>Buyer - UBS AG London Branch - Suhail Patel</reference>
+        <size>224</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>26-Oct-16</date>
+        <description>Listed KS200 JUN17 240/270 1/-1 European Risk Reversal REF 255 (DEC16)</description>
+        <fee>KRW2,534</fee>
+        <hedge>174</hedge>
+        <id>CELERAEQ-2016-13187</id>
+        <reference>Seller - UBS AG London Branch - Suhail Patel</reference>
+        <size>600</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>13-Oct-16</date>
+        <description>Listed KS200 DEC16 240 European Put REF 256.50 (DEC16)</description>
+        <fee>KRW1,708</fee>
+        <hedge>30</hedge>
+        <id>CELERAEQ-2016-13161</id>
+        <reference>Buyer - UBS AG London Branch - Suhail Patel</reference>
+        <size>200</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>14-Oct-16</date>
+        <description>Listed KS200 DEC17 270 European Call REF 256 (DEC16)</description>
+        <fee>KRW2,553</fee>
+        <hedge>120</hedge>
+        <id>CELERAEQ-2016-13162</id>
+        <reference>Buyer - UBS AG London Branch - Suhail Patel</reference>
+        <size>300</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>21-Oct-16</date>
+        <description>Listed KS200 DEC16/MAR17 255/220 1/-1 European Put Diagonal REF 257.50 (DEC16)</description>
+        <fee>KRW1,708</fee>
+        <hedge>62</hedge>
+        <id>CELERAEQ-2016-13174</id>
+        <reference>Seller - UBS AG London Branch - Suhail Patel</reference>
+        <size>400</size>
+    </TradeDetail>
+    <TradeDetail>
+        <date>21-Oct-16</date>
+        <description>Listed KS200 DEC16/MAR17 255/220 1/-1 European Put Diagonal REF 257.50 (DEC16)</description>
+        <fee>KRW2,561</fee>
+        <hedge>93</hedge>
+        <id>CELERAEQ-2016-13173</id>
+        <reference>Seller - UBS AG London Branch - Suhail Patel</reference>
+        <size>600</size>
+    </TradeDetail>
+</TradeDetails>

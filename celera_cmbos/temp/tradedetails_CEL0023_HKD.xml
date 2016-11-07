@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TradeDetails>
+    <company>HMC Investment</company>
+    <description>October 2016 Total</description>
+    <hedge>1,319</hedge>
+    <period>OCTOBER, 2016</period>
+    <size>23,538</size>
+    <total_fee>HK$276,347</total_fee>
+    <TradeDetail>
+        <date>28-Oct-16</date>
+        <description>Listed HSCEI DEC17 6600 European Put REF 9,625 (NOV16)</description>
+        <fee>HK$4,280</fee>
+        <hedge>14</hedge>
+        <id>CELERAEQ-2016-13196</id>
+        <reference>Seller - HMC Investment - JeongBon, Koo</reference>
+        <size>200</size>
+    </TradeDetail>
+</TradeDetails>
