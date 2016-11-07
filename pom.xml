@@ -166,6 +166,7 @@
 	</distributionManagement>
 	<modules>
 		<module>celera_core</module>
+		<module>celera_cmbos</module>
 		<module>uts_core</module>
 		<module>celera_uts_wsdl_soap</module>
 		<module>uts_trade_confo</module>

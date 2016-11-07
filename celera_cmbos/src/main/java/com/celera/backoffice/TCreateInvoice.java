@@ -65,7 +65,7 @@ public class TCreateInvoice implements Runnable
 		for (Map.Entry<String, List<TradeConfo>> e: client2TradeConfo.entrySet())
 		{
 			// find client info
-			List<TradeConfo> tradeConfo = ;
+			List<TradeConfo> tradeConfo = e.getValue();
 			TradeDetail tradeDetail = new TradeDetail();
 			for (TradeConfo tc : e.getValue())
 			{
