@@ -1,6 +1,0 @@
-package com.celera.message.cmmf;
-
-public interface ICmmfService extends Runnable
-{
-	public void setMessageListener(ICmmfMessageListener listener);
-}

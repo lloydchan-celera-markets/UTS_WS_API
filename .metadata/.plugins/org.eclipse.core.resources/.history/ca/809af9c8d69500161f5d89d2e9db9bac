@@ -1,6 +1,0 @@
-package com.celera.server;
-
-public interface ITcpServerListener
-{
-	public void onMessage(byte[] data);
-}

@@ -20799,3 +20799,9 @@ java.lang.NullPointerException: null
 2016-10-20 13:49:53,815 [Worker-131] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/idbs/workspace/uts/build/UTS_WS_API/celera_core/src/main/resources
 2016-10-20 13:49:53,816 [Worker-131] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2016-10-20 13:49:53,816 [Worker-131] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/idbs/workspace/uts/build/UTS_WS_API/celera_core/src/test/resources
+2016-11-07 15:44:36,233 [Worker-0] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2016-11-07 15:44:38,398 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for com.sun.xml.bind:jaxb-impl:jar:2.2.11 is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+2016-11-07 15:44:38,438 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for com.sun.xml.bind:jaxb-core:jar:2.2.11 is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+2016-11-07 15:44:38,660 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.cxf.samples:jzmq_jni:jar:3.1.7 is missing, no dependency information available
+2016-11-07 15:45:14,770 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.cxf.samples:jzmq_jni:jar:3.1.7 is missing, no dependency information available
+2016-11-07 15:45:18,263 [Worker-12] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.cxf.samples:jzmq_jni:jar:3.1.7 is missing, no dependency information available

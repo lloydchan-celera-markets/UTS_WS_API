@@ -1,8 +1,0 @@
-package com.celera.ipc;
-
-public class URL
-{
-	private static final String protocol;
-	private static final String ip;
-	private static final Interger port;
-}

@@ -1,8 +1,0 @@
-package com.celera.ipc;
-
-import java.nio.ByteBuffer;
-
-public interface ITcpServerListener
-{
-	public void onMessage(ByteBuffer buf);
-}

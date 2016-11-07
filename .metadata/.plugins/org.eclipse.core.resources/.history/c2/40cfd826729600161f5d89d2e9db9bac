@@ -1,9 +1,0 @@
-package com.celera.message.cmmf;
-
-public class CmmfBuilder
-{
-
-	public static byte[] buildMessage(char sender, char type, byte[] body) {
-		
-	}
-}

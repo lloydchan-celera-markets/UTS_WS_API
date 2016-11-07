@@ -10,12 +10,6 @@
 	<name>Celera Market Core</name>
 	<description>common core module</description>
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.cxf.samples</groupId>
-			<artifactId>jzmq_jni</artifactId>
-			<version>3.1.7</version>
-			<scope>compile</scope>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
 		<dependency>
 			<groupId>javax.mail</groupId>

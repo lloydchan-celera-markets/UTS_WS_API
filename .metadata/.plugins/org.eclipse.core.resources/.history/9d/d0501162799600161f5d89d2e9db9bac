@@ -1,5 +1,0 @@
-package com.celera.thread;
-
-public abstract class RunnableTask implements Runnable 
-{
-}

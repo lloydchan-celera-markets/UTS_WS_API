@@ -4,14 +4,13 @@
 	</section>
 	<section name="MavenProjectWizardArtifactPage">
 		<list key="groupId">
-			<item value="com.uts.api"/>
+			<item value="org.apache.cxf.samples"/>
 		</list>
 		<list key="name">
-			<item value="UTS web service wsdl"/>
 		</list>
 		<list key="artifactId">
-			<item value="uts-api-wsdl"/>
-			<item value="uts-api"/>
+			<item value="uts_core"/>
+			<item value="uts_trade_confo"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
@@ -22,7 +21,7 @@
 			<item value="[name]"/>
 		</list>
 		<list key="version">
-			<item value="0.0.1-SNAPSHOT"/>
+			<item value="3.1.7"/>
 		</list>
 	</section>
 	<section name="org.eclipse.m2e.core.pom.overview">
@@ -55,6 +54,8 @@
 	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="/home/idbs/workspace/uts/build/UTS_WS_API/uts_core"/>
+			<item value="/home/idbs/workspace/uts/build/UTS_WS_API/celera_core"/>
 			<item value="F:\workspace\3rdLib\apache-cxf-3.1.7\samples"/>
 			<item value="F:\workspace\git\IDBS\UTS_WS_API"/>
 			<item value="F:\workspace\git\IDBS\UTS_WS_API\celera_uts_wsdl_soap"/>
@@ -87,6 +88,7 @@
 	</section>
 	<section name="MavenModuleWizardParentPage">
 		<list key="moduleName">
+			<item value="uts_core"/>
 			<item value="uts-api-wsdl"/>
 		</list>
 		<list key="projectNameTemplate">
@@ -100,6 +102,7 @@
 	</section>
 	<section name="MavenProjectWizardLocationPage">
 		<list key="location">
+			<item value="/home/idbs/workspace/uts/build/UTS_WS_API/celera_uts_wsdl_soap"/>
 			<item value="F:\workspace\UTS\git\uts-api"/>
 			<item value="F:\workspace\UTS\api"/>
 			<item value="F:\workspace\3rdLib\apache-cxf-3.1.7\samples\wsdl_first_soap12\pom.xml"/>
@@ -115,13 +118,13 @@
 	</section>
 	<section name="Maven2ProjectWizardArchifactPage">
 		<list key="package">
-			<item value="org.uts.api.wsdl"/>
+			<item value="org.uts_core"/>
 		</list>
 		<list key="groupId">
-			<item value="com.uts.api"/>
+			<item value="org.apache.cxf.samples"/>
 		</list>
 		<list key="artifactId">
-			<item value="uts-api-wsdl"/>
+			<item value="uts_core"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
@@ -132,7 +135,7 @@
 			<item value="[name]"/>
 		</list>
 		<list key="version">
-			<item value="0.0.1-SNAPSHOT"/>
+			<item value="3.1.7"/>
 		</list>
 	</section>
 </section>

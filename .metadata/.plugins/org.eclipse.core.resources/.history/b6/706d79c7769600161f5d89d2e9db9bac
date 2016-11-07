@@ -1,5 +1,0 @@
-package com.celera.ipc;
-
-public interface IServerLifeCycle extends Runnable
-{
-}

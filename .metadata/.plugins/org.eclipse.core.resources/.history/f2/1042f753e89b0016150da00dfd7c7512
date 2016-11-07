@@ -1,6 +1,0 @@
-package com.celera.message.cmmf;
-
-public interface ICmmfClient extends ICmmfService
-{
-	public void connect();
-}

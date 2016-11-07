@@ -1,6 +1,0 @@
-package com.celera.ipc;
-
-public interface ICmmfClient
-{
-	public void connect();
-}

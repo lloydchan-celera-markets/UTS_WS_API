@@ -1,6 +1,0 @@
-package com.celera.zeromq;
-
-public interface TcpServerListener
-{
-	public void onMessage(byte[] data);
-}

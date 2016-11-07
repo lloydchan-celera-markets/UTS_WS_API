@@ -1,6 +1,0 @@
-package com.celera.zeromq;
-
-public interface ITcpServer
-{
-	public void setTcpListener(ITcpServerListener listener);
-}

@@ -1,8 +1,0 @@
-package com.celera.ipc;
-
-public interface ITcpServer
-{
-	public void setTcpListener(ITcpServerListener listener);
-	public void start();
-	public void stop();
-}

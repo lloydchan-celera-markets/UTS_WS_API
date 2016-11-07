@@ -1,6 +1,0 @@
-package com.celera.zeromq;
-
-public interface ITcpServerListener
-{
-	public void onMessage(byte[] data);
-}
