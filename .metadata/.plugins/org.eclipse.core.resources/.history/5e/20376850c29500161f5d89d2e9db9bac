@@ -1,0 +1,6 @@
+package com.celera.message.cmmf;
+
+public enum EApp
+{
+	DBA ('D');
+}

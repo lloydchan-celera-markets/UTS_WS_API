@@ -1,0 +1,484 @@
+package com.celera.mongo.entity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.celera.mongo.repo.TradeConfoRepo;
+
+@Document(collection = "tradeconfo")
+public class TradeConfo implements IMongoDocument<TradeConfoRepo>
+{
+	@Id
+	private String id;
+	private String summary;
+	private String buyer;
+	private String seller;
+	private Double price;
+	private String curncy;
+	private String tradeDate;
+	private Double refPrice;
+	private String tradeConfoId;
+	private String delta;
+	private Double buyQty;
+	private Double sellQty;
+	private Double ptValue;
+	private String ptCny;
+	private String premiumPmt;
+	private Double notational;
+	private String notationalCny;
+	private Double rate;
+	private Double premium;
+	private String premiumCny;
+	
+	private Double brokerageFee;
+	private String brokerageCny;
+
+	private Date lastModified;
+
+	private List<Hedge> hedges = new ArrayList<Hedge>();
+	private List<String> legs = new ArrayList<String>();
+
+	public TradeConfo()
+	{
+	}
+
+	@PersistenceConstructor
+	public TradeConfo(String id, String summary, String buyer, String seller, Double price, String curncy,
+			String tradeDate, Double refPrice, String tradeConfoId, String delta, Double buyQty, Double sellQty,
+			Double ptValue, String ptCny, String premiumPmt, Double notational, String notationalCny, Double rate,
+			Double premium, String premiumCny, List<String> legs, List<Hedge> hedges, Double brokerageFee,
+			String brokerageCny, Date lastModified)
+	{
+		super();
+		this.id = id;
+		this.summary = summary;
+		this.buyer = buyer;
+		this.seller = seller;
+		this.price = price;
+		this.curncy = curncy;
+		this.tradeDate = tradeDate;
+		this.refPrice = refPrice;
+		this.tradeConfoId = tradeConfoId;
+		this.delta = delta;
+		this.buyQty = buyQty;
+		this.sellQty = sellQty;
+		this.ptValue = ptValue;
+		this.ptCny = ptCny;
+		this.premiumPmt = premiumPmt;
+		this.notational = notational;
+		this.notationalCny = notationalCny;
+		this.rate = rate;
+		this.premium = premium;
+		this.premiumCny = premiumCny;
+		this.legs = legs;
+		this.hedges = hedges;
+		this.brokerageFee = brokerageFee;
+		this.brokerageCny = brokerageCny;
+		this.lastModified = lastModified;
+	}
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+
+	public void setTradeConfoId(String tradeConfoId)
+	{
+		this.tradeConfoId = tradeConfoId;
+	}
+
+	public String getTradeConfoId()
+	{
+		return tradeConfoId;
+	}
+
+	public String getSummary()
+	{
+		return summary;
+	}
+
+	public void setSummary(String summary)
+	{
+		this.summary = summary;
+	}
+
+	public String getBuyer()
+	{
+		return buyer;
+	}
+
+	public void setBuyer(String buyer)
+	{
+		this.buyer = buyer;
+	}
+
+	public String getSeller()
+	{
+		return seller;
+	}
+
+	public void setSeller(String seller)
+	{
+		this.seller = seller;
+	}
+
+	public Double getPrice()
+	{
+		return price;
+	}
+
+	public void setPrice(Double price)
+	{
+		this.price = price;
+	}
+
+	public String getCurncy()
+	{
+		return curncy;
+	}
+
+	public void setCurncy(String curncy)
+	{
+		this.curncy = curncy;
+	}
+
+	public String getTradeDate()
+	{
+		return tradeDate;
+	}
+
+	public void setTradeDate(String tradeDate)
+	{
+		this.tradeDate = tradeDate;
+	}
+
+	public Double getRefPrice()
+	{
+		return refPrice;
+	}
+
+	public void setRefPrice(Double refPrice)
+	{
+		this.refPrice = refPrice;
+	}
+
+	public String getDelta()
+	{
+		return delta;
+	}
+
+	public void setDelta(String delta)
+	{
+		this.delta = delta;
+	}
+
+	public Double getBuyQty()
+	{
+		return buyQty;
+	}
+
+	public void setBuyQty(Double buyQty)
+	{
+		this.buyQty = buyQty;
+	}
+
+	public Double getSellQty()
+	{
+		return sellQty;
+	}
+
+	public void setSellQty(Double sellQty)
+	{
+		this.sellQty = sellQty;
+	}
+
+	public Double getPtValue()
+	{
+		return ptValue;
+	}
+
+	public void setPtValue(Double ptValue)
+	{
+		this.ptValue = ptValue;
+	}
+
+	public String getPtCny()
+	{
+		return ptCny;
+	}
+
+	public void setPtCny(String ptCny)
+	{
+		this.ptCny = ptCny;
+	}
+
+	public String getPremiumPmt()
+	{
+		return premiumPmt;
+	}
+
+	public void setPremiumPmt(String premiumPmt)
+	{
+		this.premiumPmt = premiumPmt;
+	}
+
+	public Double getNotational()
+	{
+		return notational;
+	}
+
+	public void setNotational(Double notational)
+	{
+		this.notational = notational;
+	}
+
+	public String getNotationalCny()
+	{
+		return notationalCny;
+	}
+
+	public void setNotationalCny(String notationalCny)
+	{
+		this.notationalCny = notationalCny;
+	}
+
+	public Double getRate()
+	{
+		return rate;
+	}
+
+	public void setRate(Double rate)
+	{
+		this.rate = rate;
+	}
+
+	public Double getPremium()
+	{
+		return premium;
+	}
+
+	public void setPremium(Double premium)
+	{
+		this.premium = premium;
+	}
+
+	public String getPremiumCny()
+	{
+		return premiumCny;
+	}
+
+	public void setPremiumCny(String premiumCny)
+	{
+		this.premiumCny = premiumCny;
+	}
+
+	public List<String> getLegs()
+	{
+		return legs;
+	}
+
+	public void setLegs(List<String> legs)
+	{
+		this.legs = legs;
+	}
+
+	public List<Hedge> getHedges()
+	{
+		return hedges;
+	}
+
+	public void setHedges(List<Hedge> hedges)
+	{
+		this.hedges = hedges;
+	}
+
+	public Double getBrokerageFee()
+	{
+		return brokerageFee;
+	}
+
+	public void setBrokerageFee(Double brokerageFee)
+	{
+		this.brokerageFee = brokerageFee;
+	}
+
+	public String getBrokerageCny()
+	{
+		return brokerageCny;
+	}
+
+	public void setBrokerageCny(String brokerageCny)
+	{
+		this.brokerageCny = brokerageCny;
+	}
+
+	public Date getLastModified()
+	{
+		return lastModified;
+	}
+
+	public void setLastModified(Date lastModified)
+	{
+		this.lastModified = lastModified;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "TradeConfo [id=" + id + ", summary=" + summary + ", buyer=" + buyer + ", seller=" + seller + ", price="
+				+ price + ", curncy=" + curncy + ", tradeDate=" + tradeDate + ", refPrice=" + refPrice
+				+ ", tradeConfoId=" + tradeConfoId + ", delta=" + delta + ", buyQty=" + buyQty + ", sellQty=" + sellQty
+				+ ", ptValue=" + ptValue + ", ptCny=" + ptCny + ", premiumPmt=" + premiumPmt + ", notational="
+				+ notational + ", notationalCny=" + notationalCny + ", rate=" + rate + ", premium=" + premium
+				+ ", premiumCny=" + premiumCny + ", hedge=" + hedges + ", brokerageFee=" + brokerageFee
+				+ ", brokerageCny=" + brokerageCny + ", lastModified=" + lastModified + ", legs=" + legs + "]";
+	}
+
+	@Override
+	public Class getRepo()
+	{
+		return TradeConfoRepo.class;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((buyer == null) ? 0 : buyer.hashCode());
+		result = prime * result + ((seller == null) ? 0 : seller.hashCode());
+		result = prime * result + ((tradeConfoId == null) ? 0 : tradeConfoId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TradeConfo other = (TradeConfo) obj;
+		if (buyer == null)
+		{
+			if (other.buyer != null)
+				return false;
+		}
+		else if (!buyer.equals(other.buyer))
+			return false;
+		if (seller == null)
+		{
+			if (other.seller != null)
+				return false;
+		}
+		else if (!seller.equals(other.seller))
+			return false;
+		if (tradeConfoId == null)
+		{
+			if (other.tradeConfoId != null)
+				return false;
+		}
+		else if (!tradeConfoId.equals(other.tradeConfoId))
+			return false;
+		return true;
+	}
+
+	public String key()
+	{
+		return buyer + seller + tradeConfoId;
+	}
+	
+	public JsonObject json()
+	{
+		JsonObjectBuilder empBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder addressBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder phoneNumBuilder = Json.createArrayBuilder();
+		JsonArrayBuilder legsBuilder = Json.createArrayBuilder();
+
+		for (Hedge h : hedges)
+		{
+			phoneNumBuilder.add(h.json());
+		}
+
+		for (String l : legs)
+		{
+			phoneNumBuilder.add(l);
+		}
+
+		
+
+		private List<Hedge> hedges = new ArrayList<Hedge>();
+		private List<String> legs = new ArrayList<String>();
+		
+		addressBuilder.add("id", id)
+			.add("summary", summary)
+			.add("buyer", buyer)
+			.add("seller", seller)
+			.add("price", price)
+			.add("curncy", curncy)
+			.add("tradeDate", tradeDate)
+			.add("refPrice", refPrice)
+			.add("tradeConfoId", tradeConfoId)
+			.add("buyQty", buyQty)
+			.add("sellQty", sellQty)
+			.add("ptValue", ptValue)
+			.add("ptCny", ptCny)
+			.add("premiumPmt", premiumPmt)
+			.add("notational", notational)
+			.add("notationalCny", notationalCny)
+			.add("rate", rate)
+			.add("premium", premium)
+			.add("premiumCny", premiumCny)
+			.add("brokerageFee", brokerageFee)
+			.add("brokerageCny", brokerageCny)
+			.add("lastModified", lastModified);
+
+		empBuilder.add("id", emp.getId()).add("name", emp.getName()).add("permanent", emp.isPermanent()).add("role",
+				emp.getRole());
+
+		empBuilder.add("phoneNumbers", phoneNumBuilder);
+		empBuilder.add("address", addressBuilder);
+
+		JsonObject empJsonObject = empBuilder.build();
+
+		System.out.println("Employee JSON String\n" + empJsonObject);
+
+		// write to file
+		OutputStream os = new FileOutputStream("emp.txt");
+		JsonWriter jsonWriter = Json.createWriter(os);
+		/**
+		 * We can get JsonWriter from JsonWriterFactory also JsonWriterFactory
+		 * factory = Json.createWriterFactory(null); jsonWriter =
+		 * factory.createWriter(os);
+		 */
+		jsonWriter.writeObject(empJsonObject);
+		jsonWriter.close();
+	}
+	
+	
+//	public static void main(String[] args)
+//	{
+//		TradeConfo o = new TradeConfo();
+////		o.setBuyer("Barclay");
+////		o.setTradeConfoId("234");
+//		System.out.println(o.key());
+//	}
+}

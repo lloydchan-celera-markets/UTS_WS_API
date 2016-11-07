@@ -1,0 +1,16 @@
+package com.celera.backoffice;
+
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.celera.common.EMonthFuture;
+
+public class InvoiceService
+{
+	public static AtomicInteger id = new AtomicInteger(0);
+	
+	public static String invoiceId(Date invoiceDate) {
+		int y = d.getYear();
+		EMonthFuture m = EMonthFuture.get(d);
+	}
+}

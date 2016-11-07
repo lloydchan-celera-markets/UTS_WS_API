@@ -1,0 +1,37 @@
+package com.celera.message.cmmf;
+
+public enum ECommand implements GenericEnum<ECommand>
+{
+	QUERY_ALL_TRADES('A'), QUERY_TRADE_BETWEEN('B');
+	
+	private final Character asChar;
+    private Class type;
+
+	@Override
+	public boolean equals(char asChar) {
+		return this.asChar == asChar;
+	}
+
+	@Override
+	public Class clazz() {
+		return this.type;
+	}
+	
+	public String asChar() 
+	{
+		return Character.toString(asChar);
+	}
+
+	private ECommand(char asChar) {
+		this.asChar = asChar;
+		this.type = ECommand.class;
+	}
+
+//    public static ECommand get(final char asChar)
+//    {
+//        for (ECommand v : ECommand.values())
+//            if (v.asChar == asChar)
+//                return v;
+//        return null;
+//    }
+}

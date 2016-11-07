@@ -1,0 +1,14 @@
+package com.celera.message.cmmf;
+
+interface ICharEnum<T extends enum>
+{
+	final char asChar = ' ';
+	
+    public static T getEApp(final char asChar)
+    {
+        for (T v : T.values())
+            if (v.asChar == asChar)
+                return v;
+        return null;
+    }
+}

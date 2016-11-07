@@ -1,0 +1,30 @@
+package com.java.common.test;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class DateTest
+{
+
+	public static void testDateFormat(){
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD");
+		Date d;
+		try
+		{
+			d = sdf.parse("20161001");
+		} catch (ParseException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(d);
+	}
+	
+	public static void main(String[] args)
+	{
+		testDateFormat();
+
+	}
+
+}

@@ -1,0 +1,5 @@
+package com.celera.thread;
+
+public abstract RunnableTask implements Runnable 
+{
+}

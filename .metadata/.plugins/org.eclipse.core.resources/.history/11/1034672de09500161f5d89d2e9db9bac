@@ -1,0 +1,23 @@
+package com.celera.message.cmmf;
+
+public class ICharEnum<T extends Character>
+{
+	final T asChar;
+	
+	public boolean equals(T asChar) {
+		return this.asChar == asChar;
+	}
+	
+	public String asChar() 
+	{
+		return Character.toString(asChar);
+	}
+	
+    public static <T extends Enum<T>> T get(Class<T> enumType, final char asChar)
+    {
+        for (T v : enumType.getEnumConstants())
+            if (v.equals(asChar))
+                return v;
+        return null;
+    }
+}

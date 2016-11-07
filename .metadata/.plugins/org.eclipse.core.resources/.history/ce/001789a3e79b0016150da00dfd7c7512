@@ -1,0 +1,6 @@
+package com.celera.ipc;
+
+public interface ICmmfServer extends Runnable
+{
+	public void setTcpListener(ITcpServerListener listener);
+}

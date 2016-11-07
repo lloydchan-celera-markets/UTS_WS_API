@@ -1,0 +1,6 @@
+package com.celera.message.cmmf;
+
+public interface AbstractCmmfService
+{
+	public void setMessageListener(ICmmfMessageListener listener);
+}

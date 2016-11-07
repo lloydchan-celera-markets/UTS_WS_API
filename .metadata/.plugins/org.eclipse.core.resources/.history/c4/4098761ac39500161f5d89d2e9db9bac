@@ -1,0 +1,16 @@
+package com.celera.message.cmmf;
+
+public enum EApp
+{
+	DBA('D');
+	
+	private final char asChar;
+	
+	public boolean isEqual(char asChar) {
+		return this.asChar == asChar;
+	}
+	
+	private EApp(char asChar) {
+		this.asChar = asChar;
+	}
+}

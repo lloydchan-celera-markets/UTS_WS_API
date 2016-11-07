@@ -1,0 +1,6 @@
+package com.celera.ipc;
+
+public interface ILifeCycle
+{
+
+}

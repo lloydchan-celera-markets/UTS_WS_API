@@ -1,0 +1,6 @@
+package com.celera.server;
+
+public interface ITcpServer
+{
+	public void setTcpListener(ITcpServerListener listener);
+}

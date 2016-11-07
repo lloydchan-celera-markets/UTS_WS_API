@@ -1,0 +1,6 @@
+package com.celera.core.configure;
+
+public interface IOverrideConfig
+{
+
+}

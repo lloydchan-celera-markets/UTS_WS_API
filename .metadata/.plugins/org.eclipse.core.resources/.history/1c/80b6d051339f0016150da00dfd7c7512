@@ -1,0 +1,59 @@
+package com.celera.backoffice;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.celera.adapter.DatabaseAdapter;
+import com.celera.mongo.entity.TradeConfo;
+
+public class TCreateInvoice implements Runnable
+{
+	private final Date start; 
+	private final Date end;
+	
+	public TCreateInvoice(Date start, Date end)
+	{
+		this.start = start;
+		this.end = end;
+	}
+	
+	public void run()
+	{
+		Map<String, List<TradeConfo>> clientTradeConfo = new HashMap<String, List<TradeConfo>>();
+
+		// (client, currency) -> trade confo
+		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(start, end);
+		String key;
+		for (TradeConfo e : dbList)
+		{
+			String curncy = e.getCurncy();
+			String buyer = e.getBuyer();
+			if (buyer == null)
+			{
+				String seller = e.getSeller();
+				key = seller + curncy;
+			} else
+			{
+				key = buyer + curncy;
+			}
+			List temp = (List) clientTradeConfo.get(key);
+			if (temp == null)
+			{
+				temp = new ArrayList<TradeConfo>();
+				clientTradeConfo.put(key, temp);
+			}
+			temp.add(e);
+		}
+		
+		for (Map.Entry<String, List<TradeConfo>> e: clientTradeConfo.entrySet())
+		{
+			
+		}
+		
+	}
+
+}

@@ -1,0 +1,9 @@
+package com.celera.backoffice;
+
+import com.celera.message.cmmf.ICmmfMessageListener;
+
+public class BOServer implements ICmmfMessageListener
+{
+	private PipelineClient taskChannel;
+	
+}

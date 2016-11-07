@@ -31,6 +31,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf.samples</groupId>
+			<artifactId>uts_core</artifactId>
+			<version>3.1.7</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf.samples</groupId>
 			<artifactId>uts_wsdl_soap</artifactId>
 			<version>3.1.7</version>
 			<scope>compile</scope>

@@ -1,0 +1,153 @@
+package com.celera.mongo.entity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.celera.mongo.repo.HedgeRepo;
+
+//@Document(collection = "hedge")
+public class Hedge /*implements IMongoDocument<HedgeRepo>*/
+{
+//	@Id
+//	private String id;
+	private String side;
+	private Double qty;
+	private Double price;
+	private String future;
+
+//	private Date lastModified;
+
+	public Hedge()
+	{
+	}
+
+	@PersistenceConstructor
+	public Hedge(String side, Double qty, Double price, String future)
+	{
+		super();
+		this.side = side;
+		this.qty = qty;
+		this.price = price;
+		this.future = future;
+	}
+	
+	public String getSide()
+	{
+		return side;
+	}
+
+	public void setSide(String side)
+	{
+		this.side = side;
+	}
+
+	public Double getQty()
+	{
+		return qty;
+	}
+
+	public void setQty(Double qty)
+	{
+		this.qty = qty;
+	}
+
+	public Double getPrice()
+	{
+		return price;
+	}
+
+	public void setPrice(Double price)
+	{
+		this.price = price;
+	}
+
+	public String getFuture()
+	{
+		return future;
+	}
+
+	public void setFuture(String future)
+	{
+		this.future = future;
+	}
+
+//	@Override
+//	public Class getRepo()
+//	{
+//		return HedgeRepo.class;
+//	}
+
+	@Override
+	public String toString()
+	{
+		return "Hedge [side=" + side + ", qty=" + qty + ", price=" + price + ", future=" + future + "]";
+	}
+
+	JsonObjectBuilder empBuilder = Json.createObjectBuilder();
+	JsonObjectBuilder addressBuilder = Json.createObjectBuilder();
+	JsonArrayBuilder phoneNumBuilder = Json.createArrayBuilder();
+
+	for (Hedge h : hedges)
+	{
+		phoneNumBuilder.add("");
+	}
+
+public JsonObject json()
+{
+	private String side;
+	private Double qty;
+	private Double price;
+	private String future;
+	
+	private List<Hedge> hedges = new ArrayList<Hedge>();
+	private List<String> legs = new ArrayList<String>();
+	
+	addressBuilder.add("id", id)
+		.add("summary", summary)
+		.add("buyer", buyer)
+		.add("seller", seller)
+		.add("price", price)
+		.add("curncy", curncy)
+		.add("tradeDate", tradeDate)
+		.add("refPrice", refPrice)
+		.add("tradeConfoId", tradeConfoId)
+		.add("buyQty", buyQty)
+		.add("sellQty", sellQty)
+		.add("ptValue", ptValue)
+		.add("ptCny", ptCny)
+		.add("premiumPmt", premiumPmt)
+		.add("notational", notational)
+		.add("notationalCny", notationalCny)
+		.add("rate", rate)
+		.add("premium", premium)
+		.add("premiumCny", premiumCny)
+		.add("brokerageFee", brokerageFee)
+		.add("brokerageCny", brokerageCny)
+		.add("lastModified", lastModified);
+
+	empBuilder.add("id", emp.getId()).add("name", emp.getName()).add("permanent", emp.isPermanent()).add("role",
+			emp.getRole());
+
+	empBuilder.add("phoneNumbers", phoneNumBuilder);
+	empBuilder.add("address", addressBuilder);
+
+	JsonObject empJsonObject = empBuilder.build();
+}
+//	public static void main(String[] args)
+//	{
+//		TradeConfo o = new TradeConfo();
+////		o.setBuyer("Barclay");
+////		o.setTradeConfoId("234");
+//		System.out.println(o.key());
+//	}
+}

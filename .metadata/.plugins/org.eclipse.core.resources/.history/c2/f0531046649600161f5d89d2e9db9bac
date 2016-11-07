@@ -1,0 +1,12 @@
+package com.celera.message.cmmf;
+
+public interface GenericEnum<T>
+{
+    public static <T extends Enum<T>> T get(Class<T> clazz, final char asChar)
+    {
+        for (T v : clazz.getEnumConstants())
+            if (v.equals(asChar))
+                return v;
+        return null;
+    }
+}

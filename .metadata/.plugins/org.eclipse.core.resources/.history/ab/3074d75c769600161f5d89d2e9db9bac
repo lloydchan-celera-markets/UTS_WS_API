@@ -1,0 +1,8 @@
+package com.celera.ipc;
+
+public interface ITcpServer implements ILifeCycle
+{
+	public void setTcpListener(ITcpServerListener listener);
+	public void start();
+	public void stop();
+}

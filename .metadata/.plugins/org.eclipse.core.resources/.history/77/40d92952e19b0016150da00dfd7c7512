@@ -1,0 +1,6 @@
+package com.celera.bo.service;
+
+public class AccountService
+{
+
+}

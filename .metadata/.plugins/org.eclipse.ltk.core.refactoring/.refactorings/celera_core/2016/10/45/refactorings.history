@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename enum constant &apos;GENERATE_INVOICE&apos; of &apos;com.celera.message.cmmf.ECommand&apos; to &apos;CREATE_INVOICE&apos;&#x0A;- Original project: &apos;celera_core&apos;&#x0A;- Original element: &apos;com.celera.message.cmmf.ECommand.GENERATE_INVOICE&apos;&#x0A;- Renamed element: &apos;com.celera.message.cmmf.ECommand.CREATE_INVOICE&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" delegate="false" deprecate="false" description="Rename enum constant &apos;GENERATE_INVOICE&apos;" flags="589830" getter="false" id="org.eclipse.jdt.ui.rename.enum.constant" input="/src\/main\/java&lt;com.celera.message.cmmf{ECommand.java[ECommand^GENERATE_INVOICE" name="CREATE_INVOICE" references="true" setter="false" stamp="1477877624141" textual="false" version="1.0"/>
+</session>

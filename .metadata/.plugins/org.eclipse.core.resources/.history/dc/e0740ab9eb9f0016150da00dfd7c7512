@@ -1,0 +1,8 @@
+
+public class BOFormatter
+{
+	public static String displayFee(Double fee, String currency) 
+	{
+		
+	}
+}

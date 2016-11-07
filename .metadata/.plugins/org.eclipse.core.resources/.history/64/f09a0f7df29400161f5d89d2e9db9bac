@@ -1,0 +1,16 @@
+# technical
+cxf.spi.provider=com.sun.xml.internal.ws.spi.ProviderImpl
+
+#trade confo email
+mail.server.protocol=imap
+mail.server.ip=outlook.office365.com
+mail.server.port=993
+mail.server.user=Lloyd.Chan@celera-markets.com
+mail.server.password=Ja9XuVDj
+mail.poll.interval=10
+uts.email.tradeconf.subject=Trade Confirmation
+uts.email.tradeconf.sender=eqd@celera-markets.com
+uts.email.tradeconf.attach.prefix=CELERAEQ-
+uts.email.tradeconf.attach.ext=.pdf
+mail.filter.startdate=2016-10-01
+mail.filter.enddate=2016-10-31

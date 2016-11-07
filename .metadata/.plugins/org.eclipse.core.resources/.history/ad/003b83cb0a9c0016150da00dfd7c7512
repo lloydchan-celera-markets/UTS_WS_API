@@ -1,0 +1,52 @@
+package com.celera.common;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.celera.message.cmmf.ECommand;
+
+public enum EMonthFuture 
+{
+	JAN('F'),
+	FEB('G'),
+	MAR('H'),
+	APR('J'),
+	MAY('K'),
+	JUN('M'),
+	JUL('N'),
+	AUG('Q'),
+	SEP('U'),
+	OCT('V'),
+	NOV('X'),
+	DEC('Z');
+	
+	private static final Map<Character, EMonthFuture> map = new LinkedHashMap<Character, EMonthFuture>();
+	static
+	{
+		for (EMonthFuture e : EMonthFuture.values())
+			map.put(e.asChar, e);
+	}
+
+	private final Character asChar;
+
+	@Override
+	public String toString()
+	{
+		return Character.toString(asChar);
+	}
+	
+	public char asChar()
+	{
+		return asChar;
+	}
+
+	private ECommand(char asChar)
+	{
+		this.asChar = asChar;
+	}
+
+	public static ECommand get(final char asChar)
+	{
+		return map.get(asChar);
+	}
+}

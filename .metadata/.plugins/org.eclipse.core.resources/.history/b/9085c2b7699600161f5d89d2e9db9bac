@@ -1,0 +1,17 @@
+package com.celera.message.cmmf;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public interface GenericEnum<T>
+{
+	public boolean equals(char asChar);
+	
+    public static <T extends GenericEnum> T get(Class<T> clazz, final char asChar)
+    {
+        for (T v : clazz.getEnumConstants())
+            if (v.equals(asChar))
+                return v;
+        return null;
+    }
+}

@@ -1,0 +1,25 @@
+package com.celera.backoffice;
+
+import java.util.Date;
+import java.util.List;
+
+import com.celera.adapter.DatabaseAdapter;
+import com.celera.mongo.entity.TradeConfo;
+
+public class TCreateInvoice implements Runnable
+{
+	private final Date start; 
+	private final Date end;
+	
+	public TCreateInvoice(Date start, Date end)
+	{
+		this.start = start;
+		this.dEnd = end;
+	}
+	
+	List<TradeConfo> l = DatabaseAdapter.getHistTradeConfo(dStart, dEnd);
+	for (TradeConfo e : l) 
+	{
+	}
+
+}

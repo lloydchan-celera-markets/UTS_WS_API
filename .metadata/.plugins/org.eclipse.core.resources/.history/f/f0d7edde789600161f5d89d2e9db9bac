@@ -1,0 +1,5 @@
+package com.celera.ipc;
+
+public class Server 
+{
+}

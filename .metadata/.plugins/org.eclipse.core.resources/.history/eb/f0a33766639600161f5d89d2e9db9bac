@@ -1,0 +1,6 @@
+package com.celera.message.cmmf;
+
+public interface ABC
+{
+	public default void abc(){System.out.println("abc");}
+}

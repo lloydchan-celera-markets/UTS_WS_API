@@ -165,8 +165,9 @@
 		</snapshotRepository>
 	</distributionManagement>
 	<modules>
-		<module>jzmq_jni</module>
+	<!--	<module>jzmq_jni</module>-->
 		<module>celera_core</module>
+		<module>uts_core</module>
 		<module>celera_uts_wsdl_soap</module>
 		<module>uts_trade_confo</module>
 	</modules>

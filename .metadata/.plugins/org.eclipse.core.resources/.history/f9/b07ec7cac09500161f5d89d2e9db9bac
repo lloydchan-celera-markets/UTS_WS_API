@@ -1,0 +1,12 @@
+package com.celera.message.cmmf;
+
+public interface ICmmfListener
+{
+//	String uniqueID = UUID.randomUUID().toString();
+	char me = ' ';
+	public void onCommand(byte[] data);
+	public void onAdmin(byte[] data);
+	public default void setMe(char c) {this.me = c;}
+	public boolean isMe();
+//	public default String id() {return uniqueID;}
+}

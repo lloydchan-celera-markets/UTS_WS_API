@@ -1,0 +1,59 @@
+package com.celera.backoffice;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class Invoice
+{
+	String company;
+	String address;
+	String attn;
+	String invoice_number;
+	String invoice_date;
+	String account_number;
+	String due_date;
+	String amount_due;
+	String description;
+	String amount;
+	String payment_bank_name;
+	String payment_bank_address;
+	String payment_bank_code;
+	String payment_branch_code;
+	String account_number;
+	String account_beneficiary;
+	String swift;
+	
+	
+	
+	
+	int id;
+
+	public String getName() {
+		return name;
+	}
+
+	@XmlElement
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	@XmlElement
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	@XmlAttribute
+	public void setId(int id) {
+		this.id = id;
+	}
+}

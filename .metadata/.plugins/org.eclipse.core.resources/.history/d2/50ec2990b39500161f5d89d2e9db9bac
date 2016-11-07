@@ -1,0 +1,43 @@
+package com.celera.message.cmmf;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CmmfParser
+{
+	private static List<ICmmfListener>  dba = new ArrayList<ICmmfListener>();
+	
+	
+	public static void subscribe(ICmmfListener cb)
+	{
+		dba.add(cb);
+	}
+	
+	public static void parse(byte[] data, ICmmfListener cb)
+	{
+//		switch (data[0])
+//		{
+//		case 'D':
+//		{
+			switch (data[1]) {
+			case 'A':
+				cb.onAdmin(data);
+				break;
+			case 'C':
+				cb.onCommand(data);
+				break;
+			default:
+				break;
+			}
+//		}
+//		default:
+//			break;
+//		}
+	}
+	
+	public static void main(String[] args)
+	{
+
+	}
+
+}

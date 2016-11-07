@@ -1,0 +1,7 @@
+package com.celera.server;
+
+public interface IMultcastServer
+{
+	public void setTcpListener(ITcpServerListener listener);
+	public void subscribe(EApp app);
+}

@@ -1,0 +1,33 @@
+package com.celera.message.cmmf;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public enum EMessageType 
+{
+	ADMIN('A'), QUERY('Q');
+	
+	private static final Map<Character, EMessageType> map = new LinkedHashMap<Character, EMessageType>();
+	static
+	{
+		for (EMessageType e : EMessageType.values())
+			map.put(e.asChar, e);
+	}
+	
+	private final Character asChar;
+	
+	public String asChar()
+	{
+		return Character.toString(asChar);
+	}
+
+	private EMessageType(char asChar)
+	{
+		this.asChar = asChar;
+	}
+
+	public static EMessageType get(final char asChar)
+	{
+		return map.get(asChar);
+	}
+}

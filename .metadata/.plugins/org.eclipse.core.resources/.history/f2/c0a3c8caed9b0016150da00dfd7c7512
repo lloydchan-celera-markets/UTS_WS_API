@@ -1,0 +1,27 @@
+package com.celera.backoffice;
+
+import com.celera.core.configure.IResourceProperties;
+import com.celera.core.configure.ResourceManager;
+import com.celera.ipc.PipelineClient;
+import com.celera.message.cmmf.ICmmfMessageListener;
+
+public class BOServer implements ICmmfMessageListener
+{
+	private PipelineClient taskChannel;
+
+	public BOServer()
+	{
+		String pullProt = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT);
+		String pullIp = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT);
+		Integer pullPort = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT));
+		String sinkProt = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT);
+		String sinkIp = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT);
+		Integer sinkPort = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT));
+	}
+	
+	public byte[] onMessage(byte[] buf)
+	{
+		return null;
+	}
+	
+}

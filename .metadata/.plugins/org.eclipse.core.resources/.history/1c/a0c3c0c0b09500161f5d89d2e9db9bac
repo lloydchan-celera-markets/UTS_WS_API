@@ -1,0 +1,47 @@
+package com.celera.message.cmmf;
+
+public class CmmfParser
+{
+
+	public static void parse(byte[] data, ICmmfProcessor cb)
+	{
+		switch (data[0])
+		{
+		case 'D':
+		{
+			switch (data[1]) {
+			case 'A':
+				break;
+			case 'C':
+				switch (data[[3])
+				{
+				case 'A':
+					System.out.println("query all");
+					break;
+				case 'B':
+					String start = new String(data, 3, 8);
+					String end = new String(data, 11, 8);
+					System.out.println("start=" + start + ",end=" +end);
+					break;
+				default:
+					break;
+				}
+				
+				break;
+			default:
+				break;
+			}
+		}
+		default:
+			break;
+		}
+	}
+	
+	
+	
+	public static void main(String[] args)
+	{
+
+	}
+
+}

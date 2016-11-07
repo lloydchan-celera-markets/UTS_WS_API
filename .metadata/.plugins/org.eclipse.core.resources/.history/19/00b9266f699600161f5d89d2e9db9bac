@@ -1,0 +1,41 @@
+package com.celera.message.cmmf;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public enum ECommand implements GenericEnum
+{
+	QUERY_ALL_TRADES('A'), QUERY_TRADE_BETWEEN('B');
+	
+	private final Character asChar;
+
+	  private static final Map<String,ECommand> map = new LinkedHashMap<String,ECommand>(); 
+	  static { 
+	      for(ECommand e : ECommand.values())
+	        map.put(e.name(), e); 
+	  } 
+	
+	@Override
+	public boolean equals(char asChar) {
+		return this.asChar == asChar;
+	}
+
+	public String asChar() 
+	{
+		return Character.toString(asChar);
+	}
+
+	private ECommand(char asChar) {
+		this.asChar = asChar;
+	}
+	
+    public static ECommand get(final char asChar)
+    {
+    	ECommand e = new ECommand(asChar);
+    	
+        for (ECommand v : ECommand.values())
+            if (v.asChar == asChar)
+                return v;
+        return null;
+    }
+}

@@ -1,0 +1,15 @@
+package com.celera.message.cmmf;
+
+import java.util.UUID;
+
+public abstract class CmmfApp
+{
+	String uniqueID = UUID.randomUUID().toString();
+	
+	private EApp me;
+	public abstract void onCommand(byte[] data);
+	public void onAdmin(byte[] data);
+	public default void setMe(char c) {this.me = c;}
+	public boolean isMine();
+//	public default String id() {return uniqueID;}
+}

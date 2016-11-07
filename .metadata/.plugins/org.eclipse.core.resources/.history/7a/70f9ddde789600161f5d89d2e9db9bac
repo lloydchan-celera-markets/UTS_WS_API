@@ -1,0 +1,17 @@
+package com.celera.ipc;
+
+public class Server implements ITcpServer
+{
+
+	@Override
+	public void run()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTcpListener(ITcpServerListener listener)
+	{
+	}
+}

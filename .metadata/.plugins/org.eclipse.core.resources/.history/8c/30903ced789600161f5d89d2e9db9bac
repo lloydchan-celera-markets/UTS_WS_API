@@ -1,0 +1,9 @@
+package com.celera.ipc;
+
+public abstract Task implements Runnable 
+{
+	@Override
+	public void run()
+	{
+	}
+}

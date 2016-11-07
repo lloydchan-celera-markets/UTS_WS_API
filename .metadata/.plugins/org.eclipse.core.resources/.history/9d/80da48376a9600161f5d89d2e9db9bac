@@ -1,0 +1,33 @@
+package com.celera.message.cmmf;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public enum EApp
+{
+	DBA('D'), WEB_UI('W');
+
+	private static final Map<String, EApp> map = new LinkedHashMap<String, EApp>();
+	static
+	{
+		for (EApp e : EApp.values())
+			map.put(e.asChar, e);
+	}
+	
+	private final Character asChar;
+	
+	public String asChar()
+	{
+		return Character.toString(asChar);
+	}
+
+	private EApp(char asChar)
+	{
+		this.asChar = asChar;
+	}
+
+	public static EApp get(final char asChar)
+	{
+		return map.get(asChar);
+	}
+}

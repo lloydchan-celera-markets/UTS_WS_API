@@ -1,0 +1,127 @@
+package com.celera.backoffice;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.celera.adapter.DatabaseAdapter;
+import com.celera.core.configure.IResourceProperties;
+import com.celera.core.configure.ResourceManager;
+import com.celera.ipc.ILifeCycle;
+import com.celera.ipc.PipelineClient;
+import com.celera.ipc.URL;
+import com.celera.message.cmmf.CmmfApp;
+import com.celera.message.cmmf.EApp;
+
+public class BOServiceManager extends CmmfApp implements ILifeCycle
+{
+	private static final Logger logger = LoggerFactory.getLogger(BOServiceManager.class);
+	
+	private static final String CHANNEL_PULL_PROTOCOL;
+	private static final String CHANNEL_PULL_IP;
+	private static final Integer CHANNEL_PULL_PORT;
+	private staitc final URL PULL_URL;
+	private static final String CHANNEL_SINK_PROTOCOL;
+	private static final String CHANNEL_SINK_IP;
+	private static final Integer CHANNEL_SINK_PORT;
+
+	String pullIp = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT);
+	Integer pullPort = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT));
+	URL pull = new URL(pullProt, pullIp, pullPort);
+	
+	String sinkProt = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT);
+	String sinkIp = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT);
+	Integer sinkPort = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT));
+	
+	private ILifeCycle taskChannel;
+
+	static {
+		CHANNEL_PULL_PROTOCOL = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT);
+		CHANNEL_PULL_IP = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT);
+		CHANNEL_PULL_PORT = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PULL_PROT));
+		URL pull = new URL(pullProt, pullIp, pullPort);
+		
+		CHANNEL_SINK_PROTOCOL = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT);
+		CHANNEL_SINK_IP = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT);
+		CHANNEL_SINK_PORT = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_SINK_PROT));
+	}
+	
+	public BOServiceManager()
+	{
+		super(EApp.BOServiceManager);
+		
+
+		URL sink = new URL(sinkProt, sinkIp, sinkPort);
+		
+		taskChannel = new PipelineClient(pull, sink, this);
+	}
+	
+	public byte[] onMessage(byte[] buf)
+	{
+		return null;
+	}
+
+	public byte[] onQuery(byte[] data)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void onAdmin(byte[] data)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onResponse(byte[] data)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onTask(byte[] data)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public static void main(String[] args)
+	{
+		int interval = 10000;
+		BOServiceManager bosm = new BOServiceManager();
+		dba.start();
+		dba.loadHistory();
+
+		for (;;)
+		{
+			try
+			{
+				logger.debug("sleep {}", interval);
+				Thread.sleep(interval);
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		// dba.stop();
+	}
+
+	public void init()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void start()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void stop()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+}

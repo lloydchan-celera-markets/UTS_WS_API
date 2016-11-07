@@ -1,0 +1,6 @@
+package com.celera.server;
+
+public interface IMultcastServer
+{
+
+}

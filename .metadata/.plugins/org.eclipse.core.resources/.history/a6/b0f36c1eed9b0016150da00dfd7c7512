@@ -1,0 +1,22 @@
+package com.celera.backoffice;
+
+import com.celera.core.configure.IResourceProperties;
+import com.celera.core.configure.ResourceManager;
+import com.celera.ipc.PipelineClient;
+import com.celera.message.cmmf.ICmmfMessageListener;
+
+public class BOServer implements ICmmfMessageListener
+{
+	private PipelineClient taskChannel;
+
+	public BOServer()
+	{
+		String prot = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_CHL_PROT);
+	}
+	
+	public byte[] onMessage(byte[] buf)
+	{
+		return null;
+	}
+	
+}

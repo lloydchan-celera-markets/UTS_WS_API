@@ -1,0 +1,15 @@
+package com.celera.message.cmmf;
+
+import java.nio.ByteBuffer;
+
+public class CmmfBuilder
+{
+
+	public static byte[] buildMessage(EApp sender, ECommand type, byte[] body) {
+		int cap = body.length + 2;
+		ByteBuffer buf = ByteBuffer.allocate(cap);
+		buf.put((byte)sender.asChar());
+		buf.put((byte)type.asChar());
+		buf.put(body);
+	}
+}

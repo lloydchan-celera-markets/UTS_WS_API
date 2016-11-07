@@ -1,0 +1,8 @@
+package com.celera.ipc;
+
+import java.nio.ByteBuffer;
+
+public interface ICmmfMessageListener
+{
+	public byte[] onMessage(byte[] buf);
+}

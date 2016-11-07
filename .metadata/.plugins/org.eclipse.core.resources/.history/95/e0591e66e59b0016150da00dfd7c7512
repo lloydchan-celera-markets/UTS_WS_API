@@ -1,0 +1,11 @@
+package com.celera.ipc;
+
+public class URL
+{
+	private final String protocol;
+	private final String ip;
+	private final Integer port;
+
+	
+	
+}
