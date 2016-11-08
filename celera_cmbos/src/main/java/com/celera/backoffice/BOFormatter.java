@@ -12,7 +12,19 @@ public class BOFormatter
 		{
 		case "HKD": return "HK$" + nf.format(fee);
 		case "USD": return "US$" + nf.format(fee);
+		case "KRW": return "US$" + nf.format(fee);
 		default: return currency + nf.format(fee); 
+		}
+	}
+
+	public static String displayCurncy(String currency) 
+	{
+		switch (currency)
+		{
+		case "HKD": return "HK$";
+		case "USD": return "US$";
+		case "KRW": return "US$";
+		default: return currency; 
 		}
 	}
 	

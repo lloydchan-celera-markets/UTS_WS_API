@@ -23,6 +23,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf.samples</groupId>
+			<artifactId>uts_trade_confo</artifactId>
+			<version>3.1.7</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf.samples</groupId>
 			<artifactId>celera_core</artifactId>
 			<version>3.1.7</version>
 			<scope>compile</scope>

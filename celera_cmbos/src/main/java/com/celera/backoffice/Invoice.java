@@ -1,5 +1,8 @@
 package com.celera.backoffice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,6 +13,7 @@ public class Invoice
 	String company;
 	String address;
 	String attn;
+	String sentTo;
 	String invoice_number;
 	String invoice_date;
 	String account_number;
@@ -27,6 +31,33 @@ public class Invoice
 	String payment_account_beneficiary = "Celera Markets Limited";
 	String payment_swift = "DHBKHKHH";
 
+	
+    TradeDetails TradeDetails;
+	
+    public void showDetailsList() {
+    	for( TradeDetail td : TradeDetails.getTradeDetail()) {
+    		System.out.println(td.getId());
+    	}
+	}
+	
+	public TradeDetails getTradeDetails()
+	{
+		return TradeDetails;
+	}
+	@XmlElement
+	public void setTradeDetails(TradeDetails tradeDetails)
+	{
+		TradeDetails = tradeDetails;
+	}
+	public String getSentTo()
+	{
+		return sentTo;
+	}
+	@XmlElement
+	public void setSentTo(String sentTo)
+	{
+		this.sentTo = sentTo;
+	}
 	@XmlElement
 	public void setCompany(String company)
 	{
@@ -132,6 +163,10 @@ public class Invoice
 	{
 		return invoice_date;
 	}
+//	public String getFormatInvoice_date()
+//	{
+//		return invoice_date.substring(3, 6) + invoice_date.substring(beginIndex);
+//	}
 	public String getAccount_number()
 	{
 		return account_number;
@@ -183,12 +218,13 @@ public class Invoice
 	@Override
 	public String toString()
 	{
-		return "Invoice [company=" + company + ", address=" + address + ", attn=" + attn + ", invoice_number="
-				+ invoice_number + ", invoice_date=" + invoice_date + ", account_number=" + account_number
-				+ ", due_date=" + due_date + ", amount_due=" + amount_due + ", description=" + description + ", amount="
-				+ amount + ", payment_bank_name=" + payment_bank_name + ", payment_bank_address=" + payment_bank_address
-				+ ", payment_bank_code=" + payment_bank_code + ", payment_branch_code=" + payment_branch_code
-				+ ", payment_account_number=" + payment_account_number + ", payment_account_beneficiary="
-				+ payment_account_beneficiary + ", payment_swift=" + payment_swift + "]";
+		return "Invoice [company=" + company + ", address=" + address + ", attn=" + attn + ", sentTo=" + sentTo
+				+ ", invoice_number=" + invoice_number + ", invoice_date=" + invoice_date + ", account_number="
+				+ account_number + ", due_date=" + due_date + ", amount_due=" + amount_due + ", description="
+				+ description + ", amount=" + amount + ", payment_bank_name=" + payment_bank_name
+				+ ", payment_bank_address=" + payment_bank_address + ", payment_bank_code=" + payment_bank_code
+				+ ", payment_branch_code=" + payment_branch_code + ", payment_account_number=" + payment_account_number
+				+ ", payment_account_beneficiary=" + payment_account_beneficiary + ", payment_swift=" + payment_swift
+				+ "]";
 	}
 }
