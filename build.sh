@@ -1,7 +1,7 @@
 #!/bin/bash
 
-git fetch origin
-git reset --hard origin/master
+#git fetch origin
+#git reset --hard origin/master
 
 mvn clean compile  assembly:single
 #mvn install
