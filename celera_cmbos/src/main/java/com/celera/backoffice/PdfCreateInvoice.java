@@ -39,7 +39,7 @@ import com.uts.tradeconfo.UtsTradeConfoDetail;
 
 public class PdfCreateInvoice implements Runnable
 {
-	Logger logger = LoggerFactory.getLogger(PdfCreateInvoice.class);
+	private static final Logger logger = LoggerFactory.getLogger(PdfCreateInvoice.class);
 	
 	private static final NumberFormat format = NumberFormat.getInstance();
 
@@ -86,7 +86,7 @@ public class PdfCreateInvoice implements Runnable
 		for (Entry<String, InvoiceRegister> e: CSVReader.map.entrySet()) {
 			String key = e.getKey();
 			if (!tempRecon.contains(key))
-				System.out.println("=============recon error============" + key);
+				logger.error("=============recon error============ {}", key);
 		}
 	}
 	
@@ -253,16 +253,15 @@ if (invNumber != null)
 				
 				try {
 					InvoiceTemplate.wordDocProcessor(inv, curncy, mmmyy);
-				} catch (InvalidFormatException ex) {
-					// TODO Auto-generated catch block
-					logger.error("", ex);
-//					ex.printStackTrace();
-				} catch (IOException ex) {
-					// TODO Auto-generated catch block
-//					ex.printStackTrace();
+					DatabaseAdapter.save(inv);
+				}
+				catch (Exception ex) {
 					logger.error("", ex);
 				}
-DatabaseAdapter.save(inv);
+				finally {
+					System.out.println("other exception");
+				}
+
 
 //				try {
 //					InvoiceTemplate.csvProcessor(td, inv.getCompany(), curncy, mmmyy);
@@ -277,6 +276,7 @@ DatabaseAdapter.save(inv);
 			}
 			catch (Exception ex) 
 			{
+				logger.error("", e);
 			}
 		}
 	}
@@ -336,7 +336,7 @@ tempRecon.add(keyUsd);
 				if (register.getAmount().equals(totalFee)){
 					invNumber = register.getInvoice();
 //System.out.println("=============amount the same==============" + invNumber);
-System.out.println("=============same amount==============" + tokens[0] + "," + register.getAmount() +"," + totalFee );
+logger.info("=============same amount============== {}, {}, {}", tokens[0], register.getAmount(), totalFee);
 					return invNumber;
 				}
 				else {
@@ -346,7 +346,7 @@ System.out.println("=============same amount==============" + tokens[0] + "," + 
 inv.showDetailsList();
 					}
 					else {
-System.out.println("=============incorrect amount==============" + keyUsd + "," + register.getAmount() +"," + totalFee );
+logger.error("=============incorrect amount============== {}, {}, {}", keyUsd, register.getAmount(), totalFee );
 						inv.showDetailsList();
 					}
 //					System.out.println(keyUsd + "=" + register.getAmount() + "," + totalFee);

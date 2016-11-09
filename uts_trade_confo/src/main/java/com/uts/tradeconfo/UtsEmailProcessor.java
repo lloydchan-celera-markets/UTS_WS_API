@@ -158,7 +158,7 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 	{
 		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
 		Collection<TradeConfo> l = repo.findBetween(DB_START_DATE, DB_END_DATE);
-		l.forEach(c -> map.put(((TradeConfo)c).key(), c));
+		l.forEach(c -> map.put(((TradeConfo)c).getKey(), c));
 		logger.info("load {} tradeConfo", l.size());
 	}
 	
@@ -227,7 +227,7 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 	private void writeDb(UtsTradeConfoDetail detail) 
 	{
 		TradeConfo tradeConfo = detail.convert();
-		TradeConfo old = map.put(tradeConfo.key(), tradeConfo);
+		TradeConfo old = map.put(tradeConfo.getKey(), tradeConfo);
 		if (old != null) {
 			tradeConfo.setId(old.getId());
 		}

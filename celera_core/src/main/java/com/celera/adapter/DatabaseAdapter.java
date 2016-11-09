@@ -30,9 +30,12 @@ import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
 import com.celera.message.cmmf.ICmmfConst;
 import com.celera.mongo.MongoDbAdapter;
+import com.celera.mongo.entity.ICustomizeMongoDocument;
 import com.celera.mongo.entity.IMongoDocument;
+import com.celera.mongo.entity.Invoice;
 import com.celera.mongo.entity.TradeConfo;
 import com.celera.mongo.entity.TradeDetail;
+import com.celera.mongo.repo.InvoiceRepo;
 import com.celera.mongo.repo.TradeConfoRepo;
 
 public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
@@ -58,8 +61,11 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 	private final static SimpleDateFormat dbSdf = new SimpleDateFormat(DB_DATE_FORMATTER);
 	private final static SimpleDateFormat cmmfSdf = new SimpleDateFormat(ICmmfConst.DATE_FMT);
 
-	private static Map<String, TradeConfo> map = new ConcurrentHashMap<String, TradeConfo>();
-	private static Map<String, TradeDetail> tdMap = new ConcurrentHashMap<String, TradeDetail>();
+	// private static Map<String, TradeConfo> map = new
+	// ConcurrentHashMap<String, TradeConfo>();
+	private static Map<String, ICustomizeMongoDocument> map = new ConcurrentHashMap<String, ICustomizeMongoDocument>();
+	// private static Map<String, Invoice> invoices = new
+	// ConcurrentHashMap<String, Invoice>();
 	private static Map<String, IMongoDocument> docs = new ConcurrentHashMap<String, IMongoDocument>();
 	private Date lastModified = null;
 
@@ -148,7 +154,14 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		serv.stop();
 	}
 
-	public void loadHistory()
+	public void loadAll()
+	{
+//		loadHistoryTradeConfo();
+		loadallTradeConfo();
+		loadInvoice();
+	}
+
+	public void loadHistoryTradeConfo()
 	{
 		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
 		Collection<TradeConfo> l = repo.findBetween(DB_START_DATE, DB_END_DATE);
@@ -159,36 +172,59 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 			{
 				this.lastModified.setTime(lastModified.getTime());
 			}
-			map.put(c.key(), c);
+			map.put(c.getKey(), c);
 		});
 		logger.info("loadHistory tradeconfo {}", l.size());
 	}
 
-	public void load()
+	public void loadTradeConfo()
 	{
 		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
 		Collection<TradeConfo> l = repo.findAfter(this.lastModified);
-		l.forEach(c -> map.put(c.key(), c));
+		l.forEach(c -> map.put(c.getKey(), c));
+		logger.info("load tradeConfo {}", l.size());
+	}
+	
+	public void loadallTradeConfo()
+	{
+		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
+		Collection<TradeConfo> l = (Collection<TradeConfo>) repo.findAll();
+		l.forEach(c -> map.put(c.getKey(), c));
 		logger.info("load tradeConfo {}", l.size());
 	}
 
-	@SuppressWarnings("unused")
-	private void save(TradeConfo tradeConfo)
+	public void loadInvoice()
 	{
-		TradeConfo old = map.put(tradeConfo.key(), tradeConfo);
+		try {
+			InvoiceRepo repo = (InvoiceRepo) MongoDbAdapter.instance().get(InvoiceRepo.class);
+			Collection<Invoice> l = (Collection<Invoice>) repo.findAll();
+			l.forEach(c -> map.put(c.getKey(), c));
+			logger.info("load invoice {}", l.size());
+		}
+		catch (Exception e)
+		{
+			logger.error("", e);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	// private void save(TradeConfo tradeConfo)
+	private void save(ICustomizeMongoDocument doc)
+	{
+		ICustomizeMongoDocument old = map.put(doc.getKey(), doc);
 		if (old != null)
 		{
-			tradeConfo.setId(old.getId());
+			doc.setId(old.getId());
 		}
-		MongoDbAdapter.instance().save(tradeConfo); // save will also do update
-		logger.info("save {}", tradeConfo);
+		MongoDbAdapter.instance().save(doc); // save will also do update
+		logger.info("save {}", doc);
 	}
-	
+
 	@SuppressWarnings("unused")
 	public static void save(IMongoDocument doc)
 	{
 		String id = doc.getId();
-		if (id != null) 
+		if (id != null)
 		{
 			IMongoDocument old = docs.put(id, doc);
 			if (old != null)
@@ -227,7 +263,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		int interval = 10000;
 		DatabaseAdapter dba = new DatabaseAdapter();
 		dba.start();
-		dba.loadHistory();
+		dba.loadAll();
 
 		for (;;)
 		{
@@ -274,7 +310,11 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 				logger.error("", e);
 			}
 			break;
+		case QUERY_ALL_INVOICES:
+			msg = jsonInvoices();
+			break;
 		}
+		
 		if (msg != null)
 		{
 			// byte[] res = CmmfBuilder.buildMessage(this.me,
@@ -362,10 +402,13 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		// StringBuilder sb = new StringBuilder(0);
-		for (TradeConfo t : map.values())
+		for (ICustomizeMongoDocument t : map.values())
 		{
-			JsonObject o = t.json();
-			arrayBuilder.add(o);
+			if (t instanceof TradeConfo)
+			{
+				JsonObject o = ((TradeConfo) t).json();
+				arrayBuilder.add(o);
+			}
 			// sb.append(o.toString());
 		}
 		ansBuilder.add("sender", "D");
@@ -376,25 +419,51 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		return ansBuilder.build().toString();
 		// return sb.toString();
 	}
+	
+	public static String jsonInvoices()
+	{
+		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		// StringBuilder sb = new StringBuilder(0);
+		for (ICustomizeMongoDocument t : map.values())
+		{
+			if (t instanceof Invoice)
+			{
+				JsonObject o = ((Invoice) t).json();
+				arrayBuilder.add(o);
+			}
+			// sb.append(o.toString());
+		}
+		ansBuilder.add("sender", "D");
+		ansBuilder.add("receiver", "W");
+		ansBuilder.add("message_type", "R");
+		ansBuilder.add("command", "I");
+		ansBuilder.add("invoices", arrayBuilder);
+		return ansBuilder.build().toString();
+	}
 
 	public static String jsonHistTradeConfo(Date start, Date end)
 	{
 		StringBuilder sb = new StringBuilder(0);
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 
-		for (TradeConfo t : map.values())
+		for (ICustomizeMongoDocument value : map.values())
 		{
-			try
+			if (value instanceof TradeConfo)
 			{
-				Date tradeDate = dbSdf.parse(t.getTradeDate());
-				if (tradeDate.after(start) && tradeDate.before(end))
+				TradeConfo t = (TradeConfo) value;
+				try
 				{
-					JsonObject o = t.json();
-					arrayBuilder.add(o);
+					Date tradeDate = dbSdf.parse(t.getTradeDate());
+					if (tradeDate.after(start) && tradeDate.before(end))
+					{
+						JsonObject o = t.json();
+						arrayBuilder.add(o);
+					}
+				} catch (Exception e)
+				{
+					logger.error("", e);
 				}
-			} catch (Exception e)
-			{
-				logger.error("", e);
 			}
 		}
 		return sb.toString();
@@ -404,18 +473,22 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 	{
 		List<TradeConfo> l = new ArrayList<TradeConfo>();
 
-		for (TradeConfo t : map.values())
+		for (ICustomizeMongoDocument value : map.values())
 		{
-			try
+			if (value instanceof TradeConfo)
 			{
-				Date tradeDate = dbSdf.parse(t.getTradeDate());
-				if (tradeDate.after(start) && tradeDate.before(end))
+				TradeConfo t = (TradeConfo) value;
+				try
 				{
-					l.add(t);
+					Date tradeDate = dbSdf.parse(t.getTradeDate());
+					if (tradeDate.after(start) && tradeDate.before(end))
+					{
+						l.add(t);
+					}
+				} catch (Exception e)
+				{
+					logger.error("", e);
 				}
-			} catch (Exception e)
-			{
-				logger.error("", e);
 			}
 		}
 		return l;
