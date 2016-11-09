@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import com.celera.adapter.DatabaseAdapter;
 import com.celera.mongo.entity.TradeConfo;
+import com.celera.mongo.entity.TradeDetail;
 
 public class DbInvoiceGenerator implements Runnable
 {

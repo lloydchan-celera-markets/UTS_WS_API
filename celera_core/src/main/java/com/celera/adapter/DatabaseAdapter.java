@@ -30,7 +30,9 @@ import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
 import com.celera.message.cmmf.ICmmfConst;
 import com.celera.mongo.MongoDbAdapter;
+import com.celera.mongo.entity.IMongoDocument;
 import com.celera.mongo.entity.TradeConfo;
+import com.celera.mongo.entity.TradeDetail;
 import com.celera.mongo.repo.TradeConfoRepo;
 
 public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
@@ -57,6 +59,8 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 	private final static SimpleDateFormat cmmfSdf = new SimpleDateFormat(ICmmfConst.DATE_FMT);
 
 	private static Map<String, TradeConfo> map = new ConcurrentHashMap<String, TradeConfo>();
+	private static Map<String, TradeDetail> tdMap = new ConcurrentHashMap<String, TradeDetail>();
+	private static Map<String, IMongoDocument> docs = new ConcurrentHashMap<String, IMongoDocument>();
 	private Date lastModified = null;
 
 	private ILifeCycle serv = null;
@@ -178,6 +182,22 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		}
 		MongoDbAdapter.instance().save(tradeConfo); // save will also do update
 		logger.info("save {}", tradeConfo);
+	}
+	
+	@SuppressWarnings("unused")
+	public static void save(IMongoDocument doc)
+	{
+		String id = doc.getId();
+		if (id != null) 
+		{
+			IMongoDocument old = docs.put(id, doc);
+			if (old != null)
+			{
+				doc.setId(old.getId());
+			}
+		}
+		MongoDbAdapter.instance().save(doc); // save will also do update
+		logger.info("save {}", doc.toString());
 	}
 
 	// @Override

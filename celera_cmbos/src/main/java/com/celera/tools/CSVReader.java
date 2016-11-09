@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.uts.tradeconfo.InvoiceRegister;
+
 public class CSVReader {
 
 	public static Map<String, InvoiceRegister> map = new HashMap<String, InvoiceRegister>();

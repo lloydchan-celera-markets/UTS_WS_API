@@ -32,11 +32,11 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 
 import com.celera.backoffice.BOFormatter;
-import com.celera.backoffice.Invoice;
-import com.celera.backoffice.TradeDetail;
-import com.celera.backoffice.TradeDetails;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
+import com.celera.mongo.entity.Invoice;
+import com.celera.mongo.entity.TradeDetail;
+import com.celera.mongo.entity.TradeDetails;
 import com.celera.tools.CSVUtils;
 //import com.celera.word.IWordConst;
 import com.celera.tools.Doc2Pdf;
@@ -328,7 +328,7 @@ public class InvoiceTemplate {
 		} else if (token.equals("Xxxxid" + id)) {
 			System.out.println("equals " + token);
 			clearCell(c);
-			setCell(c, td.getId());
+			setCell(c, td.getTradeId());
 		} else if (token.equals("Xxxxdesc" + id)) {
 			System.out.println("equals " + token);
 			clearCell(c);
@@ -425,7 +425,7 @@ public class InvoiceTemplate {
 						td = list_td.get(i);
 						XWPFTableRow tableOneRowTwo = tbl.createRow();
 						tableOneRowTwo.getCell(0).setText(td.getDate());
-						tableOneRowTwo.getCell(1).setText(td.getId());
+						tableOneRowTwo.getCell(1).setText(td.getTradeId());
 						tableOneRowTwo.getCell(2).setText(td.getDescription());
 						tableOneRowTwo.getCell(3).setText(td.getSize());
 						tableOneRowTwo.getCell(4).setText(td.getHedge());
@@ -446,18 +446,13 @@ public class InvoiceTemplate {
 		cal.setTime(d);
 		cal.set(Calendar.DAY_OF_MONTH, 9);
 		cal.add(Calendar.MONTH, 1);
-		String invdate = sdf_dd_MMMM_yy.format(cal.getTime());
+//		String invdate = sdf_dd_MMMM_yy.format(cal.getTime());
 		String fileMonth = sdf_mm_yy.format(cal.getTime());
 
 		cal.add(Calendar.MONTH, 1);
-		String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
+//		String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
 
 		String mmmm_yyyy = sdf_mmmm_yyyyyy.format(d);
-
-		boolean isNext = false;
-		String sub = null;
-		String company = inv.getCompany();
-		company = company.replaceAll(".?\\*+.?", "");
 
 		TradeDetails td = inv.getTradeDetails();
 
@@ -550,20 +545,20 @@ public class InvoiceTemplate {
 							}
 							if (text != null && text.contains("$invdate")) {
 								// System.out.println("$invdate found");
-								text = text.replace("$invdate", invdate);
+								text = text.replace("$invdate", inv.getInvoice_date());
 								r.setText(text, 0);
 							} else if (text != null && text.contains("invdate")) {
 								// System.out.println("$invdate found");
-								text = text.replace("invdate", invdate);
+								text = text.replace("invdate", inv.getInvoice_date());
 								r.setText(text, 0);
 							}
 							if (text != null && text.contains("$invduedate")) {
 								// System.out.println("$invduedate found");
-								text = text.replace("$invduedate", invduedate);
+								text = text.replace("$invduedate", inv.getDue_date());
 								r.setText(text, 0);
 							} else if (text != null && text.contains("invduedate")) {
 								// System.out.println("$invduedate found");
-								text = text.replace("invduedate", invduedate);
+								text = text.replace("invduedate", inv.getDue_date());
 								r.setText(text, 0);
 							}
 							if (text != null && text.contains("$invnum")) {
@@ -629,8 +624,12 @@ public class InvoiceTemplate {
 
 		// doc.write(new FileOutputStream(destination + list.get(0) +
 		// "_TestReport_URL_Document.doc"));
+		String company = inv.getCompany();
+		company = company.replaceAll(".?\\*+.?", "");
 		FileOutputStream os = null;
 		String file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + fileMonth + ".docx";
+		inv.setFile(file);
+		
 		try {
 			os = new FileOutputStream(file);
 			doc.write(os);

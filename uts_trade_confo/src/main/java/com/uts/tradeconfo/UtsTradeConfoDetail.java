@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.celera.mongo.entity.Hedge;
 import com.celera.mongo.entity.Leg;
 import com.celera.mongo.entity.TradeConfo;
@@ -23,6 +26,8 @@ import com.uts.tools.Uts2Dm;
 
 public class UtsTradeConfoDetail 
 {
+	Logger logger = LoggerFactory.getLogger(UtsTradeConfoDetail.class);
+	
     NumberFormat format = NumberFormat.getInstance();
 //	static final String fmt = "dd-mmm-YY";
 //	static final SimpleDateFormat sdf = new SimpleDateFormat(fmt);
@@ -445,7 +450,7 @@ if (this.id.equals("CELERAEQ-2016-12878"))
 			}
 			else if (this.buyer != null && this.seller != null)
 			{
-System.out.println("============ buyer and seller both exist[start]============" + this.toString());
+logger.debug("============ buyer and seller both exist[start]============ {}", this.toString());
 if (legs.get(0).getSide().equals("Sell"))
 {
 	this.buyer = null;
@@ -453,7 +458,7 @@ if (legs.get(0).getSide().equals("Sell"))
 else {
 	this.seller = null;
 }
-System.out.println("============ buyer and seller both exist[end]============" + this.toString());
+logger.debug("============ buyer and seller both exist[end]============ {}", this.toString());
 //				if (this.buyer.indexOf("-") > 0)
 //				{
 //					this.seller = null;
@@ -463,7 +468,7 @@ System.out.println("============ buyer and seller both exist[end]============" +
 //				}
 			} 
 			if ("Celera Bank Private Test 1 - james Hugh".equals(this.seller)) {
-System.out.println("========Celera Bank Private Test 1 - james Hugh============" + this.id);			
+//System.out.println("========Celera Bank Private Test 1 - james Hugh============" + this.id);			
 this.seller = "Thierry";
 			}
 			if (this.tradeDate == null )
@@ -529,17 +534,14 @@ this.seller = "Thierry";
 						this.buyer = null;
 				}
 if ("CELERAEQ-2016-12813".equals(this.id)) {
-	System.out.println(this.toString());
-	System.out.println("sPdf=" + sPdf);
+	logger.debug("s={} sPdf={}", s, sPdf);
 }
 			}
 			
 		}
 		catch (Exception e)
 		{
-			System.out.println("s=" + s);
-			System.out.println(sPdf);
-			e.printStackTrace();
+logger.error("s={} sPdf={}", s, sPdf, e);
 //			logger.error("Error s=[{}] sPdf=[{}]", s, sPdf, e);
 		}
 	}
@@ -592,10 +594,10 @@ if ("CELERAEQ-2016-12813".equals(this.id)) {
 					String buyer = s;
 					if (buyer.indexOf(firm) >= 0) {
 						this.buyer = participant;
-						System.out.println("==========buyer1======" + participant + "," + firm);
+//System.out.println("==========buyer1======" + participant + "," + firm);
 					}
 					else {
-						System.out.println("==========buyer2======" + buyer + "," + firm);
+//System.out.println("==========buyer2======" + buyer + "," + firm);
 					}
 				}
 				else if (s.startsWith("SELLER ") || s.startsWith(" SELLER "))
@@ -605,10 +607,10 @@ if ("CELERAEQ-2016-12813".equals(this.id)) {
 					String seller = s;
 					if (seller.indexOf(firm) >= 0) {
 						this.seller = participant;
-						System.out.println("==========seller1======" + participant + "," + firm);
+//System.out.println("==========seller1======" + participant + "," + firm);
 					}
 					else {
-						System.out.println("==========seller2======" + seller + "," + firm);
+//System.out.println("==========seller2======" + seller + "," + firm);
 					}
 				}
 				else if (s.startsWith("PRICE"))
@@ -957,10 +959,10 @@ if ("CELERAEQ-2016-12813".equals(this.id)) {
 						this.seller = "Eclipse Futures (HK) Limited - Traders";
 					}
 				}
-				System.out.println("buyer,seller=null sPdf=" + sPdf);
+logger.error("buyer,seller=null sPdf={}", sPdf);
 			}
 			if ("Celera Bank Private Test 1 - james Hugh".equals(this.seller)) {
-				System.out.println("========Celera Bank Private Test 1 - james Hugh============" + this.id);			
+//System.out.println("========Celera Bank Private Test 1 - james Hugh============" + this.id);			
 				this.seller = "Thierry";
 			}
 			if (this.brokerageFee == null)
@@ -976,14 +978,12 @@ if ("CELERAEQ-2016-12813".equals(this.id)) {
 			if (this.curncy == null && this.brokerageCny == null && this.notationalCny == null)
 			{
 //				System.out.println(this.price);
-				System.out.println("curncy=null sPdf=" + sPdf);
+logger.error("curncy=null sPdf={}", sPdf);
 			}
 		}
 		catch (Exception e)
 		{
-			System.out.println("s=" + s);
-			System.out.println(sPdf);
-			e.printStackTrace();
+logger.error("s={} sPdf={}", s, sPdf, e);
 //			logger.error("Error s=[{}] sPdf=[{}]", s, sPdf, e);
 		}
 	}

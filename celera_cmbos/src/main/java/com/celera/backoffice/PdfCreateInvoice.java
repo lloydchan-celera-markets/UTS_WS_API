@@ -19,17 +19,21 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.adapter.DatabaseAdapter;
 import com.celera.backoffice.BOFormatter;
-import com.celera.backoffice.Invoice;
-import com.celera.backoffice.TradeDetail;
-import com.celera.backoffice.TradeDetails;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
+import com.celera.mongo.MongoDbAdapter;
+import com.celera.mongo.entity.Account;
 import com.celera.mongo.entity.Hedge;
+import com.celera.mongo.entity.Invoice;
 import com.celera.mongo.entity.Leg;
+import com.celera.mongo.entity.TradeConfo;
+import com.celera.mongo.entity.TradeDetail;
+import com.celera.mongo.entity.TradeDetails;
 import com.celera.tools.CSVReader;
-import com.celera.tools.InvoiceRegister;
 import com.celera.backoffice.InvoiceTemplate;
+import com.uts.tradeconfo.InvoiceRegister;
 import com.uts.tradeconfo.PdfParser;
 import com.uts.tradeconfo.UtsTradeConfoDetail;
 
@@ -162,7 +166,7 @@ public class PdfCreateInvoice implements Runnable
 			{
 				TradeDetail tradeDetail = new TradeDetail();
 				tradeDetail.setDate(tc.getTradeDate());	// same format
-				tradeDetail.setId(tc.getId());
+				tradeDetail.setTradeId(tc.getId());
 				tradeDetail.setDescription(tc.getSummary());
 				Double size = 0d;
 				for (Leg leg: tc.getLegs())
@@ -200,22 +204,23 @@ public class PdfCreateInvoice implements Runnable
 					e1.printStackTrace();
 				}
 				lTd.add(tradeDetail);
+				
+DatabaseAdapter.save(tradeDetail);
 			}
 			
 			TradeDetails td = new TradeDetails();
 			td.setTradeDetail(lTd);
-			td.setPeriod("OCTOBER, 2016");
 			String[] tokens = key.split("_");
 			String company = tokens[0];
 			String curncy = tokens[1];
 			String mmmyy = tokens[2];
-			td.setCompany(company);
-			td.setDescription("October 2016 Total");
 			td.setSize(BOFormatter.displayNumber(totalSize));
 			td.setHedge(BOFormatter.displayNumber(totalHedge));
 			td.setTotal_fee(BOFormatter.displayFee(totalFee, curncy));
 			
-			com.celera.backoffice.Account account = com.celera.backoffice.Account.get(company.toUpperCase());
+DatabaseAdapter.save(td);
+			
+			Account account = BOData.get(company.toUpperCase());
 			if (account == null) {
 				logger.error("company not found: {}", company);
 System.out.println(key);
@@ -237,7 +242,8 @@ System.out.println(key);
 				inv.setDescription("October 2016 Brokerage Fee");
 				inv.setAmount(BOFormatter.displayFee(totalFee, curncy));
 				inv.setTradeDetails(td);
-
+				setInvoiceDate(mmmyy, inv);
+				
 String invNumber = checkInvNumber(key, totalFee, inv);
 if (invNumber != null)
 {
@@ -256,6 +262,7 @@ if (invNumber != null)
 //					ex.printStackTrace();
 					logger.error("", ex);
 				}
+DatabaseAdapter.save(inv);
 
 //				try {
 //					InvoiceTemplate.csvProcessor(td, inv.getCompany(), curncy, mmmyy);
@@ -274,9 +281,34 @@ if (invNumber != null)
 		}
 	}
 
+	private void setInvoiceDate(String mmmyy, Invoice inv)
+	{
+		try
+		{
+			Date d = sdf_mmm_yy.parse(mmmyy);
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(d);
+			cal.set(Calendar.DAY_OF_MONTH, 9);
+			cal.add(Calendar.MONTH, 1);
+			String invdate = sdf_dd_MMMM_yy.format(cal.getTime());
+			String fileMonth = sdf_mm_yy.format(cal.getTime());
+
+			cal.add(Calendar.MONTH, 1);
+			String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
+			inv.setInvoice_date(invdate);
+			inv.setDue_date(invduedate);
+		} catch (ParseException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private static SimpleDateFormat sdf_mmm_yy = new SimpleDateFormat("MMMyy");
 	private static SimpleDateFormat sdf_mmmm_yyyyyy = new SimpleDateFormat("MMMM yyyy");
 	private static SimpleDateFormat sdf_dd_MMMM_yy = new SimpleDateFormat("dd MMMM, yyyy");
+	private static SimpleDateFormat sdf_mm_yy = new SimpleDateFormat("MMyy");
 	
 	public static String checkInvNumber(String key, Double totalFee, Invoice inv) {
 		String[] tokens = key.split("_");
@@ -328,5 +360,4 @@ System.out.println("=============incorrect amount==============" + keyUsd + "," 
 		}
 		return invNumber;
 	}
-	
 }

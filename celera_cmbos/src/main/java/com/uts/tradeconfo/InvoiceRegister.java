@@ -1,9 +1,11 @@
-package com.celera.tools;
+package com.uts.tradeconfo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import com.celera.tools.CSVReader;
 
 public class InvoiceRegister {
 
@@ -65,14 +67,14 @@ System.out.println("===================================================map.key="
 	public InvoiceRegister (){
 	}
 	
-	public static void main(String[] args) {
-		InvoiceRegister ir = CSVReader.map.get("");
-try {
-	Thread.sleep(1);
-} catch (InterruptedException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-	}
+//	public static void main(String[] args) {
+//		InvoiceRegister ir = CSVReader.map.get("");
+//try {
+//	Thread.sleep(1);
+//} catch (InterruptedException e) {
+//	// TODO Auto-generated catch block
+//	e.printStackTrace();
+//}
+//	}
 
 }

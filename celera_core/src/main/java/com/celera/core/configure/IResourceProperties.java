@@ -39,5 +39,6 @@ public interface IResourceProperties
 	public static final String PROP_CMBOS_TRADECONFO_PATH = "cmbos.tradeconfo.path";
 	public static final String PROP_CMBOS_INVOICE_EXPORT_PATH = "cmbos.invoice.export.path";
 	public static final String PROP_CMBOS_TEMPLATE_PATH = "cmbos.template.path";
-	
+
+	public static final String PROP_CMBOS_UTSTRADECONFO_CSV = "cmbos.uts.tradeconfo.csv";
 }
