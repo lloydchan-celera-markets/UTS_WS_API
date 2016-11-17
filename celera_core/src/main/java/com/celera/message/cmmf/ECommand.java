@@ -10,7 +10,10 @@ public enum ECommand
 	EMAIL_INVOICE('E'), 
 	CREATE_INVOICE('G'), 
 	UPDATE_CLIENT('C'),
-	QUERY_ALL_INVOICES('I');
+	QUERY_ALL_INVOICES('I'),
+	QUERY_UTS_SUMMARY('S'),
+	UPDATE_INVOICE('U'),
+	REMOVE_INVOICE('R');
 
 	private static final Map<Character, ECommand> map = new LinkedHashMap<Character, ECommand>();
 	static

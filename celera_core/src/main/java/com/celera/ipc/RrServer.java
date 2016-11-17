@@ -107,7 +107,7 @@ public class RrServer extends AbstractCmmfService implements ILifeCycle
 			// Wait for next request from client
 			byte[] request = s.recv(0);
 //			String string = new String(request);
-			logger.debug("Received request: [{}]", request);
+			logger.debug("Received request: [{}]", new String(request));
 			byte[] response = null;
 			if (listener != null)
 			{
@@ -119,7 +119,10 @@ public class RrServer extends AbstractCmmfService implements ILifeCycle
 					logger.error("Error process message: {}", request, e);
 				}
 			}
-			s.send(response, 0);
+			if (response != null)
+				s.send(response, 0);
+			else 
+				s.send("invalid", 0);
 			// Send reply back to client
 			// s.send("World".getBytes(), 0);
 //			try

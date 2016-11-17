@@ -57,6 +57,7 @@ public class UtsTradeConfoDetail
 //	List<String> hedgeFutRef = null;
 	String brokerageFee = null;
 	String brokerageCny = null;
+	String file = null;
 
 	private static final List<String> futs = new ArrayList<String>(); 
 	
@@ -69,12 +70,13 @@ public class UtsTradeConfoDetail
 	@Override
 	public String toString()
 	{
-		return "UtsTradeConfoDetail [summary=" + summary + ", buyer=" + buyer + ", seller=" + seller + ", price="
-				+ price + ", curncy=" + curncy + ", tradeDate=" + tradeDate + ", refPrice=" + refPrice + ", id=" + id
-				+ ", delta=" + delta + ", buyQty=" + buyQty + ", sellQty=" + sellQty + ", ptValue=" + ptValue
-				+ ", ptCny=" + ptCny + ", premiumPmt=" + premiumPmt + ", notational=" + notational + ", notationalCny="
-				+ notationalCny + ", rate=" + rate + ", premium=" + premium + ", premiumCny=" + premiumCny + ", legs="
-				+ legs + ", hedges=" + hedges + ", brokerageFee=" + brokerageFee + ", brokerageCny=" + brokerageCny + "]";
+		return "UtsTradeConfoDetail [logger=" + logger + ", format=" + format + ", summary=" + summary + ", buyer="
+				+ buyer + ", seller=" + seller + ", price=" + price + ", curncy=" + curncy + ", tradeDate=" + tradeDate
+				+ ", refPrice=" + refPrice + ", id=" + id + ", delta=" + delta + ", buyQty=" + buyQty + ", sellQty="
+				+ sellQty + ", ptValue=" + ptValue + ", ptCny=" + ptCny + ", premiumPmt=" + premiumPmt + ", notational="
+				+ notational + ", notationalCny=" + notationalCny + ", rate=" + rate + ", premium=" + premium
+				+ ", premiumCny=" + premiumCny + ", legs=" + legs + ", hedges=" + hedges + ", brokerageFee="
+				+ brokerageFee + ", brokerageCny=" + brokerageCny + ", file=" + file + "]";
 	}
 
 	public void parsePdf1(String sPdf)
@@ -1123,6 +1125,16 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 		return brokerageCny;
 	}
 	
+	public String getFile()
+	{
+		return file;
+	}
+
+	public void setFile(String file)
+	{
+		this.file = file;
+	}
+
 	public TradeConfo convert() 
 	{
 		TradeConfo to = new TradeConfo();
@@ -1131,7 +1143,7 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 		to.setSeller(this.seller);
 		to.setPrice(Uts2Dm.toDouble(this.price));
 		to.setCurncy(this.curncy);
-		to.setTradeDate(this.tradeDate);
+		to.setTradeDate(Uts2Dm.toDate(this.tradeDate));
 		to.setRefPrice(Uts2Dm.toDouble(this.refPrice));
 		to.setTradeConfoId(this.id);
 		to.setDelta(this.delta);

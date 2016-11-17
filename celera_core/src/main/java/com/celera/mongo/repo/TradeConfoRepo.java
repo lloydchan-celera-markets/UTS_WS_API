@@ -2,7 +2,9 @@ package com.celera.mongo.repo;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
@@ -24,10 +26,13 @@ public interface TradeConfoRepo extends CrudRepository<TradeConfo, String>
 //	public void updateTradeConfo(String tradeConfoId);
 	
 	
-	@Query("{'tradeDate' : { '$gte' : ?0, '$lte' : ?1 }}")
-	public Collection<TradeConfo> findBetween(String startDay, String endDay);
+	@Query("{'tradeDate' : { '$gt' : ?0, '$lt' : ?1 }}")
+	public Collection<TradeConfo> findBetween(Date startDay, Date endDay);
+//	public default Collection<TradeConfo> findBetween(Date startDay, Date endDay) {
+//		Criteria c = Criteria.where("tradeDate").gte(startDay).and("tradeDate").lte(endDay);
+//		List<TradeConfo> users = TradeConfoRepo.find(query(c), TradeConfo.class);
+//	}
 
 	@Query("{'lastModified' : { '$gt' : ?0 }}")
 	public Collection<TradeConfo> findAfter(Date lastModified);
-	
 }

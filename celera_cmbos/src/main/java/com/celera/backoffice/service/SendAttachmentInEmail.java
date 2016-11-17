@@ -17,15 +17,24 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.celera.mongo.entity.Invoice;
+import com.celera.mongo.entity.TradeDetail;
+
 public class SendAttachmentInEmail
 {
+	private static final Logger logger = LoggerFactory.getLogger(SendAttachmentInEmail.class);
+	
 	private static final String DEFAULT_EMAIL_SERVER_PROTO = "imap";
 	private static final String DEFAULT_EMAIL_SERVER_IP = "outlook.office365.com";
 	private static final String DEFAULT_EMAIL_SERVER_PORT = "993";
 	private static final String DEFAULT_EMAIL_SERVER_USER = "Lloyd.Chan@celera-markets.com";
 	private static final String DEFAULT_EMAIL_SERVER_PWD = "Ja9XuVDj";
 	
-	public static void main(String[] args)
+	public static void sendEmail(Invoice inv)
+//	public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
 //		String to = "Amine.Larhrib@celera-markets.com";
@@ -66,14 +75,27 @@ public class SendAttachmentInEmail
 			// Set To: header field of the header.
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
+			String company = inv.getCompany();
+			
 			// Set Subject: header field
-			message.setSubject("Testing Invoice");
+			message.setSubject(company + " -Due Invoices- Celera Markets limited");
 
 			// Create the message part
 			BodyPart messageBodyPart = new MimeBodyPart();
 
+			String msg = "\n" +
+"I hope this email finds you well,\n\n" +  
+"Please Find attached the monthly invoice, as well as single trade confirmations.\n" +  
+"Kindly make the necessary payment and let us know when we can expect it .\n\n" +
+"If you require any extra information please don’t hesitate to contact us .\n\n" +
+"Best regards,\n" + 
+"Amine Larhrib\n" +
+"Celera Markets Limited\n" +
+"Office: (852) 3746-3800\n" +
+"Cell : ( 852) 6603 4121";
+
 			// Now set the actual message
-			messageBodyPart.setText("This is testing invoice message");
+			messageBodyPart.setText(msg);
 
 			// Create a multipar message
 			Multipart multipart = new MimeMultipart();
@@ -83,11 +105,26 @@ public class SendAttachmentInEmail
 
 			// Part two is attachment
 			messageBodyPart = new MimeBodyPart();
-			String path = "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
+			String path = inv.getFile().replaceAll(".docx", ".pdf");
+			int i = path.lastIndexOf('/');
+			String fileName = path.substring(i);
+//			String path = "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
 			DataSource source = new FileDataSource(path);
 			messageBodyPart.setDataHandler(new DataHandler(source));
-			messageBodyPart.setFileName("invoice_template_new.pdf");
+			messageBodyPart.setFileName(fileName);
 			multipart.addBodyPart(messageBodyPart);
+			
+			for (TradeDetail td : inv.getTradeDetail()) {
+				MimeBodyPart part = new MimeBodyPart();
+				path = td.getTradeConfoFile();
+				i = path.lastIndexOf('/');
+				fileName = path.substring(i);
+//				String path = "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
+				DataSource src = new FileDataSource(path);
+				part.setDataHandler(new DataHandler(src));
+				part.setFileName(fileName);
+				multipart.addBodyPart(part);
+			}
 
 			// Send the complete message parts
 			message.setContent(multipart);
@@ -95,10 +132,11 @@ public class SendAttachmentInEmail
 			// Send message
 			Transport.send(message);
 
-			System.out.println("Sent message successfully....");
+			logger.info("Sent email successfully");
 
 		} catch (MessagingException e)
 		{
+			logger.error("fail send email", e);
 			throw new RuntimeException(e);
 		}
 	}

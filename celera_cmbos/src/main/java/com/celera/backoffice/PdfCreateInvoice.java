@@ -19,12 +19,12 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.celera.adapter.DatabaseAdapter;
 import com.celera.backoffice.BOFormatter;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
 import com.celera.mongo.MongoDbAdapter;
 import com.celera.mongo.entity.Account;
+import com.celera.mongo.entity.BOData;
 import com.celera.mongo.entity.Hedge;
 import com.celera.mongo.entity.Invoice;
 import com.celera.mongo.entity.Leg;
@@ -33,11 +33,11 @@ import com.celera.mongo.entity.TradeDetail;
 import com.celera.mongo.entity.TradeDetails;
 import com.celera.tools.CSVReader;
 import com.celera.backoffice.InvoiceTemplate;
-import com.uts.tradeconfo.InvoiceRegister;
+import com.celera.mongo.entity.InvoiceRegister;
 import com.uts.tradeconfo.PdfParser;
 import com.uts.tradeconfo.UtsTradeConfoDetail;
 
-public class PdfCreateInvoice implements Runnable
+public class PdfCreateInvoice
 {
 	private static final Logger logger = LoggerFactory.getLogger(PdfCreateInvoice.class);
 	
@@ -68,7 +68,7 @@ public class PdfCreateInvoice implements Runnable
 	public static void main(String[] args)
 	{
 		PdfCreateInvoice run = new PdfCreateInvoice();
-		run.run();
+		run.createInvoice();
 		
 		run.recon();
 		
@@ -90,7 +90,7 @@ public class PdfCreateInvoice implements Runnable
 		}
 	}
 	
-	public void run()
+	public void createInvoice()
 	{
 		Map<String, List<UtsTradeConfoDetail>> client2TradeConfo = new HashMap<String, List<UtsTradeConfoDetail>>();
 
@@ -100,8 +100,6 @@ public class PdfCreateInvoice implements Runnable
 		String key;
 		for (UtsTradeConfoDetail e : dbList)
 		{
-//if (e.getId().equals("CELERAEQ-2016-13031"))
-//	System.out.println("CELERAEQ-2016-13031");
 			
 			String curncy = e.getCurncy();
 			String buyer = e.getBuyer();
@@ -110,42 +108,43 @@ public class PdfCreateInvoice implements Runnable
 			String tradeDate = e.getTradeDate();
 
 
-//System.out.println("tradeDate -> " + tradeDate);			
 			if (buyer == null && seller == null || tradeDate == null)
 			{
-//System.out.println("buyer == null && seller == null && tradeDate == null");
-//System.out.println(e);
 				continue;
 			}
 			else if (buyer == null)
 			{
-				String[] tokens = tradeDate.split("-");
-				String mmm = tokens[1];
-				String yy = tokens[2];
-				seller = e.getSeller();
 				int pos = seller.lastIndexOf(PATTERN);
 				firm = (pos > 0) ? seller.substring(0,  pos) : seller;
-				key = firm + "_" + curncy + "_" + mmm+yy;
 			} else
 			{
-				String[] tokens = tradeDate.split("-");
-				String mmm = tokens[1];
-				String yy = tokens[2];
-				seller = e.getSeller();
-				
 				int pos = buyer.lastIndexOf(PATTERN);
 				firm = (pos > 0) ? buyer.substring(0,  pos) : buyer;
-				key = firm + "_" + curncy + "_" + mmm+yy;
 			}
+			
+			Date dTradeDate = null;
+			try
+			{
+				dTradeDate = sdf_dd_mmm_yy.parse(tradeDate);
+			} catch (ParseException e1)
+			{
+				e1.printStackTrace();
+				System.exit(-1);
+			} 
+//			key = Invoice.key(firm, curncy, dTradeDate);
+			key = firm + "_" + curncy + "_" + sdf_mmm_yy.format(dTradeDate);
+			
 			List temp = (List) client2TradeConfo.get(key);
 			if (temp == null)
 			{
 				temp = new ArrayList<UtsTradeConfoDetail>();
 				client2TradeConfo.put(key, temp);
-				
-				
 			}
 			temp.add(e);
+			
+			TradeConfo td = e.convert();
+			td.setHasInvoiceCreated(true);
+			DatabaseAdapter.create(td);
 		}
 
 //		String.format("CEL%04d", invoice_Num);
@@ -168,6 +167,8 @@ public class PdfCreateInvoice implements Runnable
 				tradeDetail.setDate(tc.getTradeDate());	// same format
 				tradeDetail.setTradeId(tc.getId());
 				tradeDetail.setDescription(tc.getSummary());
+				tradeDetail.setTradeConfoFile(tc.getFile());
+
 				Double size = 0d;
 				for (Leg leg: tc.getLegs())
 				{
@@ -194,33 +195,30 @@ public class PdfCreateInvoice implements Runnable
 					tradeDetail.setReference(PREFIX_BUYER + buyer);
 				}
 				try {
-//if (tc.getBrokerageFee() == null)
-//	System.out.println("borager null =" + tc.getBrokerageFee());
 					Number number = format.parse(tc.getBrokerageFee());
 					totalFee += number.doubleValue();
 					tradeDetail.setFee(BOFormatter.displayFee(number.doubleValue(), tc.getCurncy()));
 				} catch (Exception e1) {
-//System.out.println("Exception borager=" + tc.getBrokerageFee() + "," + tc.getCurncy());
 					e1.printStackTrace();
 				}
 				lTd.add(tradeDetail);
 				
-DatabaseAdapter.save(tradeDetail);
+DatabaseAdapter.create(tradeDetail);
 			}
 			
-			TradeDetails td = new TradeDetails();
-			td.setTradeDetail(lTd);
 			String[] tokens = key.split("_");
 			String company = tokens[0];
 			String curncy = tokens[1];
 			String mmmyy = tokens[2];
-			td.setSize(BOFormatter.displayNumber(totalSize));
-			td.setHedge(BOFormatter.displayNumber(totalHedge));
-			td.setTotal_fee(BOFormatter.displayFee(totalFee, curncy));
 			
-DatabaseAdapter.save(td);
+//			TradeDetails td = new TradeDetails();
+//			td.setTradeDetail(lTd);
+//			td.setSize(BOFormatter.displayNumber(totalSize));
+//			td.setHedge(BOFormatter.displayNumber(totalHedge));
+//			td.setTotal_fee(BOFormatter.displayFee(totalFee, curncy));
+//DatabaseAdapter.save(td);
 			
-			Account account = BOData.get(company.toUpperCase());
+			Account account = BOData.get(company);
 			if (account == null) {
 				logger.error("company not found: {}", company);
 System.out.println(key);
@@ -241,8 +239,15 @@ System.out.println(key);
 				inv.setAmount_due(BOFormatter.displayFee(totalFee, curncy));
 				inv.setDescription("October 2016 Brokerage Fee");
 				inv.setAmount(BOFormatter.displayFee(totalFee, curncy));
-				inv.setTradeDetails(td);
-				setInvoiceDate(mmmyy, inv);
+				inv.setCurrency(curncy);
+				Date tradeDate = sdf_mmm_yy.parse(mmmyy); 
+				setInvoiceDate(tradeDate, inv);
+				
+//				inv.setTradeDetails(td);
+				inv.setSize(BOFormatter.displayNumber(totalSize));
+				inv.setHedge(BOFormatter.displayNumber(totalHedge));
+				inv.setTotal_fee(BOFormatter.displayFee(totalFee, curncy));
+				inv.setTradeDetail(lTd);
 				
 String invNumber = checkInvNumber(key, totalFee, inv);
 if (invNumber != null)
@@ -252,14 +257,14 @@ if (invNumber != null)
 }
 				
 				try {
-					InvoiceTemplate.wordDocProcessor(inv, curncy, mmmyy);
-					DatabaseAdapter.save(inv);
+					InvoiceTemplate.wordDocProcessor(inv, curncy, tradeDate);
+					DatabaseAdapter.create(inv);
 				}
 				catch (Exception ex) {
 					logger.error("", ex);
 				}
 				finally {
-					System.out.println("other exception");
+//					System.out.println("other exception");
 				}
 
 
@@ -281,30 +286,39 @@ if (invNumber != null)
 		}
 	}
 
-	private void setInvoiceDate(String mmmyy, Invoice inv)
+	private Date nextMonth(Date d) 
 	{
-		try
-		{
-			Date d = sdf_mmm_yy.parse(mmmyy);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
+		cal.set(Calendar.DAY_OF_MONTH, 9);
+		cal.add(Calendar.MONTH, 1);
+		return cal.getTime();
+	}
+	
+	private void setInvoiceDate(Date tradeDate, Invoice inv)
+	{
+//		try
+//		{
+//			Date d = sdf_mmm_yy.parse(mmmyy);
 
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(d);
+			cal.setTimeInMillis(tradeDate.getTime());
 			cal.set(Calendar.DAY_OF_MONTH, 9);
 			cal.add(Calendar.MONTH, 1);
 			String invdate = sdf_dd_MMMM_yy.format(cal.getTime());
-			String fileMonth = sdf_mm_yy.format(cal.getTime());
-
+			inv.setInvoice_date(invdate);
+			
 			cal.add(Calendar.MONTH, 1);
 			String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
-			inv.setInvoice_date(invdate);
 			inv.setDue_date(invduedate);
-		} catch (ParseException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (ParseException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
+	private static SimpleDateFormat sdf_dd_mmm_yy = new SimpleDateFormat("dd-MMM-yy");
 	private static SimpleDateFormat sdf_mmm_yy = new SimpleDateFormat("MMMyy");
 	private static SimpleDateFormat sdf_mmmm_yyyyyy = new SimpleDateFormat("MMMM yyyy");
 	private static SimpleDateFormat sdf_dd_MMMM_yy = new SimpleDateFormat("dd MMMM, yyyy");
@@ -321,7 +335,7 @@ if (invNumber != null)
 			cal.setTime(d);
 			cal.set(Calendar.DAY_OF_MONTH, 9);
 			cal.add(Calendar.MONTH, 1);
-			String fileMonth = sdf_mmm_yy.format(cal.getTime());
+			String fileMonth = sdf_mm_yy.format(cal.getTime());
 
 			String keyUsd = tokens[0] + "_" + tokens[1].replace("KRW", "USD").replace("JPY", "USD") + "_" + fileMonth;
 			keyUsd = keyUsd.toUpperCase();
@@ -330,7 +344,7 @@ tempRecon.add(keyUsd);
 			if (register == null)
 			{
 				// dont fxxking care recon
-//				System.out.println("=============key==============" + keyUsd);
+System.out.println("=============key==============" + keyUsd);
 			}
 			else {
 				if (register.getAmount().equals(totalFee)){

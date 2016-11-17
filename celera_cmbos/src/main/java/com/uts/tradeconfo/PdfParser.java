@@ -85,6 +85,7 @@ public class PdfParser {
 				// System.out.println(sPdf);
 				UtsTradeConfoDetail t = new UtsTradeConfoDetail();
 				t.parsePdf(sPdf);
+				t.setFile(file.getAbsolutePath());
 				_list.add(t);
 			}
 			catch (Exception e)

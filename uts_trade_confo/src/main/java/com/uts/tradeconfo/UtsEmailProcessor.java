@@ -1,5 +1,6 @@
 package com.uts.tradeconfo;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -127,13 +128,14 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 	{
 		try
 		{
+			logger.debug("{} {}", message.getSentDate().toString(), message.getSubject());
 			// if (!message.getFlags().contains(Flags.Flag.SEEN))
 			// {
 			if (message.getSentDate().after(last) && message.getSentDate().before(EMAIL_END_DATE))
 			{
 				Address[] fromAddresses = message.getFrom();
-				logger.debug(message.getSentDate().toString() + "," + fromAddresses[0].toString() + ","
-						+ message.getSubject());
+				logger.debug("{} {} {}", message.getSentDate().toString(), fromAddresses[0].toString(),
+						message.getSubject());
 				if (/* isFrom(fromAddresses[0].toString()) && */ isSubjectMatched(message.getSubject()))
 				{
 					try
@@ -152,14 +154,25 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 		{
 			e.printStackTrace();
 		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void loadTradeConfo() 
 	{
 		TradeConfoRepo repo = (TradeConfoRepo) MongoDbAdapter.instance().get(TradeConfoRepo.class);
-		Collection<TradeConfo> l = repo.findBetween(DB_START_DATE, DB_END_DATE);
-		l.forEach(c -> map.put(((TradeConfo)c).getKey(), c));
-		logger.info("load {} tradeConfo", l.size());
+		Collection<TradeConfo> l;
+//		try
+//		{
+			l = repo.findBetween(EMAIL_START_DATE, EMAIL_END_DATE);
+			l.forEach(c -> map.put(((TradeConfo)c).getKey(), c));
+			logger.info("load {} tradeConfo", l.size());
+//		} catch (ParseException e)
+//		{
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void poll()
@@ -212,6 +225,8 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 			logger.info(t.toString());
 			
 			writeDb(t);
+			String path = saveFile(part);
+			t.setFile(path);
 		}
 	}
 	
@@ -232,5 +247,31 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 			tradeConfo.setId(old.getId());
 		}
 		MongoDbAdapter.instance().save(tradeConfo);	// save will also do update
+	}
+	
+	public String saveFile(MimeBodyPart part)
+	{
+		String fileName;
+		try
+		{
+			fileName = part.getFileName();
+			String x = fileName.replaceAll("/", "_").replaceAll(" ", "_");
+			String path = "/home/idbs/cmbos/tradeconfo" + File.separator + x;
+			part.saveFile(path);
+			
+			logger.info(path);
+			return path;
+		} catch (MessagingException e)
+		{
+			logger.error("{}", e);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

@@ -120,11 +120,11 @@ public class MailService implements IMailService
 			store.connect(userName, password);
 
 			Folder inbox = store.getFolder("INBOX");
-			inbox.open(Folder.READ_WRITE);
+			inbox.open(Folder.READ_ONLY);
 
 			int count = inbox.getMessageCount();
-			logger.info("Inbox emails " + count);
-			Message[] messages = inbox.getMessages(1, count);
+			logger.info("Inbox emails {}", count);
+			Message[] messages = inbox.getMessages();
 			Arrays.sort(messages, new Comparator<Message>() {
 			    @Override
 			    public int compare(Message o1, Message o2) {
@@ -139,8 +139,11 @@ public class MailService implements IMailService
 			        return 0;
 			    }
 			});
-			for (Message message : messages)
+			
+			for (int i=0; i<messages.length; i++)
 			{
+				Message message = messages[i];
+//logger.info("{}", i);
 				cb.onEmail(message);
 			}
 

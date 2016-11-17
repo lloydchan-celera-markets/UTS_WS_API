@@ -3,6 +3,7 @@ package com.celera.message.cmmf;
 public interface ICmmfConst
 {
 	public static final String DATE_FMT = "yyyyMMdd";
+	public static final String MONTH_FORMAT= "yyyyMM";
 	// cmmf header
 	public static final int HEADER_SIZE = 4;
 	public static final int HEADER_SENDER_POS = 0;
@@ -11,4 +12,6 @@ public interface ICmmfConst
 	public static final int HEADER_COMMAND_POS = 3;
 	
 	public static final int DATE_LENGTH = 8;
+	public static final int MONTH_LENGTH = 6;
+	public static final int DOC_ID_LENGTH = 24;
 }

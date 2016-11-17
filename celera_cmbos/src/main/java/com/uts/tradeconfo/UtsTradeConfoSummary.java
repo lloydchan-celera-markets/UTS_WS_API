@@ -1,103 +1,130 @@
 package com.uts.tradeconfo;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.celera.backoffice.BOData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.celera.backoffice.DatabaseAdapter;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
-import com.uts.tradeconfo.InvoiceRegister;
+import com.celera.mongo.entity.BOData;
+import com.celera.mongo.entity.InvoiceRegister;
 import com.uts.tools.Uts2Dm;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class UtsTradeConfoSummary {
+public class UtsTradeConfoSummary
+{
+	private static final Logger logger = LoggerFactory.getLogger(UtsTradeConfoSummary.class);
 
-	private static final String TRADECONFO_FILE = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_UTSTRADECONFO_CSV);
-	
-	public static Map<String, com.uts.tradeconfo.InvoiceRegister> map = new HashMap<String, InvoiceRegister>();
+	private static final String TRADECONFO_FILE = ResourceManager
+			.getProperties(IResourceProperties.PROP_CMBOS_UTSTRADECONFO_CSV);
+
+	public static Map<String, InvoiceRegister> map = new ConcurrentHashMap<String, InvoiceRegister>();
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+	public static SimpleDateFormat sdf_yyyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-	public static void loadSummary() {
-
-	}
-
-	public static void main(String[] args) throws IOException {
-
-		// public static void main(String[] args) {
-////		String csvFile = "Z://Celera Markets/Invoice/trade_confirmation(full)_v1.csv";
-//		BufferedReader br = null;
-//		String line = "";
-//		String cvsSplitBy = ",";
+	public static void load()
+	{
 		boolean isHeader = true;
 
-		try {
+		try
+		{
+			InvoiceRegister temp = new InvoiceRegister(/*"2016-11-15 00:00", "CEL-160001", "", "", "", 0d*/);
+			DatabaseAdapter.deleteAll(temp);
 
 			CSVReader reader = new CSVReader(new FileReader(TRADECONFO_FILE));
 			String[] nextLine;
-			while ((nextLine = reader.readNext()) != null) {
+			while ((nextLine = reader.readNext()) != null)
+			{
 
 				if (nextLine.length == 0)
 					continue;
-				if (isHeader) {
+				if (isHeader)
+				{
 					isHeader = false;
 					continue;
 				}
-				
-//				for (String s : nextLine) {
-//					System.out.print(s + "," );
-//				}
-//				System.out.println("");
+
 				String date = nextLine[2];
 				String client = nextLine[3];
 				String fees = nextLine[9];
-				String fc = nextLine[10];
-//				System.out.println(date + "," + baclient," + fees + "," + fc);
-				// nextLine[] is an array of values from the line
+				String fc = nextLine[11];
 
 				com.celera.mongo.entity.Account acc = BOData.get(client);
-				if (acc == null) {
-					System.out.println("=========no such client===========" + client);
-				}
-				else {
-//					System.out.println(client + ": " + acc);
-					InvoiceRegister ir = new InvoiceRegister(date, "CEL-160001", acc.getId(),fc, client, Uts2Dm.toDouble(fees));
-					InvoiceRegister old = map.get(ir.key());
-					if (old == null) {
-						map.put(ir.key(), ir);
-						System.out.println("=============new==========="+ir);
+				if (acc == null)
+				{
+					logger.debug("No such client {}", client);
+				} else
+				{
+					InvoiceRegister ir = new InvoiceRegister();
+//							date, "CEL-160001", client, acc.getId(), fc,
+//							Uts2Dm.toDouble(fees));
+					try {
+						Date d = sdf_yyyyMMddHHmm.parse(date);
+						ir.setDate(d);
 					}
-					else {
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+					ir.setInvoice("CEL-160001");
+					ir.setCustomer(client);
+					ir.setAccountNumber(acc.getId());
+					ir.setCurncy(fc);
+					ir.setAmount(Uts2Dm.toDouble(fees));
+					ir.setKey(ir.toKey());
+					
+					InvoiceRegister old = map.get(ir.getKey());
+					if (old == null)
+					{
+						map.put(ir.getKey(), ir);
+						logger.debug("New invoice register {}", ir);
+					} else
+					{
 						old.setAmount(ir.getAmount() + old.getAmount());
-						System.out.println("=============update==========="+old);
+						logger.debug("Update invoice register {}", old);
 					}
 				}
 			}
-			
-			for (InvoiceRegister l: map.values()) {
-				System.out.println(l.toString());
+			for (InvoiceRegister e : map.values())
+			{
+				DatabaseAdapter.create(e);
 			}
-			
-		} catch (FileNotFoundException e) {
+
+		} catch (FileNotFoundException e)
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-//		} finally {
-//			if (br != null) {
-//				try {
-//					br.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
+			// } finally {
+			// if (br != null) {
+			// try {
+			// br.close();
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			// }
 		}
+	}
+
+	public static void main(String[] args) throws IOException
+	{
+		DatabaseAdapter dba = new DatabaseAdapter();
+		dba.start();
+		dba.loadAll();
+		UtsTradeConfoSummary.load();
 	}
 }

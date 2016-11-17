@@ -74,7 +74,50 @@ public class MongoDbAdapter
 			throw e;
 		}
 	}
-
+	
+	public void delete(IMongoDocument doc) 
+	{
+		try
+		{
+//			doc.setLastModified(new Date(System.currentTimeMillis()));
+//		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+//				new ClassPathResource("spring-config.xml").getPath());
+			Class clazz = doc.getRepo();
+			CrudRepository repo = (CrudRepository) ctx.getBean(clazz);
+			repo.delete(doc);
+			
+//		Iterable<TradeConfo> tradeConfoList = tradeConfoRepo.findAll();
+//		System.out.println("TradeConfo List : ");
+//		for (TradeConfo person : tradeConfoList)
+//		{
+//			System.out.println(person);
+//		}
+//		System.out.println("TradeConfo with tradeId CELERAEQ-2016-13155 is " + tradeConfoRepo.searchByTradeConfoId("CELERAEQ-2016-13155"));
+//		logger.info("insert: {}" , doc.toString());
+//		context.close();
+		}
+		catch (Exception e)
+		{
+			logger.error("", e);
+			throw e;
+		}
+	}
+	
+	public void deleteAll(IMongoDocument doc) 
+	{
+		try
+		{
+			Class clazz = doc.getRepo();
+			CrudRepository repo = (CrudRepository) ctx.getBean(clazz);
+			repo.deleteAll();
+		}
+		catch (Exception e)
+		{
+			logger.error("", e);
+			throw e;
+		}
+	}
+	
 	public CrudRepository get(Class clazz) {
 		return (CrudRepository) ctx.getBean(clazz);
 	}

@@ -23,6 +23,9 @@ public class Uts2Dm
 	public static final String DB_NULL = "DBNull";
 	static final DecimalFormat format = (DecimalFormat) NumberFormat.getInstance();
 
+	private static final String DB_DATE_FORMATTER = "dd-MMM-yy";
+	private final static SimpleDateFormat dbSdf = new SimpleDateFormat(DB_DATE_FORMATTER);
+	
 	public static EInstrumentType toInstrumentType(String code)
 	{
 		switch (code)
@@ -71,6 +74,22 @@ public class Uts2Dm
 		}
 	}
 
+	public static String toDateString(Date d)
+	{
+		if (d == null)
+			return null; // skip throw
+		
+		try
+		{
+			return UTS_SDF.format(d);
+		}
+		catch (Exception e)
+		{
+//			e.printStackTrace();	// time should not be null
+			return null;
+		}
+	}
+	
 	public static Date toDate(String d)
 	{
 		if (d == null)
@@ -161,4 +180,5 @@ public class Uts2Dm
 			return null;
 		}
 	}
+	
 }

@@ -32,7 +32,7 @@ public class Application
 		tradeConfo.setSeller("Morgan Stanley & Co. International PLC");
 		tradeConfo.setPrice(3.45d);
 		tradeConfo.setCurncy("KRW");
-		tradeConfo.setTradeDate("04-Oct-16");
+//		tradeConfo.setTradeDate("04-Oct-16");
 		tradeConfo.setRefPrice(259.5d);
 		tradeConfo.setTradeConfoId("CELERAEQ-2016-13151");
 		tradeConfo.setDelta("-10.00 %");

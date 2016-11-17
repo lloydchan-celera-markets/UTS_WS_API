@@ -390,7 +390,7 @@ public class UtsTradeConfoDetail_old
 		to.setSeller(this.seller);
 		to.setPrice(Uts2Dm.toDouble(this.price));
 		to.setCurncy(this.curncy);
-		to.setTradeDate(this.tradeDate);
+		to.setTradeDate(Uts2Dm.toDate(this.tradeDate));
 		to.setRefPrice(Uts2Dm.toDouble(this.refPrice));
 		to.setTradeConfoId(this.id);
 		to.setDelta(this.delta);

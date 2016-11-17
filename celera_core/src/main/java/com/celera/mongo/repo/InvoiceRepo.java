@@ -1,5 +1,8 @@
 package com.celera.mongo.repo;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.celera.mongo.entity.Invoice;
@@ -12,4 +15,7 @@ public interface InvoiceRepo extends CrudRepository<Invoice, String>
 //			+ "t.rate = ?17, t.premium = ?18, t.premiumCny= ?19, t.hedge = ?20, t.hedgeFutRef = ?21, "
 //			+ "t.brokerageFee = ?22, t.brokerageCny = ?23, where t.buyer = ?24 and t.seller = ?25 and t.tradeConfoId = ?26}")
 //	public void updateTradeConfo(String tradeConfoId);
+	
+	@Query("{invoice_number : {$exists: true}}")
+	public Page<Invoice> findInvoiceNumberNotEmpty(Pageable pageable);
 }
