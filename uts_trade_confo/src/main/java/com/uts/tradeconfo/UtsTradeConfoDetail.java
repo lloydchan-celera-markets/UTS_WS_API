@@ -1160,6 +1160,7 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 //		to.setHedgeFutRef(Uts2Dm.toDouble(this.hedgeFutRef));
 		to.setBrokerageFee(Uts2Dm.toDouble(this.brokerageFee));
 		to.setBrokerageCny(this.brokerageCny);
+		to.setFile(this.getFile());
 		
 		List<Hedge> hedges = to.getHedges();
 		hedges.addAll(this.hedges);

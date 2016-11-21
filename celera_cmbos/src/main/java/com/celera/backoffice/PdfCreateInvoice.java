@@ -144,6 +144,7 @@ public class PdfCreateInvoice
 			
 			TradeConfo td = e.convert();
 			td.setHasInvoiceCreated(true);
+			
 			DatabaseAdapter.create(td);
 		}
 

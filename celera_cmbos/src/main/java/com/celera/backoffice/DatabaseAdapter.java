@@ -248,7 +248,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 					logger.error("{}", c, e);
 				}
 			});
-			logger.info("load invoice {}", l.size());
+			logger.info("load invoice {}, {}, {}", l.size(), all.size(), customizedMap.size());
 		}
 		catch (Exception e)
 		{
@@ -674,7 +674,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 	}
 	
 	public static IMongoDocument get(String id) {
-		
+System.out.println(all.size());
 		IMongoDocument o = customizedMap.get(id);
 		if (o == null) {
 			o = all.get(id);

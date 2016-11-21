@@ -84,14 +84,15 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 
 	public void onTask(byte[] data)
 	{
-		logger.debug("{}", new String(data));
+		String msg = new String(data);
+		logger.debug("{}", msg);
 		
 		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
 		switch (cmd)
 		{
 		case EMAIL_INVOICE:
 		{
-			String msg = new String(data);
+			
 			String param = msg.substring(ICmmfConst.HEADER_SIZE);
 			String[] params = param.split(",");
 			// msg = DatabaseAdapter.getHistTradeConfo();
@@ -112,7 +113,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 				}
 			} catch (Exception e)
 			{
-				logger.error("{}", e);
+				logger.error("", e);
 			}
 			break;
 		}
@@ -180,27 +181,30 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		}
 		case REMOVE_INVOICE:
 		{
-			String id = null;
+			String ids = null;
 			IMongoDocument o = null;
 			try
 			{
 //				msg = new String(data, ICmmfConst.HEADER_SIZE);
-				id = new String(data).substring(ICmmfConst.HEADER_SIZE);
-				o = (IMongoDocument) DatabaseAdapter.get(id);
-				
-				if (o != null) {
-					DatabaseAdapter.delete(o);
-					logger.info("delete invoice object - {}", o);
+				ids = new String(data).substring(ICmmfConst.HEADER_SIZE);
+				for (String id : ids.split(",")) 
+				{
+					o = (IMongoDocument) DatabaseAdapter.get(id);
+					
+					if (o != null) {
+						DatabaseAdapter.delete(o);
+						logger.info("delete invoice object - {}", o);
+					}
 				}
 			} catch (ClassCastException e)
 			{
 				logger.error("Not invoice object - {}", o, e);
-			} catch (NullPointerException e)
-			{
-				logger.error("Invoice no exist - {}", id, e);
+//			} catch (NullPointerException e)
+//			{
+//				logger.error("Invoice no exist - {}", id, e);
 			} catch (Exception e)
 			{
-				logger.error("{}", id, e);
+				logger.error("{}", ids, e);
 			}
 			break;
 		}
@@ -255,7 +259,8 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 //		byte[] b = {87, 68, 84, 71, 50, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
 //		byte[] b = {87, 68, 84, 71, 50, 48, 49, 54, 49, 50};
 		
-		String s = "WDQGHKD1216BNP Paribas Arbitrage S.N.C.*";
+//		String s = "WDQGHKD1216BNP Paribas Arbitrage S.N.C.*";
+		String s = "WDTE582d69b8327c2418e8c3782c,582d69f1327c2418e8c3782d,582d5738327cb2495d00abc2";
 		byte[] b = s.getBytes();
 		DatabaseAdapter dba = new DatabaseAdapter();
 		dba.start();
@@ -271,7 +276,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		}
 		finally {
 			BOServiceManager sm = new BOServiceManager();
-			dba.onMessage(b);
+			sm.onMessage(b);
 		}
 //		Object o = DatabaseAdapter.get("5823e5db327c6f823236fe83");
 //	
