@@ -13,6 +13,7 @@ public class BOFormatter
 		case "HKD": return "HK$" + nf.format(fee);
 		case "USD": return "US$" + nf.format(fee);
 		case "KRW": return "US$" + nf.format(fee);
+		case "JPY": return "JP$" + nf.format(fee);
 		default: return currency + nf.format(fee); 
 		}
 	}
@@ -24,6 +25,7 @@ public class BOFormatter
 		case "HKD": return "HK$";
 		case "USD": return "US$";
 		case "KRW": return "US$";
+		case "JPY": return "JP$";
 		default: return currency; 
 		}
 	}

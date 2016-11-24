@@ -224,17 +224,19 @@ public class DbCreateInvoice implements Runnable
 		return cal.getTime();
 	}
 	
-	public Invoice createInvoice()
+	public Invoice createInvoice(Date start, Date end)
 	{
 		List<TradeConfo> client2TradeConfo = new ArrayList<TradeConfo>();
 		
 		// (firm + currency) -> trade confo
-		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(tradeDateStart, tradeDateEnd);
+//		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(tradeDateStart, tradeDateEnd);
+		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(start, end);
 		
-		String myKey = this.key();
+		String myKey = Invoice.key(this.company, this.currency, this.invMonth);
 		String tmpKey = null/*, tdKeyLow = null*/;
 		String curncy = null;
 		Date tradeDate = null;
+int count = 0;
 		for (TradeConfo e : dbList)
 		{
 			String tmpCurncy = e.getCurncy();
@@ -251,7 +253,7 @@ public class DbCreateInvoice implements Runnable
 			}
 			tmpParticipant = buyer == null? seller: buyer;
 			tmpKey = Invoice.key(tmpParticipant, tmpCurncy, invDate);
-			
+System.out.println("=============" + myKey + "," + tmpKey + "," + ++count);			
 			if (myKey.equals(tmpKey)) 
 			{ 
 				client2TradeConfo.add(e);

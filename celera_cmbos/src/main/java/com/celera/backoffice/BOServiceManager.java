@@ -2,6 +2,7 @@ package com.celera.backoffice;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -99,11 +100,12 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 //			String id = new String(data, ICmmfConst.HEADER_SIZE, ICmmfConst.DOC_ID_LENGTH);
 			try
 			{
+				List<Invoice> list = new ArrayList<Invoice>();
 				for (String id : params) {
 					Invoice inv = (Invoice) DatabaseAdapter.get(id);
 					if (!inv.getHasSent()) {
-						SendAttachmentInEmail.sendEmail(inv);
 						logger.debug("email invoice {}", id);
+						list.add(inv);
 						inv.setHasSent(true);
 						DatabaseAdapter.update(inv);
 					}
@@ -111,6 +113,8 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 						logger.debug("email has been sent before. Please manual send the invoice {}", inv);
 					}
 				}
+				
+				SendAttachmentInEmail.sendEmail(list);
 			} catch (Exception e)
 			{
 				logger.error("", e);
@@ -159,7 +163,8 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 				inv.setInvoice_number(invoice_number);
 				inv.setInvoice_date(invoice_date);
 				inv.setAmount(amount);
-				inv.setAmount(size);
+				inv.setAmount_due(amount);
+				inv.setSize(size);
 				inv.setHedge(hedge);
 				inv.setIsPaid(isPaid);
 				inv.setHasSent(hasSent);
@@ -260,12 +265,13 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 //		byte[] b = {87, 68, 84, 71, 50, 48, 49, 54, 49, 50};
 		
 //		String s = "WDQGHKD1216BNP Paribas Arbitrage S.N.C.*";
-		String s = "WDTE582d69b8327c2418e8c3782c,582d69f1327c2418e8c3782d,582d5738327cb2495d00abc2";
+//		String s = "WDTE582d69b8327c2418e8c3782c,582d69f1327c2418e8c3782d,582d5738327cb2495d00abc2";
+		String s = "WDQGHKD1016UBS AG London Branch";
 		byte[] b = s.getBytes();
 		DatabaseAdapter dba = new DatabaseAdapter();
 		dba.start();
 		DatabaseAdapter.loadAll();
-
+dba.onQuery(b);
 		try
 		{
 			Thread.sleep(2000);

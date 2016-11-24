@@ -142,12 +142,14 @@ public class PdfCreateInvoice
 			}
 			temp.add(e);
 			
-			TradeConfo td = e.convert();
-			td.setHasInvoiceCreated(true);
+			TradeConfo tc = e.convert();
+			tc.setHasInvoiceCreated(true);
 			
-			DatabaseAdapter.create(td);
+//			DatabaseAdapter.create(tc);
 		}
 
+//System.exit(-1);
+		
 //		String.format("CEL%04d", invoice_Num);
 
 		// for each client
@@ -267,18 +269,6 @@ if (invNumber != null)
 				finally {
 //					System.out.println("other exception");
 				}
-
-
-//				try {
-//					InvoiceTemplate.csvProcessor(td, inv.getCompany(), curncy, mmmyy);
-//				} catch (InvalidFormatException ex) {
-//					// TODO Auto-generated catch block
-//					ex.printStackTrace();
-//				} catch (IOException ex) {
-//					// TODO Auto-generated catch block
-//					ex.printStackTrace();
-//				}
-				
 			}
 			catch (Exception ex) 
 			{

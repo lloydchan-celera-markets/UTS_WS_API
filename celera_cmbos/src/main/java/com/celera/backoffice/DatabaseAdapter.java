@@ -3,6 +3,7 @@ package com.celera.backoffice;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -421,6 +422,26 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 				String company = param.substring(7);
 				String key = Invoice.key(company, currency, dInvMonth);
 				
+				
+				Calendar start = Calendar.getInstance();
+				start.setTime(dInvMonth);
+				start.add(Calendar.MONTH, -1);	// trade date month
+				
+				start.set(Calendar.DAY_OF_MONTH, 1);
+				start.set(Calendar.HOUR_OF_DAY, 0);
+				start.set(Calendar.MINUTE, 0);
+				start.set(Calendar.SECOND, 0);
+				start.set(Calendar.MILLISECOND, 0);
+
+				int lastDay = start.getActualMaximum(Calendar.DAY_OF_MONTH);
+				Calendar lastDayCal = Calendar.getInstance();
+				lastDayCal.setTime(start.getTime());
+				lastDayCal.set(Calendar.DAY_OF_MONTH, lastDay);
+				lastDayCal.set(Calendar.HOUR_OF_DAY, 23);
+				lastDayCal.set(Calendar.MINUTE, 59);
+				lastDayCal.set(Calendar.SECOND, 59);
+				lastDayCal.set(Calendar.MILLISECOND, 999);
+				
 				if (customizedMap.containsKey(key)) {
 					msg = buildDWRGResponse(null, key + " already exists");
 				}
@@ -429,7 +450,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 					gen.setCompany(company);
 					gen.setCurrency(currency);
 					gen.setDate(dInvMonth);
-					Invoice inv = gen.createInvoice();
+					Invoice inv = gen.createInvoice(start.getTime(), lastDayCal.getTime());
 					
 					if (inv != null)
 						msg = buildDWRGResponse(inv, null);
@@ -692,10 +713,14 @@ System.out.println(all.size());
 //		}
 //	}
 	
-	public static void main2(String[] arg)
+	public static void main(String[] arg)
 	{
-		byte[] b = {87, 68, 84, 85, 123, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
+//		byte[] b = {87, 68, 84, 85, 123, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
+		String s = "WDQGHKD1016UBS AG London Branch";
+		byte[] b = s.getBytes();
 		DatabaseAdapter dba = new DatabaseAdapter();
+		dba.start();
+		dba.loadAll();
 		dba.onQuery(b);
 		
 		String temp = new String(b).substring(ICmmfConst.HEADER_SIZE);
@@ -705,7 +730,7 @@ System.out.println(all.size());
 		System.out.println(jsnobject);
 	}
 	
-	public static void main(String[] args)
+	public static void main2(String[] args)
 	{
 		int interval = 10000;
 		DatabaseAdapter dba = new DatabaseAdapter();
