@@ -16,7 +16,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import com.vectails.oms.OMS;
 import com.vectails.sds.UtsStaticDataService;
 import com.vectails.session.IUtsLastTimeUpdateListener;
 import com.vectails.xml.IUtsLastTimeUpdater;
@@ -41,6 +40,9 @@ import com.vectails.xml.data.Underlying;
 import com.vectails.xml.data.Underlyings;
 import com.vectails.xml.data.UtsDirectAccessResponse;
 import com.vectails.xml.data.tag.ParameterTag;
+
+import come.celera.core.oms.OMS;
+
 import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.IInstrument;

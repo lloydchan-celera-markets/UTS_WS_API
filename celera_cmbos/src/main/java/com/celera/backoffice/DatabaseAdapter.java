@@ -442,10 +442,11 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 				lastDayCal.set(Calendar.SECOND, 59);
 				lastDayCal.set(Calendar.MILLISECOND, 999);
 				
-				if (customizedMap.containsKey(key)) {
-					msg = buildDWRGResponse(null, key + " already exists");
-				}
-				else {
+//				if (customizedMap.containsKey(key)) {
+//					msg = buildDWRGResponse(null, key + " already exists");
+//				}
+//				else 
+				{
 					DbCreateInvoice gen = new DbCreateInvoice();
 					gen.setCompany(company);
 					gen.setCurrency(currency);

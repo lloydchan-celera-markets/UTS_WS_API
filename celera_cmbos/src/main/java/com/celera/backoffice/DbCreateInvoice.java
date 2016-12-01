@@ -166,54 +166,54 @@ public class DbCreateInvoice implements Runnable
 		this.company = company;
 	}
 
-	public void run1()
-	{
-		Map<String, List<TradeConfo>> client2TradeConfo = new HashMap<String, List<TradeConfo>>();
-
-		// (firm + currency) -> trade confo
-		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(tradeDateStart, tradeDateEnd);
-		String key;
-		for (TradeConfo e : dbList)
-		{
-			String curncy = e.getCurncy();
-			String buyer = e.getBuyer();
-			Date tradeDate = e.getTradeDate();
-			
-			String firm;
-			if (buyer == null)
-			{
-				String seller = e.getSeller();
-				int pos = seller.lastIndexOf(PATTERN);
-				firm = (pos > 0) ? seller.substring(0, pos) : seller;
-				key = firm + curncy;
-			} else
-			{
-				int pos = buyer.lastIndexOf(PATTERN);
-				firm = (pos > 0) ? buyer.substring(0, pos) : buyer;
-				key = firm + curncy;
-			}
-			List temp = (List) client2TradeConfo.get(key);
-			if (temp == null)
-			{
-				temp = new ArrayList<TradeConfo>();
-				client2TradeConfo.put(key, temp);
-			}
-			temp.add(e);
-		}
-
-//		String.format("CEL%04d", invoice_Num);
-		// for each client
-		for (Map.Entry<String, List<TradeConfo>> e : client2TradeConfo.entrySet())
-		{
-			// find client info
-			List<TradeConfo> tradeConfo = e.getValue();
-			TradeDetail tradeDetail = new TradeDetail();
-			for (TradeConfo tc : e.getValue())
-			{
-				tradeDetail.setDate(Uts2Dm.toDateString(tc.getTradeDate()));
-			}
-		}
-	}
+//	public void run1()
+//	{
+//		Map<String, List<TradeConfo>> client2TradeConfo = new HashMap<String, List<TradeConfo>>();
+//
+//		// (firm + currency) -> trade confo
+//		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(tradeDateStart, tradeDateEnd);
+//		String key;
+//		for (TradeConfo e : dbList)
+//		{
+//			String curncy = e.getCurncy();
+//			String buyer = e.getBuyer();
+//			Date tradeDate = e.getTradeDate();
+//			
+//			String firm;
+//			if (buyer == null)
+//			{
+//				String seller = e.getSeller();
+//				int pos = seller.lastIndexOf(PATTERN);
+//				firm = (pos > 0) ? seller.substring(0, pos) : seller;
+//				key = firm + curncy;
+//			} else
+//			{
+//				int pos = buyer.lastIndexOf(PATTERN);
+//				firm = (pos > 0) ? buyer.substring(0, pos) : buyer;
+//				key = firm + curncy;
+//			}
+//			List temp = (List) client2TradeConfo.get(key);
+//			if (temp == null)
+//			{
+//				temp = new ArrayList<TradeConfo>();
+//				client2TradeConfo.put(key, temp);
+//			}
+//			temp.add(e);
+//		}
+//
+////		String.format("CEL%04d", invoice_Num);
+//		// for each client
+//		for (Map.Entry<String, List<TradeConfo>> e : client2TradeConfo.entrySet())
+//		{
+//			// find client info
+//			List<TradeConfo> tradeConfo = e.getValue();
+//			TradeDetail tradeDetail = new TradeDetail();
+//			for (TradeConfo tc : e.getValue())
+//			{
+//				tradeDetail.setDate(Uts2Dm.toDateString(tc.getTradeDate()));
+//			}
+//		}
+//	}
 	
 	private Date nextMonth(Date d) 
 	{
@@ -236,7 +236,7 @@ public class DbCreateInvoice implements Runnable
 		String tmpKey = null/*, tdKeyLow = null*/;
 		String curncy = null;
 		Date tradeDate = null;
-int count = 0;
+//int count = 0;
 		for (TradeConfo e : dbList)
 		{
 			String tmpCurncy = e.getCurncy();
@@ -253,7 +253,7 @@ int count = 0;
 			}
 			tmpParticipant = buyer == null? seller: buyer;
 			tmpKey = Invoice.key(tmpParticipant, tmpCurncy, invDate);
-System.out.println("=============" + myKey + "," + tmpKey + "," + ++count);			
+//System.out.println("=============" + myKey + "," + tmpKey + "," + ++count);			
 			if (myKey.equals(tmpKey)) 
 			{ 
 				client2TradeConfo.add(e);
@@ -320,10 +320,6 @@ System.out.println("=============" + myKey + "," + tmpKey + "," + ++count);
 			logger.info("save database {}", tradeDetail);	
 		}
 			
-//		String[] tokens = tdKeyLow.split("_");
-//		String company = tokens[0];
-//		String curncy = tokens[1];
-//		String mmyy = tokens[2];
 		Invoice inv = null;
 		
 		try {
@@ -362,6 +358,7 @@ System.out.println("=============" + myKey + "," + tmpKey + "," + ++count);
 			inv.setKey(Invoice.key(company, curncy, this.invMonth));
 			
 			try {
+				// create word file
 				InvoiceTemplate.dbWordDocProcessor(inv, curncy, tradeDate);
 				
 				DatabaseAdapter.create(inv);
@@ -425,9 +422,9 @@ System.out.println("=============" + myKey + "," + tmpKey + "," + ++count);
 				}
 				temp.add(e);
 				
-				// update hasSent
-				e.setHasInvoiceCreated(true);
-				DatabaseAdapter.create(e);
+//				// update hasSent
+//				e.setHasInvoiceCreated(true);
+//				DatabaseAdapter.create(e);
 			}
 //			else {
 //				System.out.println("================skip key================" + key);
@@ -731,11 +728,17 @@ logger.error("=============incorrect amount============== {}, {}, {}", keyUsd, r
 	
 	public static void main(String[] args) 
 	{
+		DatabaseAdapter dba = new DatabaseAdapter();
+		dba.start();
+		dba.loadAll();
+		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		Date start = new Date(cal.getTimeInMillis());
 		Date end = new Date();
-//		DbInvoiceGenerator gen = new DbInvoiceGenerator(start, end);
-//		gen.run1();
+		DbCreateInvoice gen = new DbCreateInvoice();
+		cal.add(Calendar.MONTH, 1);
+		gen.setDate(cal.getTime());
+		gen.run();
 	}
 }

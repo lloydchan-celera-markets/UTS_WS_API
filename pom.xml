@@ -170,5 +170,6 @@
 		<module>uts_core</module>
 		<module>celera_uts_wsdl_soap</module>
 		<module>uts_trade_confo</module>
+		<module>celera_broker</module>
 	</modules>
 </project>

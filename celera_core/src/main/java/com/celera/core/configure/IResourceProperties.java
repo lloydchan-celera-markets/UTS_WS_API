@@ -41,4 +41,19 @@ public interface IResourceProperties
 	public static final String PROP_CMBOS_TEMPLATE_PATH = "cmbos.template.path";
 
 	public static final String PROP_CMBOS_UTSTRADECONFO_CSV = "cmbos.uts.tradeconfo.csv";
+	
+	public static final String PROP_EXCHANGE_CONNECTOR_CHL_PULL_PROT = "exchange.connector.channel.pull.protocol";
+	public static final String PROP_EXCHANGE_CONNECTOR_CHL_PULL_IP = "exchange.connector.channel.pull.ip";
+	public static final String PROP_EXCHANGE_CONNECTOR_CHL_PULL_PORT = "exchange.connector.channel.pull.port";
+	public static final String PROP_EXCHANGE_CONNECTOR_CHL_SINK_PROT = "exchange.connector.channel.sink.protocol";
+	public static final String PROP_EXCHANGE_CONNECTOR_CHL_SINK_IP = "exchange.connector.channel.sink.ip";
+	public static final String PROP_EXCHANGE_CONNECTOR_CHL_SINK_PORT = "exchange.connector.channel.sink.port";
+	
+	public static final String PROP_WEB_TRADER_CHL_PULL_PROT = "webtrader.channel.pull.protocol";
+	public static final String PROP_WEB_TRADER_CHL_PULL_IP = "webtrader.channel.pull.ip";
+	public static final String PROP_WEB_TRADER_CHL_PULL_PORT = "webtrader.channel.pull.port";
+	public static final String PROP_WEB_TRADER_CHL_SINK_PROT = "webtrader.channel.sink.protocol";
+	public static final String PROP_WEB_TRADER_CHL_SINK_IP = "webtrader.channel.sink.ip";
+	public static final String PROP_WEB_TRADER_CHL_SINK_PORT = "webtrader.channel.sink.port";
+	
 }

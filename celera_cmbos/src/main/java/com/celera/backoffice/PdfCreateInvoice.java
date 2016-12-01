@@ -36,6 +36,7 @@ import com.celera.backoffice.InvoiceTemplate;
 import com.celera.mongo.entity.InvoiceRegister;
 import com.uts.tradeconfo.PdfParser;
 import com.uts.tradeconfo.UtsTradeConfoDetail;
+import com.uts.tradeconfo.UtsTradeConfoSummary;
 
 public class PdfCreateInvoice
 {
@@ -46,7 +47,7 @@ public class PdfCreateInvoice
 	
 	private static final String PRE_INVOICE_NUMBER = "CEL";
 	private static final String PATTERN = " - ";
-	private static int invoice_Num = 1;
+	private static int invoice_Num = 160170;
     private static final NumberFormat nf = new DecimalFormat("##.#");
     private static final String PREFIX_BUYER = "Buyer - ";
     private static final String PREFIX_SELLER = "Seller - ";
@@ -67,6 +68,8 @@ public class PdfCreateInvoice
 	
 	public static void main(String[] args)
 	{
+		UtsTradeConfoSummary.load();
+		
 		PdfCreateInvoice run = new PdfCreateInvoice();
 		run.createInvoice();
 		
@@ -206,7 +209,7 @@ public class PdfCreateInvoice
 				}
 				lTd.add(tradeDetail);
 				
-DatabaseAdapter.create(tradeDetail);
+//DatabaseAdapter.create(tradeDetail);
 			}
 			
 			String[] tokens = key.split("_");
@@ -325,21 +328,26 @@ if (invNumber != null)
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(d);
 			cal.set(Calendar.DAY_OF_MONTH, 9);
-			cal.add(Calendar.MONTH, 1);
 			String fileMonth = sdf_mm_yy.format(cal.getTime());
+			
+			cal.add(Calendar.MONTH, 1);
 
-			String keyUsd = tokens[0] + "_" + tokens[1].replace("KRW", "USD").replace("JPY", "USD") + "_" + fileMonth;
+
+//			String keyUsd = tokens[0] + "_" + tokens[1].replace("KRW", "USD").replace("JPY", "USD") + "_" + fileMonth;
+			String keyUsd = inv.getAccount_number() + "_" + tokens[1].replace("KRW", "USD").replace("JPY", "USD") + "_" + fileMonth;
 			keyUsd = keyUsd.toUpperCase();
 tempRecon.add(keyUsd);			
-			InvoiceRegister register = CSVReader.map.get(keyUsd);
+			InvoiceRegister register = UtsTradeConfoSummary.map.get(keyUsd);
+//			InvoiceRegister register = CSVReader.map.get(keyUsd);
 			if (register == null)
 			{
 				// dont fxxking care recon
-System.out.println("=============key==============" + keyUsd);
+logger.info("=============key============== {}", keyUsd);
 			}
 			else {
 				if (register.getAmount().equals(totalFee)){
-					invNumber = register.getInvoice();
+//					invNumber = register.getInvoice();
+					invNumber = PRE_INVOICE_NUMBER + "-" + invoice_Num++;
 //System.out.println("=============amount the same==============" + invNumber);
 logger.info("=============same amount============== {}, {}, {}", tokens[0], register.getAmount(), totalFee);
 					return invNumber;
@@ -347,11 +355,11 @@ logger.info("=============same amount============== {}, {}, {}", tokens[0], regi
 				else {
 					if (register.getAmount().equals(totalFee/2))
 					{
-//System.out.println("=============double amount==============" + tokens[0] + "," + register.getAmount() +"," + totalFee );
+System.out.println("=============double amount==============" + tokens[0] + "," + register.getAmount() +"," + totalFee );
 inv.showDetailsList();
 					}
 					else {
-logger.error("=============incorrect amount============== {}, {}, {}", keyUsd, register.getAmount(), totalFee );
+logger.error("=============incorrect amount============== {}, {}, {}, {}", keyUsd, register.getCustomer(), register.getAmount(), totalFee );
 						inv.showDetailsList();
 					}
 //					System.out.println(keyUsd + "=" + register.getAmount() + "," + totalFee);

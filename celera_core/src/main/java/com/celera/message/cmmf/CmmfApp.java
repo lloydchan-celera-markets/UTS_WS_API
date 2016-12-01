@@ -2,12 +2,15 @@ package com.celera.message.cmmf;
 
 import java.util.UUID;
 
+import com.celera.ipc.ILifeCycle;
+
 public abstract class CmmfApp implements ICmmfMessageListener
 {
 	String uniqueID = UUID.randomUUID().toString();
 
 	protected EApp me;
-
+	protected ILifeCycle taskChannel;
+	
 	public CmmfApp(EApp me)
 	{
 		this.me = me;

@@ -219,7 +219,6 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 			// }
 
 			String sPdf = new String(b);
-			// System.out.println(sPdf);
 			UtsTradeConfoDetail t = new UtsTradeConfoDetail();
 			t.parsePdf(sPdf);
 			logger.info(t.toString());

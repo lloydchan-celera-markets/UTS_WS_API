@@ -993,7 +993,6 @@ public class InvoiceTemplate
 			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + fileMonth + ".docx";
 			
 			inv.setFile(file);
-//			inv.setKey(company + "_" + curncy + "_" + fileMonth);
 			inv.setKey(Invoice.key(company, curncy, cal.getTime()));
 			
 			os = new FileOutputStream(file);

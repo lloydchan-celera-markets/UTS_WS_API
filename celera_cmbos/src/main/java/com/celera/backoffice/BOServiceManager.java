@@ -96,8 +96,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 			
 			String param = msg.substring(ICmmfConst.HEADER_SIZE);
 			String[] params = param.split(",");
-			// msg = DatabaseAdapter.getHistTradeConfo();
-//			String id = new String(data, ICmmfConst.HEADER_SIZE, ICmmfConst.DOC_ID_LENGTH);
+			
 			try
 			{
 				List<Invoice> list = new ArrayList<Invoice>();
@@ -149,25 +148,52 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 
 				id = jsnobject.getString("id");
 				o = (IMongoDocument) DatabaseAdapter.get(id);
-
-				String invoice_number = jsnobject.getString("invoice_number");
-				String invoice_date = jsnobject.getString("invoice_date");
-				String amount = jsnobject.getString("amount");
-				String size = jsnobject.getString("size");
-				String hedge = jsnobject.getString("hedge");
-				Boolean isPaid = jsnobject.getBoolean("isPaid");
-				Boolean hasSent = jsnobject.getBoolean("hasSent");
-
 				Invoice inv = (Invoice) o;
 				inv.setId(id);
-				inv.setInvoice_number(invoice_number);
-				inv.setInvoice_date(invoice_date);
-				inv.setAmount(amount);
-				inv.setAmount_due(amount);
-				inv.setSize(size);
-				inv.setHedge(hedge);
-				inv.setIsPaid(isPaid);
-				inv.setHasSent(hasSent);
+				
+				try
+				{
+					String invoice_number = jsnobject.getString("invoice_number");
+					inv.setInvoice_number(invoice_number);
+				} catch (Exception e)
+				{}
+				try
+				{
+					String invoice_date = jsnobject.getString("invoice_date");
+					inv.setInvoice_date(invoice_date);
+				} catch (Exception e)
+				{}
+				try
+				{
+					String amount = jsnobject.getString("amount");
+					inv.setAmount(amount);
+					inv.setAmount_due(amount);
+				} catch (Exception e)
+				{}
+				try
+				{
+					String size = jsnobject.getString("size");
+					inv.setSize(size);
+				} catch (Exception e)
+				{}
+				try
+				{
+					String hedge = jsnobject.getString("hedge");
+					inv.setHedge(hedge);
+				} catch (Exception e)
+				{}
+				try
+				{
+					Boolean isPaid = jsnobject.getBoolean("isPaid");
+					inv.setIsPaid(isPaid);
+				} catch (Exception e)
+				{}
+				try
+				{
+					Boolean hasSent = jsnobject.getBoolean("hasSent");
+					inv.setHasSent(hasSent);
+				} catch (Exception e)
+				{}
 
 				logger.info("invoice object - {}", inv);
 				

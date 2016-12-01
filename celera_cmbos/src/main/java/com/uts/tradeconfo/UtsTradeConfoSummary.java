@@ -30,7 +30,8 @@ public class UtsTradeConfoSummary
 
 	public static Map<String, InvoiceRegister> map = new ConcurrentHashMap<String, InvoiceRegister>();
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
-	public static SimpleDateFormat sdf_yyyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//	public static SimpleDateFormat sdf_yyyyMMddHHmm = new SimpleDateFormat("MM/dd/yyyy HH:mm");2016-11-30 16:48
+	public static SimpleDateFormat sdf_yyyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm"); //2016-11-30 16:48
 
 	public static void load()
 	{
@@ -62,7 +63,7 @@ public class UtsTradeConfoSummary
 				com.celera.mongo.entity.Account acc = BOData.get(client);
 				if (acc == null)
 				{
-					logger.debug("No such client {}", client);
+					logger.debug("No such client {}", client.getBytes());
 				} else
 				{
 					InvoiceRegister ir = new InvoiceRegister();

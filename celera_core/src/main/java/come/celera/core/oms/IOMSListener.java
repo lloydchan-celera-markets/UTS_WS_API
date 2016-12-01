@@ -1,4 +1,4 @@
-package com.vectails.oms;
+package come.celera.core.oms;
 
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.ITrade;

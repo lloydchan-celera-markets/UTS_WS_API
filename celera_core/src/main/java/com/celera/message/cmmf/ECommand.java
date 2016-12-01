@@ -13,7 +13,9 @@ public enum ECommand
 	QUERY_ALL_INVOICES('I'),
 	QUERY_UTS_SUMMARY('S'),
 	UPDATE_INVOICE('U'),
-	REMOVE_INVOICE('R');
+	REMOVE_INVOICE('R'),
+	NEW_ORDER('N'),
+	TRADE_REPORT('R');
 
 	private static final Map<Character, ECommand> map = new LinkedHashMap<Character, ECommand>();
 	static
