@@ -1,5 +1,6 @@
 package com.celera.adapter;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,8 +16,10 @@ import com.celera.core.configure.ResourceManager;
 import com.celera.library.javamail.IMailListener;
 import com.celera.library.javamail.IMailService;
 import com.celera.library.javamail.MailService;
+import com.celera.mongo.MongoDbAdapter;
+import com.celera.mongo.entity.IMongoDocument;
 
-public class EmailServiceImpl
+public abstract class EmailServiceImpl
 {
 	final static Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
@@ -66,13 +69,27 @@ public class EmailServiceImpl
 //			boolean res = isPolling.compareAndSet(false, true);
 //			if (isPolling.compareAndSet(false, true)) 
 //			{
-				serv.getAllFromInbox();
+				List<IMongoDocument> list = serv.getAllFromInbox();
+				writeDb(list);
 //				isPolling.compareAndSet(true, false);
 //			}
 //			else
 //			{
 //				logger.debug("polling");
 //			}
+		}
+	}
+	
+	private void writeDb(List<IMongoDocument> list) 
+	{
+//		TradeConfo tradeConfo = detail.convert();
+//		TradeConfo old = map.put(tradeConfo.getKey(), tradeConfo);
+//		if (old != null) {
+//			tradeConfo.setId(old.getId());
+//		}
+//		MongoDbAdapter.instance().save(detail);	// save will also do update
+		for (IMongoDocument c: list) {
+			MongoDbAdapter.instance().save(c);	// save will also do update
 		}
 	}
 	
@@ -83,6 +100,11 @@ public class EmailServiceImpl
 		serv.setListener(listener);
 	}
 
+	public IMailService getEmailService() 
+	{
+		return this.serv;
+	}
+	
 	@Override
 	public String toString()
 	{

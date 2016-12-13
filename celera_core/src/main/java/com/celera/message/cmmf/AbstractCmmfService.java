@@ -4,9 +4,9 @@ import com.celera.thread.AbstractTask;
 
 public abstract class AbstractCmmfService extends AbstractTask
 {
-	protected final ICmmfMessageListener listener;
+	protected final ICmmfListener listener;
 	
-	public AbstractCmmfService(ICmmfMessageListener listener)
+	public AbstractCmmfService(ICmmfListener listener)
 	{
 		this.listener = listener;
 	}

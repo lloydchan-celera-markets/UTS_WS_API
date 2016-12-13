@@ -11,4 +11,5 @@ public interface IInstrument
 	public String getName();
 	public EInstrumentType getType();
 	public String toString();
+	public String getSymbol();
 }

@@ -14,8 +14,7 @@ public class Instrument implements IInstrument
 	protected EStatus status;
 	protected LocalDate lastUpdate;
 
-	public Instrument(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE, String rIC,
-			LocalDate lastUpdate)
+	public Instrument(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE, String rIC)
 	{
 		this.market = market;
 		this.symbol = symbol;
@@ -25,7 +24,7 @@ public class Instrument implements IInstrument
 		BLOOMBERG_CODE = bLOOMBERG_CODE;
 		RIC = rIC;
 		status = EStatus.CLOSE;
-		this.lastUpdate = lastUpdate;
+		this.lastUpdate = LocalDate.now();
 	}
 
 //	@Override
@@ -34,6 +33,11 @@ public class Instrument implements IInstrument
 		return market + "_" + symbol;
 	}
 	
+	public String getSymbol()
+	{
+		return symbol;
+	}
+
 	public EInstrumentType getType()
 	{
 		return type;

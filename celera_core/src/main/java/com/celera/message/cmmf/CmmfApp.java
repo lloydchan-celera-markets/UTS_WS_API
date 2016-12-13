@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.celera.ipc.ILifeCycle;
 
-public abstract class CmmfApp implements ICmmfMessageListener
+public abstract class CmmfApp implements ICmmfListener
 {
 	String uniqueID = UUID.randomUUID().toString();
 

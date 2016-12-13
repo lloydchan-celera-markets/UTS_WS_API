@@ -259,6 +259,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		taskChannel.stop();		
 	}
 	
+//	public static void main_run(String[] args)
 	public static void main(String[] args)
 	{
 		int interval = 100000;
@@ -285,6 +286,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		// dba.stop();
 	}
 	
+//	public static void main(String[] arg)
 	public static void main_test(String[] arg)
 	{
 //		byte[] b = {87, 68, 84, 71, 50, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
@@ -292,12 +294,15 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		
 //		String s = "WDQGHKD1216BNP Paribas Arbitrage S.N.C.*";
 //		String s = "WDTE582d69b8327c2418e8c3782c,582d69f1327c2418e8c3782d,582d5738327cb2495d00abc2";
-		String s = "WDQGHKD1016UBS AG London Branch";
+//		String s = "WDQGHKD1016UBS AG London Branch";
+		String s = "WATE583ea790bebc95fe10b0206d,583ea790bebc95fe10b02074";
+
 		byte[] b = s.getBytes();
 		DatabaseAdapter dba = new DatabaseAdapter();
 		dba.start();
 		DatabaseAdapter.loadAll();
-dba.onQuery(b);
+//dba.onQuery(b);
+//		DatabaseAdapter.jsonInvoices();
 		try
 		{
 			Thread.sleep(2000);
@@ -317,5 +322,12 @@ dba.onQuery(b);
 		
 //		System.out.println(o);
 	}
-	
+
+	@Override
+	public void onSink(byte[] data)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

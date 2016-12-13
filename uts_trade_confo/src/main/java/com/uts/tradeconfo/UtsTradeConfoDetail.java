@@ -1,12 +1,9 @@
 package com.uts.tradeconfo;
 
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +21,7 @@ import com.uts.tools.Uts2Dm;
 //import com.celera.mongo.entity.TradeConfo;
 //import com.uts.tools.Uts2Dm;
 
-public class UtsTradeConfoDetail 
+public class UtsTradeConfoDetail
 {
 	Logger logger = LoggerFactory.getLogger(UtsTradeConfoDetail.class);
 	

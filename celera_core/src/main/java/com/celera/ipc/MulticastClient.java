@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import com.celera.message.cmmf.EApp;
-import com.celera.message.cmmf.ICmmfMessageListener;
+import com.celera.message.cmmf.ICmmfListener;
 
 public class MulticastClient implements IMulticastClient
 {
@@ -42,13 +42,13 @@ public class MulticastClient implements IMulticastClient
 	private int ioThread;
 	private String ip;
 	private int port;
-	private ICmmfMessageListener listener;
+	private ICmmfListener listener;
 	private List<String> subList = new ArrayList<String>();
 
 	private AtomicBoolean isSub = new AtomicBoolean(false);
 	private AtomicBoolean isStart = new AtomicBoolean(false);
 
-	public MulticastClient(int ioThread, String ip, int port, ICmmfMessageListener listener)
+	public MulticastClient(int ioThread, String ip, int port, ICmmfListener listener)
 	{
 		this.ioThread = ioThread;
 		this.ip = ip;
@@ -173,7 +173,7 @@ public class MulticastClient implements IMulticastClient
 	}
 
 	@Override
-	public void setTcpListener(ICmmfMessageListener listener)
+	public void setTcpListener(ICmmfListener listener)
 	{
 		this.listener = listener;
 	}

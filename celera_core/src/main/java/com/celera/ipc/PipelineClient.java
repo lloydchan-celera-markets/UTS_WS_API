@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import com.celera.message.cmmf.ICmmfClient;
-import com.celera.message.cmmf.ICmmfMessageListener;
+import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.AbstractCmmfService;
 
 public class PipelineClient extends AbstractCmmfService implements ILifeCycle, ICmmfClient
@@ -21,7 +21,7 @@ public class PipelineClient extends AbstractCmmfService implements ILifeCycle, I
 	private final URL pullUrl;
 	private final URL sinkUrl;
 
-	public PipelineClient(URL pull, URL sink, ICmmfMessageListener listener)
+	public PipelineClient(URL pull, URL sink, ICmmfListener listener)
 	{
 		super(listener);
 		
@@ -108,9 +108,11 @@ public class PipelineClient extends AbstractCmmfService implements ILifeCycle, I
 		// Socket to receive messages on
 		ZMQ.Socket receiver = context.socket(ZMQ.PULL);
 		receiver.connect("tcp://localhost:5557");
+//		receiver.connect("tcp://localhost:5557");
 
 		// Socket to send messages to
 		ZMQ.Socket sender = context.socket(ZMQ.PUSH);
+//		sender.connect("tcp://localhost:5558");
 		sender.connect("tcp://localhost:5558");
 
 		// Process tasks forever

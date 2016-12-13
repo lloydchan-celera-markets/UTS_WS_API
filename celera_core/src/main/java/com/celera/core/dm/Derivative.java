@@ -16,10 +16,10 @@ public class Derivative extends Instrument implements IDerivative
 	protected Map<String, Leg> legs = new HashMap<String, Leg>();
 
 	public Derivative(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE,
-			String rIC, LocalDate lastUpdate, String strike, String expiry, Double price,
+			String rIC, String strike, String expiry, Double price,
 			Boolean isPriceInPercent)
 	{
-		super(market, symbol, type, name, iSIN, bLOOMBERG_CODE, rIC, lastUpdate);
+		super(market, symbol, type, name, iSIN, bLOOMBERG_CODE, rIC);
 		this.strike = strike;
 		this.expiry = expiry;
 		this.price = price;

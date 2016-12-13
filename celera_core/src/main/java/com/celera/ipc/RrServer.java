@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import com.celera.message.cmmf.ICmmfMessageListener;
+import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.AbstractCmmfService;
 import com.celera.thread.AbstractTask;
 
@@ -50,7 +50,7 @@ public class RrServer extends AbstractCmmfService implements ILifeCycle
 //	private final ExecutorService exec = Executors.newFixedThreadPool(1);
 //	private Future future;
 	
-	public RrServer(ICmmfMessageListener listener)
+	public RrServer(ICmmfListener listener)
 	{
 		super(listener);
 		
@@ -62,7 +62,7 @@ public class RrServer extends AbstractCmmfService implements ILifeCycle
 //		bind();
 	}
 	
-	public RrServer(int ioThread, String ip, int port, ICmmfMessageListener listener)
+	public RrServer(int ioThread, String ip, int port, ICmmfListener listener)
 	{
 		super(listener);
 		

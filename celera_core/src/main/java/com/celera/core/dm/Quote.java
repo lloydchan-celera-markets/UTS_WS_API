@@ -203,4 +203,22 @@ public class Quote implements IQuote
 	{
 		return null;
 	}
+
+	@Override
+	public EOrderType getOrderType()
+	{
+		return null;
+	}
+
+	@Override
+	public void setOrderType(EOrderType ordType)
+	{
+	}
+
+	@Override
+	public byte[] toMessage()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

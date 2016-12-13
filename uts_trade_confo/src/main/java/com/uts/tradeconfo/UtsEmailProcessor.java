@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.Address;
@@ -19,7 +20,6 @@ import javax.mail.internet.MimeBodyPart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.CrudRepository;
 
 import com.celera.adapter.EmailServiceImpl;
 import com.celera.core.configure.IOverrideConfig;
@@ -27,6 +27,7 @@ import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
 import com.celera.library.javamail.IMailListener;
 import com.celera.mongo.MongoDbAdapter;
+import com.celera.mongo.entity.IMongoDocument;
 import com.celera.mongo.entity.TradeConfo;
 import com.celera.mongo.repo.TradeConfoRepo;
 import com.itextpdf.text.pdf.PdfReader;
@@ -113,7 +114,7 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 	{
 		last = EMAIL_START_DATE;
 		overrideCfg();
-		service = new EmailServiceImpl(this);
+		service = new UtsEmailServiceImpl(this);
 //		logger.info(a.toString());
 	}
 	
@@ -124,7 +125,7 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 	}
 	
 	@Override
-	public void onEmail(Message message)
+	public void onEmail(Message message, List<IMongoDocument> list)
 	{
 		try
 		{
@@ -140,7 +141,7 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 				{
 					try
 					{
-						parseAttachment(message);
+						parseAttachment(message, list);
 					}
 					catch (IOException e)
 					{
@@ -180,7 +181,7 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 		service.start();
 	}
 	
-	public void parseAttachment(Message message) throws IOException, MessagingException
+	public void parseAttachment(Message message, List<IMongoDocument> list) throws IOException, MessagingException
 	{
 		Multipart multipart = (Multipart) message.getContent();
 		int numberOfParts = multipart.getCount();
@@ -198,13 +199,13 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 					// part.saveFile(SAVE_DIRECTORY + File.separator +
 					// fileName);
 					// parsePdf(SAVE_DIRECTORY + File.separator + fileName);
-					parsePdf(part);
+					parsePdf(part, list);
 				}
 			}
 		}
 	}
 
-	public void parsePdf(MimeBodyPart part) throws IOException, MessagingException
+	public void parsePdf(MimeBodyPart part, List<IMongoDocument> list) throws IOException, MessagingException
 	{
 		InputStream is = part.getInputStream();
 		PdfReader reader = new PdfReader(is);
@@ -223,9 +224,11 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 			t.parsePdf(sPdf);
 			logger.info(t.toString());
 			
-			writeDb(t);
+			TradeConfo tradeConfo = t.convert();
 			String path = saveFile(part);
 			t.setFile(path);
+			
+			list.add(tradeConfo);
 		}
 	}
 	
@@ -236,16 +239,6 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 		if (sub.contains(PREFIX_EMAIL_SUBJECT))
 			return true;
 		return false;
-	}
-	
-	private void writeDb(UtsTradeConfoDetail detail) 
-	{
-		TradeConfo tradeConfo = detail.convert();
-		TradeConfo old = map.put(tradeConfo.getKey(), tradeConfo);
-		if (old != null) {
-			tradeConfo.setId(old.getId());
-		}
-		MongoDbAdapter.instance().save(tradeConfo);	// save will also do update
 	}
 	
 	public String saveFile(MimeBodyPart part)

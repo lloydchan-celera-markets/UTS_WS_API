@@ -9,10 +9,10 @@ public class Leg extends Derivative implements ILeg
 	private Double multiplier = null;
 
 	public Leg(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE,
-			String rIC, LocalDate lastUpdate, String strike, String expiry, Double price, Boolean isPriceInPercent,
+			String rIC, String strike, String expiry, Double price, Boolean isPriceInPercent,
 			Double multiplier)
 	{
-		super(market, symbol, type, name, iSIN, bLOOMBERG_CODE, rIC, lastUpdate, strike, expiry, price,
+		super(market, symbol, type, name, iSIN, bLOOMBERG_CODE, rIC, strike, expiry, price,
 				isPriceInPercent);
 		this.multiplier = multiplier;
 	}

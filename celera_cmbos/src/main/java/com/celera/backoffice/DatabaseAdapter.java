@@ -244,6 +244,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 				try {
 					customizedMap.put(c.getKey(), c);
 					all.put(c.getId(), c);
+					logger.info("load key[{}] id[{}] [{}] ", c.getKey(), c.getId(), c);
 				}
 				catch (NullPointerException e) {
 					logger.error("{}", c, e);
@@ -580,15 +581,18 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		// StringBuilder sb = new StringBuilder(0);
+		int count = 0;
 		for (IMongoDocument t : customizedMap.values())
 		{
 			if (t instanceof Invoice)
 			{
 				JsonObject o = ((Invoice) t).json();
 				arrayBuilder.add(o);
+				count++;
 			}
 			// sb.append(o.toString());
 		}
+		logger.debug("======count[{}] cusMap.size[{}]", count, customizedMap.size());
 		ansBuilder.add("sender", "D");
 		ansBuilder.add("receiver", "W");
 		ansBuilder.add("message_type", "R");
@@ -754,4 +758,12 @@ System.out.println(all.size());
 
 		// dba.stop();
 	}
+
+	@Override
+	public void onSink(byte[] data)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -1,8 +1,10 @@
 package com.celera.library.javamail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Folder;
@@ -19,6 +21,7 @@ import javax.mail.search.SearchTerm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.mongo.entity.IMongoDocument;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.SortTerm;
 
@@ -71,8 +74,10 @@ public class MailService implements IMailService
 	/* 
 	 * only work for POP3
 	 */
-	public void getBetween(Date somePastDate, Date someFutureDate)
+	public List<IMongoDocument> getBetween(Date somePastDate, Date someFutureDate)
 	{
+		List<IMongoDocument>  list = new ArrayList<IMongoDocument>();
+		
 		SearchTerm olderThan = new ReceivedDateTerm(ComparisonTerm.LT, someFutureDate);
 		SearchTerm newerThan = new ReceivedDateTerm(ComparisonTerm.GT, somePastDate);
 		SearchTerm andTerm = new AndTerm(olderThan, newerThan);
@@ -94,7 +99,7 @@ public class MailService implements IMailService
 
 			for (Message message : messages)
 			{
-				cb.onEmail(message);
+				cb.onEmail(message, list);
 			}
 
 			inbox.close(false);
@@ -110,10 +115,13 @@ public class MailService implements IMailService
 			System.out.println("Could not connect to the message store");
 			ex.printStackTrace();
 		}
+		
+		return list;
 	}
 
-	public void getAllFromInbox()
+	public List<IMongoDocument> getAllFromInbox()
 	{
+		List<IMongoDocument> list = new ArrayList<IMongoDocument>();
 		try
 		{
 			Store store = session.getStore(protocol);
@@ -144,7 +152,7 @@ public class MailService implements IMailService
 			{
 				Message message = messages[i];
 //logger.info("{}", i);
-				cb.onEmail(message);
+				cb.onEmail(message, list);
 			}
 
 			inbox.close(false);
@@ -158,6 +166,8 @@ public class MailService implements IMailService
 		{
 			logger.error("Could not connect to the message store {}", protocol, ex);
 		}
+		
+		return list;
 	}
 
 	@Override

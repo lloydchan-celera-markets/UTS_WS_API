@@ -247,7 +247,8 @@ public class UtsMessageProcessor
 			LocalDate lastUpdate = Uts2Dm.toLocalDate(lastUpdTime);
 			EInstrumentType type = Uts2Dm.toInstrumentType(typeCode);
 
-			return new Derivative(IMarket.HK, code, type, null, null, null, null, lastUpdate, null, expiry, null, null);
+//			return new Derivative(IMarket.HK, code, type, null, null, null, null, lastUpdate, null, expiry, null, null);
+			return new Derivative(IMarket.HK, code, type, null, null, null, null, null, expiry, null, null);
 
 		}
 		catch (Exception e)
@@ -272,7 +273,8 @@ public class UtsMessageProcessor
 			LocalDate lastUpdate = Uts2Dm.toLocalDate(lastUpdTime);
 			EInstrumentType type = Uts2Dm.toInstrumentType(typeCode);
 
-			return new Instrument(IMarket.HK, code, type, name, isin, bbg, ric, lastUpdate);
+//			return new Instrument(IMarket.HK, code, type, name, isin, bbg, ric, lastUpdate);
+			return new Instrument(IMarket.HK, code, type, name, isin, bbg, ric);
 		}
 		catch (Exception e)
 		{
@@ -297,8 +299,10 @@ public class UtsMessageProcessor
 			LocalDate lastUpdate = Uts2Dm.toLocalDate(lastUpdTime);
 			EInstrumentType type = Uts2Dm.toInstrumentType(code);
 
-			return new Derivative(IMarket.HK, code, type, name, null, null, null, lastUpdate, null, null, null,
+			return new Derivative(IMarket.HK, code, type, name, null, null, null, null, null, null,
 					isPriceInPercent);
+//			return new Derivative(IMarket.HK, code, type, name, null, null, null, lastUpdate, null, null, null,
+//					isPriceInPercent);
 		}
 		catch (Exception e)
 		{
@@ -326,8 +330,10 @@ public class UtsMessageProcessor
 			{
 			}
 			EInstrumentType type = Uts2Dm.toInstrumentType(code);
-			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null, null,
+			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null,
 					null, multiplier);
+//			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null, null,
+//					null, multiplier);
 		}
 		catch (Exception e)
 		{
