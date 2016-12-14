@@ -1,19 +1,15 @@
 package com.celera.core.dm;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Leg extends Derivative implements ILeg
 {
 	private Double multiplier = null;
 
 	public Leg(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE,
-			String rIC, String strike, String expiry, Double price, Boolean isPriceInPercent,
-			Double multiplier)
+			String rIC, Double strike, String expiry, Double price, Boolean isPriceInPercent,
+			Double multiplier, Double delta)
 	{
 		super(market, symbol, type, name, iSIN, bLOOMBERG_CODE, rIC, strike, expiry, price,
-				isPriceInPercent);
+				isPriceInPercent, delta);
 		this.multiplier = multiplier;
 	}
 

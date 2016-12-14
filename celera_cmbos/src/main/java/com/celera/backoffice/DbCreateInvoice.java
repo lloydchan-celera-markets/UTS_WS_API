@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -726,7 +728,20 @@ logger.error("=============incorrect amount============== {}, {}, {}", keyUsd, r
 		return null;
 	}
 	
-	public static void main(String[] args) 
+	public static void regenInvoiceByAccNum(Set<String> accNum) 
+	{
+		List<Invoice> l = DatabaseAdapter.getAllInvoice();
+		for (Invoice inv : l) 
+		{
+			if (accNum.contains(inv.getAccount_number()))
+			{
+//System.out.println(inv);
+InvoiceTemplate.regenerateWordDocProcessor(inv);
+			}
+		}
+	}
+	
+	public static void main_test(String[] args) 
 	{
 		DatabaseAdapter dba = new DatabaseAdapter();
 		dba.start();
@@ -740,5 +755,40 @@ logger.error("=============incorrect amount============== {}, {}, {}", keyUsd, r
 		cal.add(Calendar.MONTH, 1);
 		gen.setDate(cal.getTime());
 		gen.run();
+	}
+
+	public static void main(String[] args) 
+	{
+		DatabaseAdapter dba = new DatabaseAdapter();
+		dba.start();
+		dba.loadAll();
+		
+		
+		Set<String> accNum = new HashSet<String>();
+		accNum.add("CEL0013");
+		accNum.add("CEL0014");
+		accNum.add("CEL0015");
+		accNum.add("CEL0016");
+		accNum.add("CEL0017");
+//		accNum.add("CEL0018");
+		accNum.add("CEL0019");
+		accNum.add("CEL0020");
+		accNum.add("CEL0021");
+		accNum.add("CEL0022");
+		accNum.add("CEL0023");
+		accNum.add("CEL0024");
+		accNum.add("CEL0025");
+		accNum.add("CEL0026");
+		accNum.add("CEL0027");
+		accNum.add("CEL0028");
+		accNum.add("CEL0029");
+		accNum.add("CEL0030");
+		accNum.add("CEL0034");
+		accNum.add("CEL0035");
+		accNum.add("CEL0036");
+		accNum.add("CEL0037");
+		accNum.add("CEL0038");
+		
+		DbCreateInvoice.regenInvoiceByAccNum(accNum);
 	}
 }

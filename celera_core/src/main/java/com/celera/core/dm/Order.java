@@ -1,9 +1,6 @@
 package com.celera.core.dm;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
@@ -23,7 +20,7 @@ public class Order implements IOrder
 {
 	Logger logger = LoggerFactory.getLogger(Order.class);
 
-	private static final int CMMF_SIZE = 64;
+	private static final int CMMF_SIZE = 71;
 	
 	private EOrderStatus status = null;
 	private IInstrument instr = null;
@@ -33,13 +30,14 @@ public class Order implements IOrder
 	private Double price = null;
 	private LocalDate lastTime = null;
 	private Integer qty = null;
+	private ESide side = null;
 
 	public Order()
 	{
 	}
 
 	public Order(EOrderStatus status, IInstrument instr, EOrderType type, Long id, String entity,
-			Double price, Integer qty)
+			Double price, Integer qty, ESide side)
 	{
 		super();
 		this.status = status;
@@ -49,6 +47,7 @@ public class Order implements IOrder
 		this.entity = entity;
 		this.price = price;
 		this.qty = qty;
+		this.side = side;
 	}
 
 	public EOrderStatus getStatus()
@@ -139,6 +138,16 @@ public class Order implements IOrder
 		this.orderType = ordType;
 	}
 
+	public ESide getSide()
+	{
+		return side;
+	}
+
+	public void setSide(ESide side)
+	{
+		this.side = side;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -164,42 +173,71 @@ public class Order implements IOrder
 //	}
 	
 //	public void writeObject() throws IOException
-	public byte[] toMessage() throws IOException
+	// TODO Unit test
+	public byte[] toCmmf() throws IOException
 	{
+
+//		ByteBuffer buf = ByteBuffer.allocate(5);
+//		buf.put((byte)1);
+//		buf.putInt(1);
+
 		ByteBuffer buf = ByteBuffer.allocate(CMMF_SIZE);
 		buf.put(StringUtils.rightPad(instr.getSymbol(), 32).getBytes());
-		buf.putInt(status.ordinal());
-		buf.putInt(orderType.ordinal());
+		buf.put((byte)status.ordinal());
+		buf.put((byte)orderType.value());
 		buf.putInt(qty);
 		buf.putLong(id);
-		buf.putLong((long)(price * 10000));
-//		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//		ObjectOutputStream oss = new ObjectOutputStream(bos);
-//		oss.writeObject(StringUtils.rightPad(instr.getSymbol(), 32));
-//		oss.writeInt(status.ordinal());
-//		oss.writeInt(orderType.ordinal());
-//		oss.writeLong(qty);
-//		oss.writeLong(id);
-//		oss.writeLong((long)(price * 10000));
-//		return bos.toByteArray();
-//		System.out.println(oss);
+		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
+		if (instr instanceof IDerivative) {
+			buf.putLong((long)(((IDerivative)instr).getStrike() * (double)IInstrument.CMMF_PRICE_FACTOR));
+			buf.putLong((long)(((IDerivative)instr).getDelta() * (double)IInstrument.CMMF_PRICE_FACTOR));
+		}
+		else { 
+			buf.putLong(0);
+			buf.putLong(0);
+		}
+		buf.put((byte)side.ordinal());
 		
 		buf.flip();
 		return buf.array();
 	}
 
 	@Override
-	public void setQty(Long qty)
+	public Integer getQty()
 	{
-		// TODO Auto-generated method stub
-		
+		return this.qty;
 	}
 
 	@Override
-	public Long getQty()
+	public void setQty(Integer qty)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		this.qty = qty;
+	}
+	
+	@Override
+	public JsonObject json()
+	{
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add("symbol", instr.getSymbol());
+		builder.add("status", status.ordinal());
+		builder.add("orderType", orderType.ordinal());
+		builder.add("qty", qty);
+		builder.add("id", id);
+		builder.add("price", (price * IInstrument.CMMF_PRICE_FACTOR));
+		if (instr instanceof IDerivative) {
+			builder.add("strike", ((IDerivative)instr).getStrike() * IInstrument.CMMF_PRICE_FACTOR);
+			builder.add("delta", ((IDerivative)instr).getDelta() * IInstrument.CMMF_PRICE_FACTOR);
+		}
+		else { 
+			builder.add("strike", 0);
+			builder.add("delta", 0);
+		}
+		
+		JsonObject empJsonObject = builder.build();
+
+		logger.debug("Order JSON {}", empJsonObject);
+
+		return empJsonObject;
 	}
 	
 //	public void readObject(ObjectInputStream iss) throws IOException

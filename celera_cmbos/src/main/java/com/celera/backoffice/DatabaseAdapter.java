@@ -691,6 +691,21 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		return l;
 	}
 
+	public static List<Invoice> getAllInvoice()
+	{
+		List<Invoice> l = new ArrayList<Invoice>();
+		
+		for (ICustomizeMongoDocument value : customizedMap.values())
+		{
+			if (value instanceof Invoice)
+			{
+				Invoice t = (Invoice) value;
+				l.add(t);
+			}
+		}
+		return l;
+	}
+	
 	public static String getMaxInvoiceNumber()
 	{
 		InvoiceRepo repo = (InvoiceRepo) MongoDbAdapter.instance().get(InvoiceRepo.class);

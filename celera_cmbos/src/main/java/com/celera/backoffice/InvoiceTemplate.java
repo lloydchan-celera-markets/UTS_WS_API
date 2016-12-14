@@ -768,6 +768,270 @@ public class InvoiceTemplate
 		}
 	}
 
+	public static void regenerateWordDocProcessor(Invoice inv)
+	{
+		FileOutputStream os = null;
+		String file = null;
+//		Date d = null;
+//		TradeDetails td = null;
+		try
+		{
+//			d = sdf_mmm_yy.parse(mmmyy);
+			String sInvDate = inv.getInvoice_date();
+			Date invDate = sdf_dd_MMMM_yy.parse(sInvDate);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(invDate);
+			String fileMonth = sdf_mm_yy.format(cal.getTime());
+			
+
+			// trade month
+			cal.add(Calendar.MONTH, -1);
+			String mmmm_yyyy = sdf_mmmm_yyyyyy.format(cal.getTime());
+
+//			td = inv.getTradeDetails();
+
+			String attn = "Account Payable";
+			if (inv.getAttn() != null && inv.getAttn().length() > 0)
+			{
+				attn = inv.getAttn();
+			}
+
+			String curncy = inv.getCurrency();
+			
+			// XWPFDocument doc = new XWPFDocument(OPCPackage.open(sourse +
+			// "XXXXX_TestReport_URL_Document.doc"));
+
+			XWPFDocument doc = new XWPFDocument(OPCPackage.open(TEMPLATE_PATH + File.separator + "template.docx"));
+			// XWPFDocument doc = new
+			// XWPFDocument("F://Temp/word/template.docx");
+			for (XWPFTable tbl : doc.getTables())
+			{
+				for (XWPFTableRow row : tbl.getRows())
+				{
+					for (XWPFTableCell cell : row.getTableCells())
+					{
+						for (XWPFParagraph p : cell.getParagraphs())
+						{
+							for (XWPFRun r : p.getRuns())
+							{
+								String text = r.getText(0);
+								// System.out.println("text=" + text);
+
+								if (text != null && text.contains("$company"))
+								{
+									// System.out.println("$company found");
+									text = text.replace("$company", inv.getCompany());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$address"))
+								{
+									// System.out.println("$address found");
+									text = text.replace("$address", inv.getAddress());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("$address"))
+								{
+									// System.out.println("$address found");
+									text = text.replace("$address", inv.getAddress());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$attentionto"))
+								{
+									// System.out.println("$attentionto found");
+									text = text.replace("$attentionto", "Attn: " + attn);
+									r.setText(text, 0);
+								} else if (text != null && text.contains("attentionto"))
+								{
+									// System.out.println("$attentionto found");
+									text = text.replace("attentionto", "Attn: " + attn);
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$emails"))
+								{
+									// System.out.println("$emails found");
+									text = text.replace("$emails", inv.getSentTo());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("emails"))
+								{
+									// System.out.println("$emails found");
+									text = text.replace("emails", inv.getSentTo());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$myaccount"))
+								{
+									// System.out.println("$myaccount found");
+									text = text.replace("$myaccount", "Account number: " + inv.getAccount_number());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("myaccount"))
+								{
+									// System.out.println("$myaccount found");
+									text = text.replace("myaccount", "Account number: " + inv.getAccount_number());
+									r.setText(text, 0);
+								}
+								if (text != null && text.startsWith("$dueamount"))
+								{
+									// System.out.println("$dueamount found");
+									text = text.replace("$dueamount", inv.getAmount_due());
+									r.setText(text, 0);
+								} else if (text != null && text.startsWith("dueamount"))
+								{
+									// System.out.println("$dueamount found");
+									text = text.replace("dueamount", inv.getAmount_due());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$amountdue"))
+								{
+									// System.out.println("$amountdue found");
+									text = text.replace("$amountdue", "Amount Due: " + inv.getAmount_due());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("amountdue"))
+								{
+									// System.out.println("$amountdue found");
+									text = text.replace("amountdue", "Amount Due: " + inv.getAmount_due());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$mmmmyyyy"))
+								{
+									// System.out.println("$mmmmyyyy found");
+									text = text.replace("$mmmmyyyy", mmmm_yyyy);
+									r.setText(text, 0);
+								} else if (text != null && text.contains("mmmmyyyy"))
+								{
+									// System.out.println("mmmmyyyy found");
+									text = text.replace("mmmmyyyy", mmmm_yyyy);
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$invdate"))
+								{
+									// System.out.println("$invdate found");
+									text = text.replace("$invdate", inv.getInvoice_date());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("invdate"))
+								{
+									// System.out.println("$invdate found");
+									text = text.replace("invdate", inv.getInvoice_date());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$invduedate"))
+								{
+									// System.out.println("$invduedate found");
+									text = text.replace("$invduedate", inv.getDue_date());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("invduedate"))
+								{
+									// System.out.println("$invduedate found");
+									text = text.replace("invduedate", inv.getDue_date());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$invnum"))
+								{
+									// System.out.println("invnum found");
+									text = text.replace("$invnum", inv.getInvoice_number());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("invnum"))
+								{
+									// System.out.println("invnum found");
+									text = text.replace("invnum", inv.getInvoice_number());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$tdmonth"))
+								{
+									// System.out.println("$tdmonth found");
+									text = text.replace("$tdmonth", mmmm_yyyy);
+									r.setText(text, 0);
+								} else if (text != null && text.contains("tdmonth"))
+								{
+									// System.out.println("$tdmonth found");
+									text = text.replace("tdmonth", mmmm_yyyy);
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$totfee"))
+								{
+									// System.out.println("$totfee found");
+									text = text.replace("$totfee", inv.getTotal_fee());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("totfee"))
+								{
+									// System.out.println("$totfee found");
+									text = text.replace("totfee", inv.getTotal_fee());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$tothedge"))
+								{
+									// System.out.println("$tothedge found");
+									text = text.replace("$tothedge", inv.getHedge());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("tothedge"))
+								{
+									// System.out.println("$tothedge found");
+									text = text.replace("tothedge", inv.getHedge());
+									r.setText(text, 0);
+								}
+								if (text != null && text.contains("$totsize"))
+								{
+									// System.out.println("$totsize found");
+									text = text.replace("$totsize", inv.getSize());
+									r.setText(text, 0);
+								} else if (text != null && text.contains("totsize"))
+								{
+									// System.out.println("$totsize found");
+									text = text.replace("totsize", inv.getSize());
+									r.setText(text, 0);
+								}
+								if (text != null && text.equals("$"))
+								{
+									// System.out.println("$ found");
+									text = text.replace("$", "");
+									r.setText(text, 0);
+								}
+							}
+						}
+					}
+				}
+				// System.out.println("====ened for");
+			}
+
+			fillTradeDetails2(doc, inv);
+			
+			String company = inv.getCompany();
+			company = company.replaceAll(".?\\*+.?", "");
+			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + fileMonth + ".docx";
+			
+			os = new FileOutputStream(file);
+			doc.write(os);
+		} catch (Exception e)
+		{
+			logger.error("{}", inv.getInvoice_number(), e);
+			System.exit(-1);
+		} finally
+		{
+			if (os != null)
+			{
+				try
+				{
+					os.flush();
+				} catch (Exception e)
+				{
+				}
+				;
+				try
+				{
+					os.close();
+				} catch (Exception e)
+				{
+				}
+				;
+			}
+		}
+
+		if (inv.getInvoice_number() == null || inv.getInvoice_number().length() == 0)
+		{
+		} else
+		{
+			// System.out.println("=============Doc2Pdf.doGenerate=============="+inv.getInvoice_number());
+			Doc2Pdf.doGenerate(file);
+		}
+	}
+	
 	public static void dbWordDocProcessor(Invoice inv, String curncy, Date tradeDate)
 	{
 		FileOutputStream os = null;

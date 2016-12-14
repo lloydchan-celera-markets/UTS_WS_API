@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.JsonObject;
+
 public class Quote implements IQuote
 {
 	private EOrderStatus status = null;
@@ -188,7 +190,7 @@ public class Quote implements IQuote
 	}
 
 //	@Override
-	public Long getQty()
+	public Integer getQty()
 	{
 		return null;
 	}
@@ -216,7 +218,21 @@ public class Quote implements IQuote
 	}
 
 	@Override
-	public byte[] toMessage()
+	public byte[] toCmmf()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setQty(Integer qty)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public JsonObject json()
 	{
 		// TODO Auto-generated method stub
 		return null;

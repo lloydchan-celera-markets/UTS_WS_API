@@ -248,7 +248,7 @@ public class UtsMessageProcessor
 			EInstrumentType type = Uts2Dm.toInstrumentType(typeCode);
 
 //			return new Derivative(IMarket.HK, code, type, null, null, null, null, lastUpdate, null, expiry, null, null);
-			return new Derivative(IMarket.HK, code, type, null, null, null, null, null, expiry, null, null);
+			return new Derivative(IMarket.HK, code, type, null, null, null, null, null, expiry, null, null, null);
 
 		}
 		catch (Exception e)
@@ -300,7 +300,7 @@ public class UtsMessageProcessor
 			EInstrumentType type = Uts2Dm.toInstrumentType(code);
 
 			return new Derivative(IMarket.HK, code, type, name, null, null, null, null, null, null,
-					isPriceInPercent);
+					isPriceInPercent, null);
 //			return new Derivative(IMarket.HK, code, type, name, null, null, null, lastUpdate, null, null, null,
 //					isPriceInPercent);
 		}
@@ -331,7 +331,7 @@ public class UtsMessageProcessor
 			}
 			EInstrumentType type = Uts2Dm.toInstrumentType(code);
 			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null,
-					null, multiplier);
+					null, multiplier, null);
 //			return new com.celera.core.dm.Leg(IMarket.HK, code, type, name, null, null, null, null, null, null, null,
 //					null, multiplier);
 		}

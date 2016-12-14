@@ -3,14 +3,18 @@ package com.celera.gateway;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import javax.json.JsonObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
+import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.EOrderStatus;
 import com.celera.core.dm.EOrderType;
+import com.celera.core.dm.ESide;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.IQuote;
@@ -20,6 +24,10 @@ import com.celera.ipc.ILifeCycle;
 import com.celera.ipc.PipelineServer;
 import com.celera.ipc.PipelineSinkCollector;
 import com.celera.ipc.URL;
+import com.celera.message.cmmf.CmmfBuilder;
+import com.celera.message.cmmf.EApp;
+import com.celera.message.cmmf.ECommand;
+import com.celera.message.cmmf.EMessageType;
 import com.celera.message.cmmf.ICmmfListener;
 
 public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
@@ -109,12 +117,15 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 	{
 		try
 		{
-			byte b[] = o.toMessage();
-			for (int i=0; i<b.length; i++) {
-				System.out.println((int)b[i]);
+			byte b[] = o.toCmmf();
+			byte[] msg = CmmfBuilder.buildMessage(EApp.WEB_TRADER, EMessageType.TASK, ECommand.NEW_ORDER, b);
+//			JsonObject json = o.json();
+//			byte b[] = json.toString().getBytes();
+			for (int i=0; i<msg.length; i++) {
+				System.out.print((int)msg[i] + ",");
 			}
-			server.send(b);
-		} catch (IOException e)
+			server.send(msg);
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -154,15 +165,16 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 		
 //		EOrderStatus status, IInstrument instr, EOrderType type, Long id, String entity,
 //		Double price, Integer qty
-		IInstrument instr = new Instrument("HK", "HHI9800O7", EInstrumentType.EP, "European Put", "", "", "");
-		IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT, 1l, "", 439d, 100);
+		IInstrument instr = new Derivative("HK", "HHI9800O7", EInstrumentType.EP, "European Put", null, null, null, 
+				9800d, "O7", null, false, 0.5);
+		IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT, 1l, "", 439d, 100, ESide.BUY);
 		
 		while(true)
 		{
 			try
 			{
 				gw.createOrder(order);
-				Thread.sleep(30000);
+				Thread.sleep(10000);
 			} catch (InterruptedException e)
 			{
 				// TODO Auto-generated catch block

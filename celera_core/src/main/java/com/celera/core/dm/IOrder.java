@@ -2,6 +2,8 @@ package com.celera.core.dm;
 
 import java.io.IOException;
 
+import javax.json.JsonObject;
+
 public interface IOrder
 {
 	public EOrderStatus getStatus();
@@ -13,10 +15,11 @@ public interface IOrder
 	public Long getId();
 	public void setId(Long id);
 	
-	public void setQty(Long qty);
-	public Long getQty();
+	public void setQty(Integer qty);
+	public Integer getQty();
 	public void setPrice(Double p);
 	public Double getPrice();
 	
-	public byte[] toMessage() throws IOException;
+	public byte[] toCmmf() throws IOException;
+	public JsonObject json();
 }

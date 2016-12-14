@@ -1,26 +1,24 @@
 package com.celera.core.dm;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class Derivative extends Instrument implements IDerivative
 {
-	protected String strike;
+	protected Double strike;
+	protected Double delta;
 	protected String expiry;
 	protected Double price;
 	protected final Boolean isPriceInPercent;
 	protected Map<String, Leg> legs = new HashMap<String, Leg>();
 
 	public Derivative(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE,
-			String rIC, String strike, String expiry, Double price,
-			Boolean isPriceInPercent)
+			String rIC, Double strike, String expiry, Double price,
+			Boolean isPriceInPercent, Double delta)
 	{
 		super(market, symbol, type, name, iSIN, bLOOMBERG_CODE, rIC);
 		this.strike = strike;
+		this.delta = delta;
 		this.expiry = expiry;
 		this.price = price;
 		this.isPriceInPercent = isPriceInPercent;
@@ -69,13 +67,20 @@ public class Derivative extends Instrument implements IDerivative
 		this.price = price;
 	}
 
-	public void setStrike(String strike)
+	public void setStrike(Double strike)
 	{
 		this.strike = strike;
 	}
 
-	public void setExpiry(String expiry)
+	@Override
+	public Double getStrike()
 	{
-		this.expiry = expiry;
+		return strike;
+	}
+
+	@Override
+	public Double getDelta()
+	{
+		return delta;
 	}
 }
