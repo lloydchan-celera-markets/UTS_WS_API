@@ -5,7 +5,12 @@ import java.util.Map;
 
 public enum EApp
 {
-	DBA('D'), WEB_UI('W'), BOServiceManager('B'), WEB_TRADER('T'), ExchangeConnector('E');
+	DBA('D'), 
+	WEB_UI('W'), 
+	BOServiceManager('B'), 
+	WEB_TRADER('T'), 
+	OMS('O'), 
+	ExchangeConnector('E');
 
 	private static final Map<Character, EApp> map = new LinkedHashMap<Character, EApp>();
 	static

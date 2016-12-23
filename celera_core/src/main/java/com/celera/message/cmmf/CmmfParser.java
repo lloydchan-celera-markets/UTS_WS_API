@@ -1,16 +1,22 @@
-//package com.celera.message.cmmf;
-//
-//public class CmmfParser
-//{
-////	private static Map dba = new HashMap<String, ICmmfListener>();
-//	
-//	
-////	public static void subscribe(ICmmfListener cb)
-////	{
-//////		if (cb instanceof DatabaseAdapter)
-////			dba.put(cb.id(), cb);
-////	}
-//	
+package com.celera.message.cmmf;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.celera.core.dm.EOGAdmin;
+import com.celera.core.dm.EOrderStatus;
+
+
+public class CmmfParser
+{
+	static final Logger logger = LoggerFactory.getLogger(CmmfParser.class);
+	
+//	private static Map dba = new HashMap<String, ICmmfListener>();
+	
+	
 //	public static void parse(byte[] data, CmmfApp cb)
 //	{
 //		if (!cb.isMine((char) data[1]))
@@ -27,14 +33,81 @@
 //			break;
 //		}
 //	}
-//	
-//	public static void dispatch() {
-//		
-//	}
-//	
-//	public static void main(String[] args)
-//	{
-//
-//	}
-//
-//}
+
+//	public static CmmfOrderResponse parse(byte[] data)
+	public static void parse(byte[] data)
+	{
+//		for (int i=0; i<data.length; i++) {
+//			System.out.print(data[i] + ",");
+//		}
+//		System.out.println("");
+		ByteBuffer buf = ByteBuffer.allocate(data.length);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		buf.put(data);
+		buf.flip();
+		EApp sender = EApp.get((char)buf.get());
+		EMessageType type = EMessageType.get((char)buf.get());
+		ECommand cmd = ECommand.get((char)buf.get());
+		Long id = buf.getLong();
+		EOrderStatus status = EOrderStatus.get((int)buf.get());
+		String reason = new String(data, 12, 50);
+		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
+				sender, type, cmd, id, status, reason);
+	}
+	
+	public static void parseCmmfOrderResponse(byte[] data)
+	{
+		ByteBuffer buf = ByteBuffer.allocate(data.length);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		buf.put(data);
+		buf.flip();
+		EApp sender = EApp.get((char)buf.get());
+		EMessageType type = EMessageType.get((char)buf.get());
+		ECommand cmd = ECommand.get((char)buf.get());
+		Long id = buf.getLong();
+		EOrderStatus status = EOrderStatus.get((int)buf.get());
+		String reason = new String(data, 12, 50);
+		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
+				sender, type, cmd, id, status, reason);
+	}
+	
+	public static void print(byte[] data) 
+	{
+		for (int i=0; i<data.length; i++) {
+			System.out.print(data[i] + ",");
+		}
+		System.out.println("");
+	}
+	
+	public static boolean parseCmmfOgAdminResponse(byte[] data)
+	{
+		print(data);
+		
+		ByteBuffer buf = ByteBuffer.allocate(data.length);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		buf.put(data);
+		buf.flip();
+		EApp sender = EApp.get((char)buf.get());
+		EMessageType type = EMessageType.get((char)buf.get());
+		ECommand cmd = ECommand.get((char)buf.get());
+		EOGAdmin action = EOGAdmin.get((char)buf.get());
+		byte result = buf.get();
+//		String reason = new String(data, 12, 50);
+//		logger.info("sender[{}], type[{}], cmd[{}] action[{}] result[{}] reason[{}]",
+//				sender, type, cmd, action, result, reason);
+		logger.info("sender[{}], type[{}], cmd[{}] action[{}] result[{}]",
+				sender, type, cmd, action, result);
+		
+		return result == 0x01;
+	}
+	
+	public static void dispatch() {
+		
+	}
+	
+	public static void main(String[] args)
+	{
+
+	}
+
+}

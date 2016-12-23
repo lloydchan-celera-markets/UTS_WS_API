@@ -68,7 +68,7 @@ public class PipelineSinkCollector extends AbstractCmmfService implements ILifeC
 		for (;;)
 		{
 			byte[] b = sink.recv(0);
-			logger.debug("sink receive result: " + new String(b));
+//			logger.debug("sink receive result: " + new String(b));
 			listener.onSink(b);
 		}
 	}

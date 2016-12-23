@@ -20,7 +20,7 @@ public class Order implements IOrder
 {
 	Logger logger = LoggerFactory.getLogger(Order.class);
 
-	private static final int CMMF_SIZE = 71;
+	private static final int CMMF_SIZE = 55;
 	
 	private EOrderStatus status = null;
 	private IInstrument instr = null;
@@ -188,15 +188,15 @@ public class Order implements IOrder
 		buf.putInt(qty);
 		buf.putLong(id);
 		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
-		if (instr instanceof IDerivative) {
-			buf.putLong((long)(((IDerivative)instr).getStrike() * (double)IInstrument.CMMF_PRICE_FACTOR));
-			buf.putLong((long)(((IDerivative)instr).getDelta() * (double)IInstrument.CMMF_PRICE_FACTOR));
-		}
-		else { 
-			buf.putLong(0);
-			buf.putLong(0);
-		}
-		buf.put((byte)side.ordinal());
+//		if (instr instanceof IDerivative) {
+//			buf.putLong((long)(((IDerivative)instr).getStrike() * (double)IInstrument.CMMF_PRICE_FACTOR));
+//			buf.putLong((long)(((IDerivative)instr).getDelta() * (double)IInstrument.CMMF_PRICE_FACTOR));
+//		}
+//		else { 
+//			buf.putLong(0);
+//			buf.putLong(0);
+//		}
+		buf.put((byte)side.getAsInt());
 		
 		buf.flip();
 		return buf.array();

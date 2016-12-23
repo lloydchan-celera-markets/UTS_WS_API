@@ -11,11 +11,14 @@ public enum ECommand
 	CREATE_INVOICE('G'), 
 	UPDATE_CLIENT('C'),
 	QUERY_ALL_INVOICES('I'),
-	QUERY_UTS_SUMMARY('S'),
 	UPDATE_INVOICE('U'),
-	REMOVE_INVOICE('R'),
-	NEW_ORDER('N'),
-	TRADE_REPORT('R');
+	QUERY_UTS_SUMMARY('S'),
+	REMOVE_INVOICE('T'),
+	ORDER_REQUEST('O'),
+	TRADE('T'),
+	UPDATE_INSTRUMENT('P'),
+	TRADE_REPORT('R'),
+	OG_ADMIN_REQUEST('H');
 
 	private static final Map<Character, ECommand> map = new LinkedHashMap<Character, ECommand>();
 	static

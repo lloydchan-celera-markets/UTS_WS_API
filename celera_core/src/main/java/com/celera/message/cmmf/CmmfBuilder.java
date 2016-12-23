@@ -10,7 +10,18 @@ public class CmmfBuilder
 		combine[0] = (byte) sender.asChar();
 		combine[1] = (byte) type.asChar();
 		combine[2] = (byte) cmd.asChar();
-		System.arraycopy(body, 0, combine, 2, body.length);
+		System.arraycopy(body, 0, combine, 3, body.length);
+		return combine;
+	}
+
+	public static byte[] buildMessage(EApp sender, EMessageType type, ECommand cmd, byte[] body, int size)
+	{
+		int cap = size + 3;
+		byte[] combine = new byte[cap];
+		combine[0] = (byte) sender.asChar();
+		combine[1] = (byte) type.asChar();
+		combine[2] = (byte) cmd.asChar();
+		System.arraycopy(body, 0, combine, 3, size);
 		return combine;
 	}
 }
