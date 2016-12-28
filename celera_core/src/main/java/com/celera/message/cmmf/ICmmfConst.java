@@ -4,6 +4,7 @@ public interface ICmmfConst
 {
 	public static final String DATE_FMT = "yyyyMMdd";
 	public static final String MONTH_FORMAT= "yyyyMM";
+	public static final String JSON_LOG_DATE_FORMAT= "yyyy-MM-dd HH:mm:ss";
 	// cmmf header
 	public static final int HEADER_SIZE = 4;
 	public static final int HEADER_SENDER_POS = 0;

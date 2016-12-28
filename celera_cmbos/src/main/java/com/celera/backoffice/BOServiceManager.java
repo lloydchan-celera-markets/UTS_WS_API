@@ -42,6 +42,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 	private static final URL SINK_URL;
 	
 	private final static SimpleDateFormat cmmfSdf = new SimpleDateFormat(ICmmfConst.MONTH_FORMAT);
+	private final static SimpleDateFormat cmmfLogSdf = new SimpleDateFormat(ICmmfConst.JSON_LOG_DATE_FORMAT);
 	
 	private ILifeCycle taskChannel;
 
@@ -239,9 +240,32 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 			}
 			break;
 		}
+		case LOG:
+		{
+			try
+			{
+				String temp = new String(data).substring(ICmmfConst.HEADER_SIZE);
+				JSONObject jsnobject = new JSONObject(temp);
+				try
+				{
+					String time = jsnobject.getString("time");
+					String message = jsnobject.getString("message");
+					com.celera.mongo.entity.Log l = new com.celera.mongo.entity.Log();
+					l.setMessage(message);
+					l.setLastModified(cmmfLogSdf.parse(time));
+					DatabaseAdapter.create(l);
+					logger.info("save log {}", l);
+				} catch (Exception e)
+				{}
+			} catch (Exception e)
+			{
+				logger.error("", e);
+			}
+			break;
 		}
-//		logger.debug(data.toString());
+		}
 	}
+
 	
 	public void init()
 	{

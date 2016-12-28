@@ -3,6 +3,7 @@ package com.celera.backoffice;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -37,10 +38,13 @@ import com.celera.mongo.entity.ICustomizeMongoDocument;
 import com.celera.mongo.entity.IMongoDocument;
 import com.celera.mongo.entity.Invoice;
 import com.celera.mongo.entity.InvoiceRegister;
+import com.celera.mongo.entity.Log;
 import com.celera.mongo.entity.TradeConfo;
 import com.celera.mongo.repo.InvoiceRegisterRepo;
 import com.celera.mongo.repo.InvoiceRepo;
+import com.celera.mongo.repo.LogRepo;
 import com.celera.mongo.repo.TradeConfoRepo;
+import com.celera.tools.PrettyDate;
 import com.uts.tradeconfo.UtsTradeConfoSummary;
 
 public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
@@ -175,6 +179,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		loadallTradeConfo();
 		loadInvoice();
 		loadallUtsTradeConfoSummary();
+		loadTodayLog();
 	}
 	
 	public static void loadHistoryTradeConfo()
@@ -233,6 +238,29 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 			all.put(c.getId(), c);
 		});
 		logger.info("load uts tradeconfo summary {}", l.size());
+	}
+	
+	public static void loadTodayLog()
+	{
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		Date today_start = new Date(cal.getTimeInMillis());
+		cal.add(Calendar.DATE, 1);
+		Date tom_start = new Date(cal.getTimeInMillis());
+		LogRepo repo = (LogRepo) MongoDbAdapter.instance().get(LogRepo.class);
+//		Collection<com.celera.mongo.entity.Log> l = (Collection<com.celera.mongo.entity.Log>) repo.findAll();
+		
+		Collection<com.celera.mongo.entity.Log> l = 
+				(Collection<com.celera.mongo.entity.Log>) repo.getBetween(today_start, tom_start);
+		l.forEach(c -> {
+//			logger.debug(c + "," + today_start + "," + tom_start);
+//			if (c.getLastModified().after(today_start) && c.getLastModified().before(tom_start)) 
+				all.put(c.getId(), c);
+		});
+		logger.info("load today log {}", l.size());
 	}
 
 	public static void loadInvoice()
@@ -403,6 +431,11 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		case QUERY_ALL_INVOICES:
 		{
 			msg = jsonInvoices();
+			break;
+		}
+		case LOG:
+		{
+			msg = jsonLogs();
 			break;
 		}
 		case QUERY_UTS_SUMMARY:
@@ -601,6 +634,30 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		return ansBuilder.build().toString();
 	}
 	
+	public static String jsonLogs()
+	{
+		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		// StringBuilder sb = new StringBuilder(0);
+		int count = 0;
+		for (IMongoDocument t : all.values())
+		{
+			if (t instanceof Log)
+			{
+				JsonObject o = ((Log) t).json();
+				arrayBuilder.add(o);
+				count++;
+			}
+			// sb.append(o.toString());
+		}
+		ansBuilder.add("sender", "D");
+		ansBuilder.add("receiver", "W");
+		ansBuilder.add("message_type", "R");
+		ansBuilder.add("command", "L");
+		ansBuilder.add("logs", arrayBuilder);
+		return ansBuilder.build().toString();
+	}
+	
 	public static String jsonInvoiceRegisters()
 	{
 		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
@@ -703,6 +760,21 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 				l.add(t);
 			}
 		}
+		return l;
+	}
+
+	public static List<Log> getAllLog()
+	{
+		List<Log> l = new ArrayList<Log>();
+		
+		for (IMongoDocument value : all.values())
+		{
+			if (value instanceof Log)
+			{
+				l.add((Log)value);
+			}
+		}
+		Arrays.sort(l.toArray());
 		return l;
 	}
 	

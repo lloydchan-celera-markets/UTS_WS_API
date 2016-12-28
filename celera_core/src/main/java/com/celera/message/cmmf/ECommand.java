@@ -18,7 +18,8 @@ public enum ECommand
 	TRADE('T'),
 	UPDATE_INSTRUMENT('P'),
 	TRADE_REPORT('R'),
-	OG_ADMIN_REQUEST('H');
+	OG_ADMIN_REQUEST('H'),
+	LOG('L');
 
 	private static final Map<Character, ECommand> map = new LinkedHashMap<Character, ECommand>();
 	static
