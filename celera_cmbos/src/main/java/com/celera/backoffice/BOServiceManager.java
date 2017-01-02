@@ -198,7 +198,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 
 				logger.info("invoice object - {}", inv);
 				
-				DatabaseAdapter.update(inv);
+//				DatabaseAdapter.update(inv);
 			} catch (ClassCastException e)
 			{
 				logger.error("Not invoice object - {}", o, e);
@@ -253,7 +253,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 					com.celera.mongo.entity.Log l = new com.celera.mongo.entity.Log();
 					l.setMessage(message);
 					l.setLastModified(cmmfLogSdf.parse(time));
-					DatabaseAdapter.create(l);
+//					DatabaseAdapter.create(l);
 					logger.info("save log {}", l);
 				} catch (Exception e)
 				{}

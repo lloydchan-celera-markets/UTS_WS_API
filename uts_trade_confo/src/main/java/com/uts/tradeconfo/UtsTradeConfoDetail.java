@@ -76,475 +76,505 @@ public class UtsTradeConfoDetail
 				+ brokerageFee + ", brokerageCny=" + brokerageCny + ", file=" + file + "]";
 	}
 
-	public void parsePdf1(String sPdf)
-	{
-		String s = null;
-		try
-		{
-			boolean isHedge = false;
-			boolean isFees = false;
-			boolean isSummary = false;
-			
-			String[] lines = sPdf.split("\n");
-			int len = lines.length;
-			for (int i = 0; i < len; i++)
-			{
-				s = lines[i];
-				if (s.startsWith("SUMMARY"))
-				{
-					isSummary = true;
-				}
-				else if (s.startsWith("BUYER"))
-				{
-					isSummary = false;
-					this.buyer = s.substring(6);
-				}
-				else if (s.startsWith(" BUYER"))
-				{
-					isSummary = false;
-					this.buyer = s.substring(7);
-				}
-				else if (s.startsWith("SELLER"))
-				{
-					isSummary = false;
-					this.seller = s.substring(7);
-				}
-				else if (s.startsWith(" SELLER"))
-				{
-					isSummary = false;
-					this.seller = s.substring(8);
-				}
-				else if (s.startsWith("PRICE"))
-				{
-					String[] tokens = s.split(" ");
-					
-					try 
-					{
-						format.parse(tokens[2]);
-					}
-					catch (Exception e)
-					{
-						continue;
-					}
-					this.curncy = tokens[1];
-					this.price = tokens[2];
-				}
-				else if (s.startsWith(" PRICE"))
-				{
-					String[] tokens = s.split(" ");
-					this.curncy = tokens[2];
-					this.price = tokens[3];
-				}
-				else if (s.startsWith("REF"))
-				{
-					this.refPrice = s.substring(4);
-					if (s.indexOf("TRADE ID") > 0)
-					{
-						int k = s.indexOf("TRADE ID") + "TRADE ID".length();
-						this.id = s.substring(k).trim();
-					}
-//					System.out.println(this.price);
-//					System.out.println("id=null sPdf=" + this.id);
-					
-				}
-				else if (s.startsWith("DELTA"))
-				{
-					this.delta = s.substring(6);
-				}
-				else if (s.startsWith("TRADE DATE"))
-				{
-					this.tradeDate = s.substring(11);
-				}
-				else if (s.startsWith("PREMIUM PAYMENT"))
-				{
-					this.premiumPmt = s.substring(16);
-				}
-				else if (s.startsWith("PREMIUM"))
-				{
-					try {
-						this.premiumCny = s.substring(8, 11);
-						this.premium = s.substring(12);	
-					}
-					catch (Exception e)
-					{
-//						e.printStackTrace();
-					}
-					
-				}
-				else if (s.startsWith("TRADE ID"))
-				{
-					this.id = s.substring(9);
-				}
-				else if (s.startsWith("SIZE (PT VALUE)"))
-				{
-					String[] tokens = s.substring(16).split("\\s|\\(|\\)|/");
-					if (tokens[0].contains("x"))
-					{
-						String[] qtys = tokens[0].split("x");
-//if ("CELERAEQ-2016-13046".equals(id)) {
-//System.out.println(this.toString());
-//}
-						if (this.buyer != null && this.seller != null)
-						{
-
-							if (this.buyer.indexOf("-") > 0)
-							{
-								this.seller = null;
-							} else if (this.seller.indexOf("-") > 0)
-							{
-								this.buyer = null;
-							}
-						}
-					}
-					else
-					{
-						if (this.buyer != null && this.seller != null)
-						{
-							if (this.buyer.indexOf("-") > 0)
-							{
-								this.seller = null;
-							} else if (this.seller.indexOf("-") > 0)
-							{
-								this.buyer = null;
-							}
-						} 
-					}
-					try
-					{
-						this.ptCny = tokens[3];
-						this.ptValue = tokens[2];
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-				}
-				else if (s.startsWith("NOTIONAL"))
-				{
-					String[] tokens = s.split(" ");
-					try {
-					this.notationalCny = tokens[1];
-					this.notational = tokens[2];
-					}
-					catch (Exception e){
-//						System.out.println("s=" + s);
-					}
-	//				if (tokens.length > 3)
-	//				{
-	//					this.curncy = tokens[2].substring(0, 7);
-	//					this.rate = tokens[3];
-	//				}
-				}
-				else if (s.startsWith("Leg"))
-				{
-					String[] tokens = s.split(" ");
-					int lenLeg = tokens.length;
-					
-					String side = tokens[2];
-					Double size = Uts2Dm.toDouble(tokens[3]);
-					String expiry = tokens[4];
-					String strike = tokens[5];
-					String product = "";
-					for (int j = 6; j<lenLeg-2; j++) {
-						product += tokens[j] + " ";
-					}
-					String price = tokens[lenLeg - 2];
-					String premium = tokens[lenLeg - 1];
-					
-					this.legs.add(new Leg(side, size, expiry, strike, price, premium, product));
-				}
-				else if (s.startsWith("HEDGE"))
-				{
-					isHedge = true;
-				}
-				else if (s.startsWith("FEES"))
-				{
-					isHedge = false;
-					isFees = true;
-				}
-	//			else if (s.startsWith("Terms will be defined as per exchange rules and regulations"))
-	//			{
-	//				return;
-	//			}
-				else if (isSummary)
-				{
-					this.summary = s;
-					isSummary = false;
-				}
-				else if (s.startsWith("Syn "))
-				{
-					String[] tokens = s.split(" ");
-					int lenLeg = tokens.length;
-					
-					String side = tokens[2];
-					Double size = Uts2Dm.toDouble(tokens[3]);
-					String expiry = tokens[4];
-					String strike = tokens[5];
-					String product = "";
-					for (int j = 6; j<lenLeg-2; j++) {
-						product += tokens[j] + " ";
-					}
-					String price = tokens[lenLeg - 2];
-					String premium = tokens[lenLeg - 1];
-					
-					Hedge h = new Hedge();
-					h.setSide(side);
-					h.setQty(size);
-					h.setPrice(Uts2Dm.toDouble(price));
-					h.setFuture(product + " " + expiry + " " + strike + " " + premium);
-					this.hedges.add(h);
-				}
-				else
-				{
-					if (isHedge)
-					{
-						String trim = s.toUpperCase()
-								.replaceAll(" ", "")
-								.replace("FUTURES(", ";")
-								.replace(");FUTUREREFERENCE=", ";")
-								.replace(":AVERAGEEXECUTEDPRICE=", ";");
-//						System.out.println(trim);
-						
-						if (s.startsWith("Hedge settlement as per exchange rules") || 
-								s.startsWith("Trade hedge with synthetic forward"))
-						{}
-						else
-//						else if (!s.contains(" "))
-						{
-							
-							try
-							{
-//							String trim = s.replaceAll(" ", "");
-							boolean isBuy = false;
-							boolean hasAt = false;
-							
-							if (trim.startsWith("YOUBUY")) {
-								trim = trim.replace("YOUBUY", "");
-								isBuy = true;
-							}
-							else if (trim.startsWith("BUY")) {
-								trim = trim.replace("BUY", "");
-								isBuy = true;
-							}
-							else if (trim.startsWith("YOUSELL")) {
-								trim = trim.replace("YOUSELL", "");
-							}
-							else if (trim.startsWith("SELL")) {
-								trim = trim.replace("SELL", "");
-							}
-							
-							if (trim.contains("@"))
-								hasAt = true;
-							
-							String side = null, qty = null, fut = null, price = null;
-							if (hasAt) {
-								String _fut = isFut(trim); 
-								if (_fut != null)
-								{
-									trim = trim.replace(_fut, ";").replace("FUTURE@", ";").replace("C@", ";").replace("P@", ";");
-									// 5;JUN16242.5;4.90
-									String[] tokens = trim.split(";");
-									side = isBuy ? "Buy" : "Sell";
-									qty = tokens[0];
-									fut = _fut + " " + tokens[1].substring(0, 5);
-									price = tokens[2];
-								}
-							}
-							else {
-									String[] tokens = trim.split(";");
-									side = isBuy ? "Buy" : "Sell";
-									qty = tokens[0];
-									int pos = tokens[1].length() - 5;
-									fut = tokens[1].substring(0, pos) + " " + tokens[1].substring(pos);
-									price = tokens[2];
-							}
-							
-//System.out.println("testing=" + side +"," + qty + "," + fut + "," + price);
-							
-								Hedge h = new Hedge();
-								h.setSide(side);
-								h.setQty(Uts2Dm.toDouble(qty));
-								h.setPrice(Uts2Dm.toDouble(price));
-								h.setFuture(fut);
-								this.hedges.add(h);
-							}
-							catch (Exception e) {
-//								System.out.println("s=" + s);
-//								e.printStackTrace();
-							}
-						}
-					}
-					else if (isFees && s.startsWith("BROKERAGE FEE"))
-					{
-						int offset = 0;
-						if (s.startsWith(" "))
-							offset++;
-						
-						this.brokerageCny = s.substring(14 + offset, 17 + offset);
-						this.brokerageFee = s.substring(18 + offset);
-						isFees = false;
-						
-						Double buyQty = 0d;
-						Double sellQty = 0d;
-						for (Leg leg : legs) 
-						{
-							if ("Buy".equals(leg.getSide()))
-							{
-								buyQty += Double.valueOf(leg.getQty()); 
-							}
-							else 
-							{
-								sellQty += Double.valueOf(leg.getQty());
-							}
-						}
-						for (Hedge h : hedges) 
-						{
-							if ("Buy".equals(h.getSide()))
-							{
-								buyQty += h.getQty(); 
-							}
-							else 
-							{
-								sellQty += h.getQty();
-							}
-						}
-						if (buyQty > 0d)
-							this.buyQty = buyQty.toString();
-						if (sellQty > 0d)
-							this.sellQty = sellQty.toString();
-					}
-					else if (s.startsWith(" BROKERAGE FEE"))
-					{
-						int offset = 0;
-						if (s.startsWith(" "))
-							offset++;
-						
-						this.brokerageCny = s.substring(14 + offset, 17 + offset);
-						this.brokerageFee = s.substring(18 + offset);
-					}
-					else if (s.contains("RATE")) {
-						this.rate = s.substring(13);
-					}
-				}
-			}
-			
-if ("CELERAEQ-2016-12813".equals(this.id)) {
-	System.out.println(this.toString());
-	System.out.println("sPdf=" + sPdf);
-}
-
-			
-			if (this.buyer == null && this.seller == null)
-			{
-if (this.id.equals("CELERAEQ-2016-12878"))
-{
-	System.out.println(this.toString());
-	if (this.brokerageFee.equals("1,200"))
-		this.buyer = "Nomura International Plc - Nadjib Ezziane";
-	else {
-		this.seller = "Eclipse Futures (HK) Limited - Traders";
-	}
-}
-				System.out.println("buyer,seller=null sPdf=" + sPdf);
-			}
-			else if (this.buyer != null && this.seller != null)
-			{
-logger.debug("============ buyer and seller both exist[start]============ {}", this.toString());
-if (legs.get(0).getSide().equals("Sell"))
-{
-	this.buyer = null;
-}
-else {
-	this.seller = null;
-}
-logger.debug("============ buyer and seller both exist[end]============ {}", this.toString());
-//				if (this.buyer.indexOf("-") > 0)
+//	public void parsePdf1(String sPdf)
+//	{
+//		String s = null;
+//		try
+//		{
+//			boolean isHedge = false;
+//			boolean isFees = false;
+//			boolean isSummary = false;
+//			
+//			String[] lines = sPdf.split("\n");
+//			int len = lines.length;
+//			for (int i = 0; i < len; i++)
+//			{
+//				s = lines[i];
+//				if (s.startsWith("SUMMARY"))
 //				{
-//					this.seller = null;
-//				} else if (this.seller.indexOf("-") > 0)
-//				{
-//					this.buyer = null;
+//					isSummary = true;
 //				}
-			} 
-			if ("Celera Bank Private Test 1 - james Hugh".equals(this.seller)) {
-//System.out.println("========Celera Bank Private Test 1 - james Hugh============" + this.id);			
-this.seller = "Thierry";
-			}
-			if (this.tradeDate == null )
-			{
-				if (sPdf.indexOf("TRADE DATE") > 0)
-				{
-					int k = sPdf.indexOf("TRADE DATE ") + "TRADE DATE ".length();
-					this.tradeDate = sPdf.substring(k, k+9).trim();
-				}
-//				System.out.println("sPdf=" + this.buyer + "," + this.seller +"," + this.tradeDate);
-				if (this.tradeDate == null || this.tradeDate.length() > 15)
-					System.out.println("tradeDate=null sPdf=" + sPdf);
-			}
-			if (this.brokerageFee == null)
-			{
-				System.out.println("brokerageFee sPdf=" + sPdf);
-			}
-			if (this.price == null || this.price.startsWith("DATE"))
-			{
-//				System.out.println(this.price);
-//				System.out.println("sPdf=" + sPdf);
-			}
-			if (this.id == null)
-			{
-				if (sPdf.indexOf("TRADE ID") > 0)
-				{
-					int k = sPdf.indexOf("TRADE ID ") + "TRADE ID ".length();
-					this.id = sPdf.substring(k, k+19).trim();
-				}
-//				System.out.println(this.price);
-//				System.out.println("id=null sPdf=" + this.id);
-			}
-			
-			if (this.curncy == null && this.brokerageCny == null && this.notationalCny == null)
-			{
-//				System.out.println(this.price);
-				System.out.println("curncy=null sPdf=" + sPdf);
-			}
-//			System.out.println("brokerageFee=" + this.brokerageFee);
-//if ("CELERAEQ-2016-13046".equals(id)) {
+//				else if (s.startsWith("BUYER"))
+//				{
+//					isSummary = false;
+//					this.buyer = s.substring(6);
+//				}
+//				else if (s.startsWith(" BUYER"))
+//				{
+//					isSummary = false;
+//					this.buyer = s.substring(7);
+//				}
+//				else if (s.startsWith("SELLER"))
+//				{
+//					isSummary = false;
+//					this.seller = s.substring(7);
+//				}
+//				else if (s.startsWith(" SELLER"))
+//				{
+//					isSummary = false;
+//					this.seller = s.substring(8);
+//				}
+//				else if (s.startsWith("PRICE"))
+//				{
+//					String[] tokens = s.split(" ");
+//					
+//					try 
+//					{
+//						format.parse(tokens[2]);
+//					}
+//					catch (Exception e)
+//					{
+//						continue;
+//					}
+//					this.curncy = tokens[1];
+//					this.price = tokens[2];
+//				}
+//				else if (s.startsWith(" PRICE"))
+//				{
+//					String[] tokens = s.split(" ");
+//					this.curncy = tokens[2];
+//					this.price = tokens[3];
+//				}
+//				else if (s.startsWith("REF"))
+//				{
+//					this.refPrice = s.substring(4);
+//					if (s.indexOf("TRADE ID") > 0)
+//					{
+//						int k = s.indexOf("TRADE ID") + "TRADE ID".length();
+//						this.id = s.substring(k).trim();
+//					}
+////					System.out.println(this.price);
+////					System.out.println("id=null sPdf=" + this.id);
+//					
+//				}
+//				else if (s.startsWith("DELTA"))
+//				{
+//					this.delta = s.substring(6);
+//				}
+//				else if (s.startsWith("TRADE DATE"))
+//				{
+//					this.tradeDate = s.substring(11);
+//				}
+//				else if (s.startsWith("PREMIUM PAYMENT"))
+//				{
+//					this.premiumPmt = s.substring(16);
+//				}
+//				else if (s.startsWith("PREMIUM"))
+//				{
+//					try {
+//						this.premiumCny = s.substring(8, 11);
+//						this.premium = s.substring(12);	
+//					}
+//					catch (Exception e)
+//					{
+////						e.printStackTrace();
+//					}
+//					
+//				}
+//				else if (s.startsWith("TRADE ID"))
+//				{
+//					this.id = s.substring(9);
+//				}
+//				else if (s.startsWith("SIZE (PT VALUE)"))
+//				{
+//					String[] tokens = s.substring(16).split("\\s|\\(|\\)|/");
+//					if (tokens[0].contains("x"))
+//					{
+//						String[] qtys = tokens[0].split("x");
+////if ("CELERAEQ-2016-13046".equals(id)) {
+////System.out.println(this.toString());
+////}
+//						if (this.buyer != null && this.seller != null)
+//						{
+//
+//							if (this.buyer.indexOf("-") > 0)
+//							{
+//								this.seller = null;
+//							} else if (this.seller.indexOf("-") > 0)
+//							{
+//								this.buyer = null;
+//							}
+//						}
+//					}
+//					else
+//					{
+//						if (this.buyer != null && this.seller != null)
+//						{
+//							if (this.buyer.indexOf("-") > 0)
+//							{
+//								this.seller = null;
+//							} else if (this.seller.indexOf("-") > 0)
+//							{
+//								this.buyer = null;
+//							}
+//						} 
+//					}
+//					try
+//					{
+//						this.ptCny = tokens[3];
+//						this.ptValue = tokens[2];
+//					}
+//					catch (Exception e)
+//					{
+//						e.printStackTrace();
+//					}
+//				}
+//				else if (s.startsWith("NOTIONAL"))
+//				{
+//					String[] tokens = s.split(" ");
+//					try {
+//					this.notationalCny = tokens[1];
+//					this.notational = tokens[2];
+//					}
+//					catch (Exception e){
+////						System.out.println("s=" + s);
+//					}
+//	//				if (tokens.length > 3)
+//	//				{
+//	//					this.curncy = tokens[2].substring(0, 7);
+//	//					this.rate = tokens[3];
+//	//				}
+//				}
+//				else if (s.startsWith("Leg"))
+//				{
+//					String[] tokens = s.split(" ");
+//					int lenLeg = tokens.length;
+//					
+//					String side = tokens[2];
+//					Double size = Uts2Dm.toDouble(tokens[3]);
+//					String expiry = tokens[4];
+//					String strike = tokens[5];
+//					String product = "";
+//					for (int j = 6; j<lenLeg-2; j++) {
+//						product += tokens[j] + " ";
+//					}
+//					String price = tokens[lenLeg - 2];
+//					String premium = tokens[lenLeg - 1];
+//					
+//					this.legs.add(new Leg(side, size, expiry, strike, price, premium, product));
+//				}
+//				else if (s.startsWith("HEDGE"))
+//				{
+//					isHedge = true;
+//				}
+//				else if (s.startsWith("FEES"))
+//				{
+//					isHedge = false;
+//					isFees = true;
+//				}
+//	//			else if (s.startsWith("Terms will be defined as per exchange rules and regulations"))
+//	//			{
+//	//				return;
+//	//			}
+//				else if (isSummary)
+//				{
+//					this.summary = s;
+//					isSummary = false;
+//				}
+//				else if (s.startsWith("Syn "))
+//				{
+//					String[] tokens = s.split(" ");
+//					int lenLeg = tokens.length;
+//					
+//					String side = tokens[2];
+//					Double size = Uts2Dm.toDouble(tokens[3]);
+//					String expiry = tokens[4];
+//					String strike = tokens[5];
+//					String product = "";
+//					for (int j = 6; j<lenLeg-2; j++) {
+//						product += tokens[j] + " ";
+//					}
+//					String price = tokens[lenLeg - 2];
+//					String premium = tokens[lenLeg - 1];
+//					
+//					Hedge h = new Hedge();
+//					h.setSide(side);
+//					h.setQty(size);
+//					h.setPrice(Uts2Dm.toDouble(price));
+//					h.setFuture(product + " " + expiry + " " + strike + " " + premium);
+//					this.hedges.add(h);
+//				}
+//				else
+//				{
+//					if (isHedge)
+//					{
+//						String trim = s.toUpperCase()
+//								.replaceAll(" ", "")
+//								.replace("FUTURES(", ";")
+//								.replace(");FUTUREREFERENCE=", ";")
+//								.replace(":AVERAGEEXECUTEDPRICE=", ";");
+////						System.out.println(trim);
+//						
+//						if (s.startsWith("Hedge settlement as per exchange rules") || 
+//								s.startsWith("Trade hedge with synthetic forward"))
+//						{}
+//						else
+////						else if (!s.contains(" "))
+//						{
+//							
+//							try
+//							{
+////							String trim = s.replaceAll(" ", "");
+//							boolean isBuy = false;
+//							boolean hasAt = false;
+//							
+//							if (trim.startsWith("YOUBUY")) {
+//								trim = trim.replace("YOUBUY", "");
+//								isBuy = true;
+//							}
+//							else if (trim.startsWith("BUY")) {
+//								trim = trim.replace("BUY", "");
+//								isBuy = true;
+//							}
+//							else if (trim.startsWith("YOUSELL")) {
+//								trim = trim.replace("YOUSELL", "");
+//							}
+//							else if (trim.startsWith("SELL")) {
+//								trim = trim.replace("SELL", "");
+//							}
+//							
+//							if (trim.contains("@"))
+//								hasAt = true;
+//							
+//							String side = null, qty = null, fut = null, price = null;
+//							if (hasAt) {
+//								String _fut = isFut(trim); 
+//								if (_fut != null)
+//								{
+//									trim = trim.replace(_fut, ";").replace("FUTURE@", ";").replace("C@", ";").replace("P@", ";");
+//									// 5;JUN16242.5;4.90
+//									String[] tokens = trim.split(";");
+//									side = isBuy ? "Buy" : "Sell";
+//									qty = tokens[0];
+//									fut = _fut + " " + tokens[1].substring(0, 5);
+//									price = tokens[2];
+//								}
+//							}
+//							else {
+//									String[] tokens = trim.split(";");
+//									side = isBuy ? "Buy" : "Sell";
+//									qty = tokens[0];
+//									int pos = tokens[1].length() - 5;
+//									fut = tokens[1].substring(0, pos) + " " + tokens[1].substring(pos);
+//									price = tokens[2];
+//							}
+//							
+////System.out.println("testing=" + side +"," + qty + "," + fut + "," + price);
+//							
+//								Hedge h = new Hedge();
+//								h.setSide(side);
+//								h.setQty(Uts2Dm.toDouble(qty));
+//								h.setPrice(Uts2Dm.toDouble(price));
+//								h.setFuture(fut);
+//								this.hedges.add(h);
+//							}
+//							catch (Exception e) {
+////								System.out.println("s=" + s);
+////								e.printStackTrace();
+//							}
+//						}
+//					}
+//					else if (isFees && s.startsWith("BROKERAGE FEE"))
+//					{
+//						int offset = 0;
+//						if (s.startsWith(" "))
+//							offset++;
+//						
+//						this.brokerageCny = s.substring(14 + offset, 17 + offset);
+//						this.brokerageFee = s.substring(18 + offset);
+//						isFees = false;
+//						
+//						Double buyQty = 0d;
+//						Double sellQty = 0d;
+//						for (Leg leg : legs) 
+//						{
+//							if ("Buy".equals(leg.getSide()))
+//							{
+//								buyQty += Double.valueOf(leg.getQty()); 
+//							}
+//							else 
+//							{
+//								sellQty += Double.valueOf(leg.getQty());
+//							}
+//						}
+//						for (Hedge h : hedges) 
+//						{
+//							if ("Buy".equals(h.getSide()))
+//							{
+//								buyQty += h.getQty(); 
+//							}
+//							else 
+//							{
+//								sellQty += h.getQty();
+//							}
+//						}
+//						if (buyQty > 0d)
+//							this.buyQty = buyQty.toString();
+//						if (sellQty > 0d)
+//							this.sellQty = sellQty.toString();
+//					}
+//					else if (s.startsWith(" BROKERAGE FEE"))
+//					{
+//						int offset = 0;
+//						if (s.startsWith(" "))
+//							offset++;
+//						
+//						this.brokerageCny = s.substring(14 + offset, 17 + offset);
+//						this.brokerageFee = s.substring(18 + offset);
+//					}
+//					else if (s.contains("RATE")) {
+//						this.rate = s.substring(13);
+//					}
+//				}
+//			}
+//			
+//if ("CELERAEQ-2016-12813".equals(this.id)) {
 //	System.out.println(this.toString());
+//	System.out.println("sPdf=" + sPdf);
 //}
-			
-			
-			// handle special case
-			if ("CELERAEQ-2016-12802".equals(this.id) 
-					|| "CELERAEQ-2016-12800".equals(this.id)
-					|| "CELERAEQ-2016-12803".equals(this.id)
-					|| "CELERAEQ-2016-12804".equals(this.id)
-					|| "CELERAEQ-2016-12808".equals(this.id)
-					|| "CELERAEQ-2016-12813".equals(this.id)
-					|| "CELERAEQ-2016-12814".equals(this.id)
-					|| "CELERAEQ-2016-12821".equals(this.id)
-					|| "CELERAEQ-2016-12823".equals(this.id)
-					|| "CELERAEQ-2016-12900".equals(this.id)
-					|| "CELERAEQ-2016-13016".equals(this.id)
-					)
-			{
-				if (this.buyer != null && this.seller != null) {
-					if (legs.get(0).getSide().equals("Buy"))
-						this.seller = null;
-					else
-						this.buyer = null;
-				}
-if ("CELERAEQ-2016-12813".equals(this.id)) {
-	logger.debug("s={} sPdf={}", s, sPdf);
-}
+//
+//			
+//			if (this.buyer == null && this.seller == null)
+//			{
+//if (this.id.equals("CELERAEQ-2016-12878"))
+//{
+//	System.out.println(this.toString());
+//	if (this.brokerageFee.equals("1,200"))
+//		this.buyer = "Nomura International Plc - Nadjib Ezziane";
+//	else {
+//		this.seller = "Eclipse Futures (HK) Limited - Traders";
+//	}
+//}
+//				System.out.println("buyer,seller=null sPdf=" + sPdf);
+//			}
+//			else if (this.buyer != null && this.seller != null)
+//			{
+//logger.debug("============ buyer and seller both exist[start]============ {}", this.toString());
+//if (legs.get(0).getSide().equals("Sell"))
+//{
+//	this.buyer = null;
+//}
+//else {
+//	this.seller = null;
+//}
+//logger.debug("============ buyer and seller both exist[end]============ {}", this.toString());
+////				if (this.buyer.indexOf("-") > 0)
+////				{
+////					this.seller = null;
+////				} else if (this.seller.indexOf("-") > 0)
+////				{
+////					this.buyer = null;
+////				}
+//			} 
+//			if ("Celera Bank Private Test 1 - james Hugh".equals(this.seller)) {
+////System.out.println("========Celera Bank Private Test 1 - james Hugh============" + this.id);			
+//this.seller = "Thierry";
+//			}
+//			if (this.tradeDate == null )
+//			{
+//				if (sPdf.indexOf("TRADE DATE") > 0)
+//				{
+//					int k = sPdf.indexOf("TRADE DATE ") + "TRADE DATE ".length();
+//					this.tradeDate = sPdf.substring(k, k+9).trim();
+//				}
+////				System.out.println("sPdf=" + this.buyer + "," + this.seller +"," + this.tradeDate);
+//				if (this.tradeDate == null || this.tradeDate.length() > 15)
+//					System.out.println("tradeDate=null sPdf=" + sPdf);
+//			}
+//			if (this.brokerageFee == null)
+//			{
+//				System.out.println("brokerageFee sPdf=" + sPdf);
+//			}
+//			if (this.price == null || this.price.startsWith("DATE"))
+//			{
+////				System.out.println(this.price);
+////				System.out.println("sPdf=" + sPdf);
+//			}
+//			if (this.id == null)
+//			{
+//				if (sPdf.indexOf("TRADE ID") > 0)
+//				{
+//					int k = sPdf.indexOf("TRADE ID ") + "TRADE ID ".length();
+//					this.id = sPdf.substring(k, k+19).trim();
+//				}
+////				System.out.println(this.price);
+////				System.out.println("id=null sPdf=" + this.id);
+//			}
+//			
+//			if (this.curncy == null && this.brokerageCny == null && this.notationalCny == null)
+//			{
+////				System.out.println(this.price);
+//				System.out.println("curncy=null sPdf=" + sPdf);
+//			}
+////			System.out.println("brokerageFee=" + this.brokerageFee);
+////if ("CELERAEQ-2016-13046".equals(id)) {
+////	System.out.println(this.toString());
+////}
+//			
+//			
+//			// handle special case
+//			if ("CELERAEQ-2016-12802".equals(this.id) 
+//					|| "CELERAEQ-2016-12800".equals(this.id)
+//					|| "CELERAEQ-2016-12803".equals(this.id)
+//					|| "CELERAEQ-2016-12804".equals(this.id)
+//					|| "CELERAEQ-2016-12808".equals(this.id)
+//					|| "CELERAEQ-2016-12813".equals(this.id)
+//					|| "CELERAEQ-2016-12814".equals(this.id)
+//					|| "CELERAEQ-2016-12821".equals(this.id)
+//					|| "CELERAEQ-2016-12823".equals(this.id)
+//					|| "CELERAEQ-2016-12900".equals(this.id)
+//					|| "CELERAEQ-2016-13016".equals(this.id)
+//					)
+//			{
+//				if (this.buyer != null && this.seller != null) {
+//					if (legs.get(0).getSide().equals("Buy"))
+//						this.seller = null;
+//					else
+//						this.buyer = null;
+//				}
+//if ("CELERAEQ-2016-12813".equals(this.id)) {
+//	logger.debug("s={} sPdf={}", s, sPdf);
+//}
+//			}
+//			
+//		}
+//		catch (Exception e)
+//		{
+//logger.error("s={} sPdf={}", s, sPdf, e);
+////			logger.error("Error s=[{}] sPdf=[{}]", s, sPdf, e);
+//		}
+//	}
+
+	public int findNextAscii(String s, int pos)
+	{
+		try {
+			char c = s.charAt(pos);
+			while (!(Character.isAlphabetic(c) || Character.isDigit(c))){
+				c = s.charAt(pos++);
 			}
-			
+			return pos - 1;
 		}
-		catch (Exception e)
-		{
-logger.error("s={} sPdf={}", s, sPdf, e);
-//			logger.error("Error s=[{}] sPdf=[{}]", s, sPdf, e);
+		catch (Exception e) {
+			e.printStackTrace();
 		}
+		return -1;
 	}
 
+	public int findNextEndline(String s, int pos)
+	{
+		try {
+			char c = s.charAt(pos);
+			while (c != '\n'){
+				c = s.charAt(pos++);
+			}
+			return pos - 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
 	public void parsePdf(String sPdf)
 	{
 		String s = null;
@@ -563,7 +593,12 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 				s = lines[i];
 				if (s.startsWith("To: ") || s.startsWith(" To: ")) 
 				{
-					s = s.replace(" To: ", "").replace("To: ", "");
+//					s = s.replace(" To: ", "").replace("To: ", "");
+					int k = sPdf.indexOf("To: ");
+					k += "To:".length();
+					int pos = findNextAscii(sPdf, k);
+					int el = findNextEndline(sPdf, pos);
+					s = sPdf.substring(pos, el);
 					try {
 						int idx = s.indexOf(" <");
 						if (idx > 0) {
@@ -588,9 +623,12 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 				}
 				else if (s.startsWith("BUYER ") || s.startsWith(" BUYER "))
 				{
-					s = s.replace(" BUYER ", "").replace("BUYER ", "");
+//					s = s.replace(" BUYER ", "").replace("BUYER ", "");
 					isSummary = false;
-					String buyer = s;
+					
+					int k = s.indexOf("BUYER") + "BUYER".length();
+					int pos = findNextAscii(s, k);
+					String buyer = s.substring(pos);
 					if (buyer.indexOf(firm) >= 0) {
 						this.buyer = participant;
 //System.out.println("==========buyer1======" + participant + "," + firm);
@@ -598,12 +636,23 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 					else {
 //System.out.println("==========buyer2======" + buyer + "," + firm);
 					}
+					
+					if (this.buyer != null && this.buyer.isEmpty())
+					{
+						logger.info("buyer,seller=null sPdf={}", sPdf);	
+					}
+					
 				}
 				else if (s.startsWith("SELLER ") || s.startsWith(" SELLER "))
 				{
-					s = s.replace(" SELLER ", "").replace("SELLER ", "");
+//					s = s.replace(" SELLER ", "").replace("SELLER ", "");
 					isSummary = false;
-					String seller = s;
+//					String seller = s;
+					
+					int k = s.indexOf("SELLER") + "SELLER".length();
+					int pos = findNextAscii(s, k);
+					String seller = s.substring(pos);
+					
 					if (seller.indexOf(firm) >= 0) {
 						this.seller = participant;
 //System.out.println("==========seller1======" + participant + "," + firm);
@@ -612,27 +661,61 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 //System.out.println("==========seller2======" + seller + "," + firm);
 					}
 				}
-				else if (s.startsWith("PRICE"))
+//				else if (s.startsWith("BUYER ") || s.startsWith(" BUYER "))
+//				{
+//					s = s.replace(" BUYER ", "").replace("BUYER ", "");
+//					isSummary = false;
+//					String buyer = s;
+//					if (buyer.indexOf(firm) >= 0) {
+//						this.buyer = participant;
+////System.out.println("==========buyer1======" + participant + "," + firm);
+//					}
+//					else {
+////System.out.println("==========buyer2======" + buyer + "," + firm);
+//					}
+//				}
+//				else if (s.startsWith("SELLER ") || s.startsWith(" SELLER "))
+//				{
+//					s = s.replace(" SELLER ", "").replace("SELLER ", "");
+//					isSummary = false;
+//					String seller = s;
+//					if (seller.indexOf(firm) >= 0) {
+//						this.seller = participant;
+////System.out.println("==========seller1======" + participant + "," + firm);
+//					}
+//					else {
+////System.out.println("==========seller2======" + seller + "," + firm);
+//					}
+//				}
+				else if (s.startsWith("PRICE") || s.startsWith(" PRICE"))
 				{
+					int k = sPdf.indexOf("PRICE ");
+					k += "PRICE".length();
+					int pos = findNextAscii(sPdf, k);
+					int el = findNextEndline(sPdf, pos);
+					s = sPdf.substring(pos, el);
 					String[] tokens = s.split(" ");
 					
 					try 
 					{
-						format.parse(tokens[2]);
+						format.parse(tokens[1]);
 					}
 					catch (Exception e)
 					{
-						continue;
+						e.printStackTrace();
+						logger.error("prase price error {}", sPdf);
+						System.exit(-1);
+//						continue;
 					}
-					this.curncy = tokens[1];
-					this.price = tokens[2];
+					this.curncy = tokens[0];
+					this.price = tokens[1];
 				}
-				else if (s.startsWith(" PRICE"))
-				{
-					String[] tokens = s.split(" ");
-					this.curncy = tokens[2];
-					this.price = tokens[3];
-				}
+//				else if (s.startsWith(" PRICE"))
+//				{
+//					String[] tokens = s.split(" ");
+//					this.curncy = tokens[2];
+//					this.price = tokens[3];
+//				}
 				else if (s.startsWith("REF"))
 				{
 					this.refPrice = s.substring(4);
@@ -934,18 +1017,24 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 					this.id = sPdf.substring(k, k+19).trim();
 				}
 			}
-			if (this.tradeDate == null )
+			if (this.tradeDate == null || this.tradeDate.length() == 0 ||  this.tradeDate.length() > 15)
 			{
 				if (sPdf.indexOf("TRADE DATE") > 0)
 				{
 					int k = sPdf.indexOf("TRADE DATE ") + "TRADE DATE ".length();
-					this.tradeDate = sPdf.substring(k, k+9).trim();
+					char c = sPdf.charAt(k);
+					while (!(Character.isDigit(c) || Character.isAlphabetic(c)))
+					{
+						c = sPdf.charAt(k++);
+					}
+					this.tradeDate = sPdf.substring(k-1, k+9).trim();
 				}
-//				System.out.println("sPdf=" + this.buyer + "," + this.seller +"," + this.tradeDate);
-				if (this.tradeDate == null || this.tradeDate.length() > 15)
-					System.out.println("tradeDate=null sPdf=" + sPdf);
+				else 
+				{
+					logger.error("tradeDate error sPdf[{}]", sPdf);
+					System.exit(-1);
+				}
 			}
-			
 			// handle special case
 			if (this.buyer == null && this.seller == null)
 			{
@@ -960,6 +1049,10 @@ logger.error("s={} sPdf={}", s, sPdf, e);
 				}
 logger.error("buyer,seller=null sPdf={}", sPdf);
 			}
+//if (this.id.equals("CELERAEQ-2016-13284"))
+//{
+//	logger.info("buyer,seller=null sPdf={}", sPdf);	
+//}
 			if ("Celera Bank Private Test 1 - james Hugh".equals(this.seller)) {
 //System.out.println("========Celera Bank Private Test 1 - james Hugh============" + this.id);			
 				this.seller = "Thierry";

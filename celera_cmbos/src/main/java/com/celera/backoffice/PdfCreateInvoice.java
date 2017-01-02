@@ -47,7 +47,8 @@ public class PdfCreateInvoice
 	
 	private static final String PRE_INVOICE_NUMBER = "CEL";
 	private static final String PATTERN = " - ";
-	private static int invoice_Num = 160170;
+	private static int invoice_Num = 160198;
+//	private static final String invoice_Num = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_INVOICE_NUMBER);
     private static final NumberFormat nf = new DecimalFormat("##.#");
     private static final String PREFIX_BUYER = "Buyer - ";
     private static final String PREFIX_SELLER = "Seller - ";
@@ -87,9 +88,9 @@ public class PdfCreateInvoice
 	
 	public void recon() {
 		for (Entry<String, InvoiceRegister> e: CSVReader.map.entrySet()) {
-			String key = e.getKey();
+			String key = e.getKey().replace("IR_", "");
 			if (!tempRecon.contains(key))
-				logger.error("=============recon error============ {}", key);
+				logger.error("=============recon error============ csv_key = {}", key);
 		}
 	}
 	
@@ -136,7 +137,9 @@ public class PdfCreateInvoice
 			} 
 //			key = Invoice.key(firm, curncy, dTradeDate);
 			key = firm + "_" + curncy + "_" + sdf_mmm_yy.format(dTradeDate);
-			
+			if (key.toUpperCase().endsWith("OCT16")) {
+				logger.debug("{}", e);
+			}
 			List temp = (List) client2TradeConfo.get(key);
 			if (temp == null)
 			{
@@ -148,7 +151,7 @@ public class PdfCreateInvoice
 			TradeConfo tc = e.convert();
 			tc.setHasInvoiceCreated(true);
 			
-//			DatabaseAdapter.create(tc);
+			DatabaseAdapter.create(tc);
 		}
 
 //System.exit(-1);
@@ -209,7 +212,7 @@ public class PdfCreateInvoice
 				}
 				lTd.add(tradeDetail);
 				
-//DatabaseAdapter.create(tradeDetail);
+DatabaseAdapter.create(tradeDetail);
 			}
 			
 			String[] tokens = key.split("_");
@@ -227,8 +230,9 @@ public class PdfCreateInvoice
 			Account account = BOData.get(company);
 			if (account == null) {
 				logger.error("company not found: {}", company);
-System.out.println(key);
-				continue;
+				System.exit(-1);
+//System.out.println(key);
+//				continue;
 			}
 			
 			try {
@@ -342,14 +346,15 @@ tempRecon.add(keyUsd);
 			if (register == null)
 			{
 				// dont fxxking care recon
-logger.info("=============key============== {}", keyUsd);
+logger.error("=============key============== {}", keyUsd);
+System.exit(-1);
 			}
 			else {
 				if (register.getAmount().equals(totalFee)){
 //					invNumber = register.getInvoice();
 					invNumber = PRE_INVOICE_NUMBER + "-" + invoice_Num++;
 //System.out.println("=============amount the same==============" + invNumber);
-logger.info("=============same amount============== {}, {}, {}", tokens[0], register.getAmount(), totalFee);
+//logger.info("=============same amount============== {}, {}, {}", tokens[0], register.getAmount(), totalFee);
 					return invNumber;
 				}
 				else {

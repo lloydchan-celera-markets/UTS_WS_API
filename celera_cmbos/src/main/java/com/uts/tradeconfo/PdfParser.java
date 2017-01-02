@@ -20,10 +20,15 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 
 public class PdfParser {
+
+	Logger logger = LoggerFactory.getLogger(PdfParser.class);
 	
 	private static final String CHARSET_UTF8 = "UTF-8";
 	
@@ -54,7 +59,7 @@ public class PdfParser {
 				listFilesForFolder(fileEntry);
 			} else {
 				String fileName = fileEntry.getName();
-				System.out.println(fileName);
+				logger.info(fileName);
 				try {
 					if (fileName.endsWith("pdf"))
 						parsePdf(fileEntry);
