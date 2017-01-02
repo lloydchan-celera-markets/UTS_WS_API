@@ -177,8 +177,8 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 //		loadHistoryTradeConfo();
 		clearAll();
 		loadallTradeConfo();
-		loadInvoice();
 		loadallUtsTradeConfoSummary();
+		loadInvoice();
 		loadTodayLog();
 	}
 	
