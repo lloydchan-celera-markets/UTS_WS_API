@@ -1,10 +1,15 @@
 package com.celera.core.dm;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
@@ -14,17 +19,17 @@ import org.slf4j.LoggerFactory;
 
 import com.celera.message.cmmf.CmmfJson;
 
-public class TradeReport implements IOrder, ITrade
+public class BlockTradeReport implements IOrder
 {
-	Logger logger = LoggerFactory.getLogger(TradeReport.class);
+	Logger logger = LoggerFactory.getLogger(BlockTradeReport.class);
 
 	private static final int CMMF_SIZE = 69;
 
 	private IInstrument instr = null;
 	private EOrderStatus status = null;
 	private ETradeReportType tradeReportType = null;
-	private Double price = null;
 	private Integer qty = null;
+	private Double price = null;
 	private Long id = null;
 	private Long refId = null;
 	private ESide side = null;
@@ -33,12 +38,13 @@ public class TradeReport implements IOrder, ITrade
 	
 	private LocalDate lastTime = null;
 	
+	private List<TradeReport> list = new ArrayList<TradeReport>();
 
-	public TradeReport()
+	public BlockTradeReport()
 	{
 	}
 
-	public TradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
+	public BlockTradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
 			Integer qty, Double price, Long id, Long refId, ESide side, String company, String cpCompany)
 	{
 		super();
@@ -52,6 +58,15 @@ public class TradeReport implements IOrder, ITrade
 		this.side = side;
 		this.company = company;
 		this.cpCompany = cpCompany;
+	}
+
+	public void add(TradeReport tr) {
+		list.add(tr);
+	}
+	
+	public List<TradeReport> getList()
+	{
+		return list;
 	}
 
 	public String getCpCompany()
@@ -105,6 +120,16 @@ public class TradeReport implements IOrder, ITrade
 	{
 		if (id != null)
 			this.id = id;
+	}
+
+	public Long getRefId()
+	{
+		return refId;
+	}
+
+	public void setRefId(Long refId)
+	{
+		this.refId = refId;
 	}
 
 	public Logger getLogger()
@@ -196,10 +221,11 @@ public class TradeReport implements IOrder, ITrade
 		buf.put(StringUtils.rightPad(instr.getSymbol(), 32).getBytes());
 		buf.put((byte)status.ordinal());
 		buf.put((byte)tradeReportType.value());
-		buf.putLong(qty);
+		buf.putInt(qty);
 		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
 		buf.put((byte)side.getAsInt());
 		buf.putLong(id);
+		buf.putLong(refId);
 		buf.put(StringUtils.rightPad(this.company, 7).getBytes());
 		buf.put(StringUtils.rightPad(this.cpCompany, 7).getBytes());
 		
@@ -207,11 +233,24 @@ public class TradeReport implements IOrder, ITrade
 		return buf.array();
 	}
 
+	@Override
+	public EOrderType getOrderType()
+	{
+		return null;
+	}
+
+	@Override
+	public void setOrderType(EOrderType ordType)
+	{
+	}
+
+	@Override
 	public void setQty(Integer qty)
 	{
 		this.qty = qty;		
 	}
 
+	@Override
 	public Integer getQty()
 	{
 		return qty;
@@ -221,108 +260,40 @@ public class TradeReport implements IOrder, ITrade
 	public JsonObject json()
 	{
 		JsonObjectBuilder builder = Json.createObjectBuilder();
-		if (this.id != null)
-			builder.add(CmmfJson.ORDER_ID, this.id);
-		if (this.refId != null)
-			builder.add(CmmfJson.REFERENCE_ID, this.refId);
-		
-		
-		String symbol = this.instr.getSymbol();
-		if (symbol != null)
-			builder.add(CmmfJson.INSTRUMENT, symbol);
-		String ul = this.instr.getName();
-		if (ul != null)
-			builder.add(CmmfJson.UL, ul);
-		if (this.price != null)
-			builder.add(CmmfJson.PRICE, this.price);
-		if (this.qty != null)
-			builder.add(CmmfJson.QTY, this.qty);
-		if (this.side != null)
-			builder.add(CmmfJson.SIDE, this.side.toString());
-		
+//		builder.add("symbol", instr.getSymbol());
+		builder.add(CmmfJson.ORDER_ID, this.id);
+		builder.add(CmmfJson.REFERENCE_ID, this.refId);
+		builder.add(CmmfJson.TRADE_REPORT_TYPE, this.tradeReportType.getName());
+		builder.add(CmmfJson.COUNTER_PARTY, this.cpCompany);
+		builder.add(CmmfJson.QTY, this.qty);
+		builder.add(CmmfJson.SIDE, this.side.name());
 		if (this.instr instanceof IDerivative) {
-			String expiry = ((IDerivative) this.instr).getExpiry();
-			if (expiry != null)
-				builder.add(CmmfJson.EXPIRY, expiry);
-			Double strike = ((IDerivative) this.instr).getStrike();
-			if (strike != null)
-				builder.add(CmmfJson.STRIKE, strike);
+			IDerivative deriv = (IDerivative)this.instr;
+			String expiry = deriv.getExpiry();
+			if (expiry != null) {
+				builder.add(CmmfJson.FUTURE_MATURITY, expiry);
+			}
+			String symbol = deriv.getSymbol();
+			if (symbol != null) {
+				builder.add(CmmfJson.SYMBOL, symbol);
+			}
+			Double delta = deriv.getDelta();
+			if (delta != null) {
+				builder.add(CmmfJson.DELTA, delta);
+			}
 		}
-		builder.add(CmmfJson.STATUS, this.status.ordinal());
+		builder.add(CmmfJson.STATUS, this.status.toString());
 		
+		JsonArrayBuilder legs = Json.createArrayBuilder();
+		for (TradeReport tr : this.list) {
+			legs.add(tr.json());
+		}
+		
+		builder.add(CmmfJson.LEGS, legs);
 		JsonObject empJsonObject = builder.build();
 
-		logger.debug("Trade Report JSON {}", empJsonObject);
+		logger.debug("Block Trade Report JSON {}", empJsonObject);
 
 		return empJsonObject;
 	}
-
-	public Long getRefId()
-	{
-		return refId;
-	}
-
-	public void setRefId(Long refId)
-	{
-		this.refId = refId;
-	}
-
-	public EOrderType getOrderType()
-	{
-		return EOrderType.LIMIT;
-	}
-
-	public void setOrderType(EOrderType ordType)
-	{
-	}
-
-	@Override
-	public LocalDate getTime()
-	{
-		return this.lastTime;
-	}
-
-	@Override
-	public void setTime(LocalDate time)
-	{
-		this.lastTime = time;
-	};
-	
-//	@Override
-//	public LocalDate getTime()
-//	{
-//		return lastTime;
-//	}
-//
-//	@Override
-//	public void setTime(LocalDate time)
-//	{
-//		this.lastTime = lastTime;
-//	}
-
-//	@Override
-//	public JsonObject json()
-//	{
-//		JsonObjectBuilder builder = Json.createObjectBuilder();
-////		builder.add("symbol", instr.getSymbol());
-////		builder.add("status", status.ordinal());
-////		builder.add("orderType", orderType.ordinal());
-////		builder.add("qty", qty);
-////		builder.add("id", id);
-////		builder.add("price", (price * IInstrument.CMMF_PRICE_FACTOR));
-////		if (instr instanceof IDerivative) {
-////			builder.add("strike", ((IDerivative)instr).getStrike() * IInstrument.CMMF_PRICE_FACTOR);
-////			builder.add("delta", ((IDerivative)instr).getDelta() * IInstrument.CMMF_PRICE_FACTOR);
-////		}
-////		else { 
-////			builder.add("strike", 0);
-////			builder.add("delta", 0);
-////		}
-////		
-//		JsonObject empJsonObject = builder.build();
-//
-//		logger.debug("Order JSON {}", empJsonObject);
-//
-//		return empJsonObject;
-//	}
 }

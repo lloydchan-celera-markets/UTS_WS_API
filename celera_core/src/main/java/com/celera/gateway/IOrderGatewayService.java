@@ -5,7 +5,7 @@ import java.util.List;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.IQuote;
 
-public interface IOrderGateway
+public interface IOrderGatewayService
 {
 	void createOrder(IOrder o);
 	void modifyOrder(IOrder o);

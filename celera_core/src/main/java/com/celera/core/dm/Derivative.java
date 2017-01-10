@@ -38,6 +38,16 @@ public class Derivative extends Instrument implements IDerivative
 		return legs.get(key);
 	}
 	
+	public String getExpiry()
+	{
+		return expiry;
+	}
+
+	public void setExpiry(String expiry)
+	{
+		this.expiry = expiry;
+	}
+
 	@Override
 	public String key()
 	{

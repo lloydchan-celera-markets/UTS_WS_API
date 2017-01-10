@@ -2,21 +2,23 @@ package com.celera.core.dm;
 
 import java.time.LocalDate;
 
+import javax.json.JsonObject;
+
 public class Trade implements ITrade
 {
-	private String id = null;
+	private Long id = null;
 	private Long orderId = null;
 	private Double price = null;
-	private Long qty = null;
+	private Integer qty = null;
 	private LocalDate time = null;
 	private String comment = null;
 
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -41,12 +43,12 @@ public class Trade implements ITrade
 		this.price = price;
 	}
 
-	public Long getQty()
+	public Integer getQty()
 	{
 		return qty;
 	}
 
-	public void setQty(Long qty)
+	public void setQty(Integer qty)
 	{
 		this.qty = qty;
 	}
@@ -76,5 +78,12 @@ public class Trade implements ITrade
 	{
 		return "Trade [id=" + id + ", orderId=" + orderId + ", price=" + price + ", qty=" + qty + ", time=" + time
 				+ ", comment=" + comment + "]";
+	}
+
+	@Override
+	public JsonObject json()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -38,7 +38,7 @@ import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
 import com.celera.message.cmmf.ICmmfListener;
 
-public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
+public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGatewayService
 {
 	Logger logger = LoggerFactory.getLogger(HkexOapiGateway.class);
 
@@ -101,7 +101,7 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 			CmmfParser.parseCmmfOrderResponse(data);
 			break;
 		}
-		case OG_ADMIN_REQUEST: {
+		case ADMIN_REQUEST: {
 			boolean result = CmmfParser.parseCmmfOgAdminResponse(data);
 			isWaitAdminResp.set(false);
 			break;
@@ -303,7 +303,7 @@ CmmfParser.print(msg);
 //		Double price, Integer qty
 		IInstrument instr = new Derivative("HK", "HHI9800O7", EInstrumentType.EP, "European Put", null, null, null, 
 				9800d, "O7", null, false, 0.5);
-		IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT, 1l, "", 439d, 100, ESide.BUY);
+		IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT, null, 1l, "", 439d, 100, ESide.BUY);
 		
 		while(true)
 		{
@@ -330,7 +330,7 @@ CmmfParser.print(msg);
 			buf.put(newPassword.getBytes());
 			buf.flip();
 			byte b[] = buf.array();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.OG_ADMIN_REQUEST, b);
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
 			for (int i=0; i<msg.length; i++) {
 				System.out.print((int)msg[i] + ",");
 			}
@@ -350,7 +350,7 @@ CmmfParser.print(msg);
 			buf.put((byte)EOGAdmin.LOGOUT.getChar());
 			buf.flip();
 			byte b[] = buf.array();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.OG_ADMIN_REQUEST, b);
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
 			server.send(msg);
 		} catch (Exception e)
 		{
@@ -379,7 +379,7 @@ CmmfParser.print(msg);
 			buf.put(password.getBytes());
 			buf.flip();
 			byte b[] = buf.array();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.OG_ADMIN_REQUEST, b);
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
 //			for (int i=0; i<msg.length; i++) {
 //				System.out.print((int)msg[i] + ",");
 //			}
@@ -399,7 +399,7 @@ CmmfParser.print(msg);
 			buf.put((byte)EOGAdmin.SOD.getChar());
 			buf.flip();
 			byte b[] = buf.array();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.OG_ADMIN_REQUEST, b);
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
 //			for (int i=0; i<msg.length; i++) {
 //				System.out.print((int)msg[i] + ",");
 //			}
@@ -419,7 +419,7 @@ CmmfParser.print(msg);
 			buf.put((byte)EOGAdmin.SUBSCRIBE_MARKET_DATA.getChar());
 			buf.flip();
 			byte b[] = buf.array();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.OG_ADMIN_REQUEST, b);
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
 			for (int i=0; i<msg.length; i++) {
 				System.out.print((int)msg[i] + ",");
 			}
@@ -439,7 +439,7 @@ CmmfParser.print(msg);
 			buf.put((byte)EOGAdmin.UNSUBSCRIBE_MARKET_DATA.getChar());
 			buf.flip();
 			byte b[] = buf.array();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.OG_ADMIN_REQUEST, b);
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
 			for (int i=0; i<msg.length; i++) {
 				System.out.print((int)msg[i] + ",");
 			}

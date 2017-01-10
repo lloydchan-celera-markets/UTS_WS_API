@@ -14,6 +14,8 @@ public interface IOrder
 	public void setOrderType(EOrderType ordType);
 	public Long getId();
 	public void setId(Long id);
+	public Long getRefId();
+	public void setRefId(Long id);
 	
 	public void setQty(Integer qty);
 	public Integer getQty();

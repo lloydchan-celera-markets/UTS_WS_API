@@ -1,5 +1,10 @@
 package com.celera.core.dm;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.celera.message.cmmf.EMessageType;
+
 public enum EInstrumentType 
 {
 	OPTION("Option"),	// default
@@ -405,10 +410,23 @@ public enum EInstrumentType
 	VSWSW("Variance Swap Switch"),
 	VSWVSWC("Variance Swap against Variance Swap Capped"),
 	WOC_PERCENT("Worst Of Call %"),
-	WOP_PERCENT("Worst Of Put %");
+	WOP_PERCENT("Worst Of Put %"),
+	
+	CALL("Call"),
+	PUT("Put");
 
 	private final String name;
-
+	private static final Map<String, EInstrumentType> map = new LinkedHashMap<String, EInstrumentType>();
+	static
+	{
+		for (EInstrumentType e : EInstrumentType.values())
+			map.put(e.name, e);
+	}
+	public static EInstrumentType get(final String name)
+	{
+		return map.get(name);
+	}
+	
 	EInstrumentType(String name) {
 		this.name = name;
 	};

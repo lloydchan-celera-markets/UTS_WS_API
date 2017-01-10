@@ -2,10 +2,15 @@ package com.celera.message.cmmf;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.celera.ipc.ILifeCycle;
 
 public abstract class CmmfApp implements ICmmfListener
 {
+	Logger logger = LoggerFactory.getLogger(CmmfApp.class);
+	
 	String uniqueID = UUID.randomUUID().toString();
 
 	protected EApp me;
@@ -30,6 +35,8 @@ public abstract class CmmfApp implements ICmmfListener
 	@Override
 	public byte[] onMessage(byte[] data)
 	{
+		logger.debug("onMessage {}", new String (data));
+		
 		EMessageType type = EMessageType.get((char) data[ICmmfConst.HEADER_MESSAGE_TYPE_POS]);
 		byte[] b = null;
 		

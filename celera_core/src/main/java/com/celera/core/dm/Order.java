@@ -26,6 +26,7 @@ public class Order implements IOrder
 	private IInstrument instr = null;
 	private EOrderType orderType = null;
 	private Long id = null;
+	private Long refId = null;
 	private String entity = null;
 	private Double price = null;
 	private LocalDate lastTime = null;
@@ -36,7 +37,7 @@ public class Order implements IOrder
 	{
 	}
 
-	public Order(EOrderStatus status, IInstrument instr, EOrderType type, Long id, String entity,
+	public Order(EOrderStatus status, IInstrument instr, EOrderType type, Long id, Long refId, String entity,
 			Double price, Integer qty, ESide side)
 	{
 		super();
@@ -44,6 +45,7 @@ public class Order implements IOrder
 		this.instr = instr;
 		this.orderType = type;
 		this.id = id;
+		this.refId = refId;
 		this.entity = entity;
 		this.price = price;
 		this.qty = qty;
@@ -70,6 +72,16 @@ public class Order implements IOrder
 	{
 		if (instr != null)
 			this.instr = instr;
+	}
+
+	public Long getRefId()
+	{
+		return refId;
+	}
+
+	public void setRefId(Long refId)
+	{
+		this.refId = refId;
 	}
 
 	public Long getId()
@@ -151,9 +163,9 @@ public class Order implements IOrder
 	@Override
 	public String toString()
 	{
-		return "Order [logger=" + logger + ", status=" + status + ", instr=" + instr + ", orderType=" + orderType
-				+ ", id=" + id + ", entity=" + entity + ", price=" + price + ", lastTime=" + lastTime + ", qty=" + qty
-				+ "]";
+		return "Order [status=" + status + ", instr=" + instr + ", orderType=" + orderType + ", id=" + id + ", refId="
+				+ refId + ", entity=" + entity + ", price=" + price + ", lastTime=" + lastTime + ", qty=" + qty
+				+ ", side=" + side + "]";
 	}
 
 //	public byte[] toBytes()
@@ -187,6 +199,7 @@ public class Order implements IOrder
 		buf.put((byte)orderType.value());
 		buf.putInt(qty);
 		buf.putLong(id);
+		buf.putLong(refId);
 		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
 //		if (instr instanceof IDerivative) {
 //			buf.putLong((long)(((IDerivative)instr).getStrike() * (double)IInstrument.CMMF_PRICE_FACTOR));

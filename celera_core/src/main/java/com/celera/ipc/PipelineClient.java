@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import com.celera.message.cmmf.ICmmfClient;
+import com.celera.message.cmmf.ICmmfServer;
 import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.AbstractCmmfService;
 
-public class PipelineClient extends AbstractCmmfService implements ILifeCycle, ICmmfClient
+public class PipelineClient extends AbstractCmmfService implements ILifeCycle, ICmmfClient/*, ICmmfServer*/
 {
 	Logger logger = LoggerFactory.getLogger(PipelineClient.class);
 
@@ -38,6 +39,7 @@ public class PipelineClient extends AbstractCmmfService implements ILifeCycle, I
 	@Override
 	public void start()
 	{
+//		this.connect();
 		super.submit(this);
 	}
 
@@ -57,10 +59,10 @@ public class PipelineClient extends AbstractCmmfService implements ILifeCycle, I
 		try
 		{
 			pull.connect(pullUrl.toString());
+			logger.info("Bind pull {}", pullUrl.toString());
 			sink.connect(sinkUrl.toString());
+			logger.info("Bind sink {}", sinkUrl.toString());
 			
-			logger.info("connect pull {}", pullUrl.toString());
-			logger.info("connect sink {}", sinkUrl.toString());
 		} catch (Exception e)
 		{
 			logger.error("connect error", e);
@@ -68,6 +70,11 @@ public class PipelineClient extends AbstractCmmfService implements ILifeCycle, I
 		}
 	}
 
+	public void sink(byte[] buf) {
+		logger.info("sink {}", new String(buf));
+		sink.send(buf, 0);
+	}
+	
 	@Override
 	public void run()
 	{
@@ -134,4 +141,22 @@ public class PipelineClient extends AbstractCmmfService implements ILifeCycle, I
 		receiver.close();
 		context.term();
 	}
+
+//	@Override
+//	public void bind()
+//	{
+//		try
+//		{
+//			pull.bind(pullUrl.toString());
+//			logger.info("Bind pull {}", pullUrl.toString());
+//			
+//			sink.bind(sinkUrl.toString());
+//			logger.info("Bind sink {}", sinkUrl.toString());
+//			
+//		} catch (Exception e)
+//		{
+//			logger.error("connect error", e);
+//			System.exit(-1);
+//		}
+//	}
 }

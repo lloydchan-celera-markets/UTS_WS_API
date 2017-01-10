@@ -106,7 +106,7 @@ public class HKExCertTest
 							// EInstrumentType.EP, "European Put",
 							// null, null, null, strike, month, null, false,
 							// delta);
-							order = new Order(EOrderStatus.NEW, instr, EOrderType.LIMIT, orderId, "", price, qty,
+							order = new Order(EOrderStatus.NEW, instr, EOrderType.LIMIT, orderId, null, "", price, qty,
 									ESide.get(side));
 							gw.createOrder(order);
 							map.put(orderId, order);
@@ -171,7 +171,7 @@ public class HKExCertTest
 							// Integer qty, Double price, Long id, ESide
 							// side, String company
 							order = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.get(trType), qty, price,
-									orderId, ESide.get(side), myCompany, cpCompany);
+									orderId, null, ESide.get(side), myCompany, cpCompany);
 							gw.createTradeReport(order);
 							map.put(orderId, order);
 						} catch (Exception e)
@@ -201,7 +201,7 @@ public class HKExCertTest
 								IInstrument instr = new Derivative("HK", legSymbol, EInstrumentType.EP, "European Put", null,
 										null, null, null, "", null, false, 0d);
 								order = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.T2_COMBO_CROSS, legQty, legPrice,
-										orderId, ESide.get(legSide), legMyCompany, legCpCompany);
+										orderId, null, ESide.get(legSide), legMyCompany, legCpCompany);
 								list.add(order);
 							}
 							gw.createBlockTradeReport(list, orderId, synSymbol);

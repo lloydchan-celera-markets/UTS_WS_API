@@ -24,4 +24,8 @@ public class CmmfBuilder
 		System.arraycopy(body, 0, combine, 3, size);
 		return combine;
 	}
+	
+	public static byte[] buildJson(EApp sender, EMessageType type, ECommand cmd, byte[] body, int size) {
+		return null;
+	}
 }

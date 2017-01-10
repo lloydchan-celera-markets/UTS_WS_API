@@ -11,6 +11,7 @@ public class Quote implements IQuote
 	private EOrderStatus status = null;
 	private IInstrument instr = null;
 	private Long id = null;
+	private Long refId = null;
 	private String entity = null;
 	private String quoteType = null;
 	private Double bidPrice = null;
@@ -26,13 +27,14 @@ public class Quote implements IQuote
 	{
 	}
 	
-	public Quote(EOrderStatus status, IInstrument instr, Long id, String entity, String quoteType, Double bidPrice,
+	public Quote(EOrderStatus status, IInstrument instr, Long id, Long refId, String entity, String quoteType, Double bidPrice,
 			LocalDate bidTime, Long bidQty, Double askPrice, LocalDate askTime, Long askQty)
 	{
 		super();
 		this.status = status;
 		this.instr = instr;
 		this.id = id;
+		this.refId = refId;
 		this.entity = entity;
 		this.quoteType = quoteType;
 		this.bidPrice = bidPrice;
@@ -79,6 +81,16 @@ public class Quote implements IQuote
 	{
 		if (id != null)
 			this.id = id;
+	}
+
+	public Long getRefId()
+	{
+		return refId;
+	}
+
+	public void setRefId(Long refId)
+	{
+		this.refId = refId;
 	}
 
 	public String getEntity()
@@ -172,11 +184,10 @@ public class Quote implements IQuote
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("Quote [status=").append(status).append(", instr=").append(instr)
-				.append(", id=").append(id).append(", entity=").append(entity).append(", quoteType=").append(quoteType)
-				.append(", bidPrice=").append(bidPrice).append(", bidTime=").append(bidTime).append(", bidQty=")
-				.append(bidQty).append(", askPrice=").append(askPrice).append(", askTime=").append(askTime)
-				.append(", askQty=").append(askQty)
-				.append(", [");
+				.append(", id=").append(id).append(", refId=").append(refId).append(", entity=").append(entity)
+				.append(", quoteType=").append(quoteType).append(", bidPrice=").append(bidPrice).append(", bidTime=")
+				.append(bidTime).append(", bidQty=").append(bidQty).append(", askPrice=").append(askPrice)
+				.append(", askTime=").append(askTime).append(", askQty=").append(askQty).append(", [");
 		for (Addressee o: addressees) {
 			sb.append(o.toString()).append(",");
 		}
