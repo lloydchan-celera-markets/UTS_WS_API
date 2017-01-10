@@ -181,4 +181,19 @@ public class Uts2Dm
 		}
 	}
 	
+	public static Integer toInt(String s)
+	{
+		if (s == null || s.length() == 0 || DB_NULL.equals(s))
+			return null; // skip throw
+		
+		try
+		{
+			return format.parse(s).intValue();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+	
 }
