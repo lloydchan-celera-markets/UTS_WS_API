@@ -33,6 +33,7 @@ import com.celera.ipc.PipelineClient;
 import com.celera.ipc.RrServer;
 import com.celera.ipc.URL;
 import com.celera.message.cmmf.CmmfApp;
+import com.celera.message.cmmf.CmmfJson;
 import com.celera.message.cmmf.EAdminCommand;
 import com.celera.message.cmmf.EApp;
 import com.celera.message.cmmf.ECommand;
@@ -172,26 +173,28 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 			
 			try {
 //				JSONObject message = jsonbject.getJSONObject("message");
-				Long refId = jsonbject.getLong("RefId");
-				String sTrType = jsonbject.getString("TrType");
+				Long refId = jsonbject.getLong(CmmfJson.REFERENCE_ID);
+				String sTrType = jsonbject.getString(CmmfJson.TRADE_REPORT_TYPE);
 				ETradeReportType trType = ETradeReportType.get(sTrType);
-				String sSide = jsonbject.getString("Side");
-				ESide side = ESide.get(sSide);
-				String cp = jsonbject.getString("Cp");
+//				String sSide = jsonbject.getString(CmmfJson.SIDE);
+//				ESide side = ESide.get(sSide);
+//				String cp = jsonbject.getString("Cp");
+				String buyer = jsonbject.getString(CmmfJson.BUYER);
+				String seller = jsonbject.getString(CmmfJson.SELLER);
 				
 				// log
-				Integer qty = jsonbject.getInt("Qty");
-				String futMat = jsonbject.getString("FutMat");
+				Integer qty = jsonbject.getInt(CmmfJson.QTY);
+				String futMat = jsonbject.getString(CmmfJson.FUTURE_MATURITY);
 //				Double strike = jsonbject.getDouble("strike");
-				Double delta = jsonbject.getDouble("Delta");
-				String symbol = jsonbject.getString("Symbol");
+				Double delta = jsonbject.getDouble(CmmfJson.DELTA);
+				String symbol = jsonbject.getString(CmmfJson.SYMBOL);
 				
 				switch (trType) {
 				case T1_SELF_CROSS: {
 					break;
 				}
 				case T2_COMBO_CROSS: {
-					JSONArray ary = jsonbject.getJSONArray("Legs");
+					JSONArray ary = jsonbject.getJSONArray(CmmfJson.LEGS);
 
 //					public Derivative(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE,
 //							String rIC, Double strike, String expiry, Double price,
@@ -199,33 +202,35 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 					
 					IInstrument deriv = new Derivative("HK", symbol, null, null, null, null, null, null, futMat, null, false, delta);
 					BlockTradeReport block = new BlockTradeReport(deriv, EOrderStatus.SENT, trType, qty, null,
-							null, refId, side, "HKCEL", cp);
+							null, refId, buyer, seller);
 					
 					List<IOrder> l = new ArrayList<IOrder>();
 					for (Object o: ary) 
 					{
 						JSONObject jo = (JSONObject)o;
 						
-						String ul = jo.getString("UL");
+						String ul = jo.getString(CmmfJson.UL);
 						String sType = ul.split(" " )[1];
 						EInstrumentType instrType = EInstrumentType.get(sType);
 						
-						Double price = jo.getDouble("Price");
-						qty = jo.getInt("Qty");
-						sSide = jo.getString("Side");
-						side = ESide.get(sSide);
-						symbol = jo.getString("Instrument");
-						String expiry = jo.getString("Expiry");
+						Double price = jo.getDouble(CmmfJson.PRICE);
+						qty = jo.getInt(CmmfJson.QTY);
+//						sSide = jo.getString("Side");
+//						side = ESide.get(sSide);
+						buyer = jo.getString(CmmfJson.BUYER);
+						seller = jo.getString(CmmfJson.SELLER);
+						symbol = jo.getString(CmmfJson.INSTRUMENT);
+						String expiry = jo.getString(CmmfJson.EXPIRY);
 						
 						Double strike = null;
 						try {
-							strike = jo.getDouble("Strike");	// future no strike
+							strike = jo.getDouble(CmmfJson.STRIKE);	// future no strike
 						}
 						catch (Exception e) {}
 						IInstrument instr = new Derivative("HK", symbol, instrType, ul, "", "",
 								"", strike, expiry, price, false, null);
 						
-						TradeReport tr = new TradeReport(instr, EOrderStatus.SENT, trType, qty, price, null, refId, side, "HKCEL", cp);
+						TradeReport tr = new TradeReport(instr, EOrderStatus.SENT, trType, qty, price, null, refId, buyer, seller);
 						block.add(tr);
 					}
 					oms.sendBlockTradeReport(block);

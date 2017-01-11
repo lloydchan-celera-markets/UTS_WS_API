@@ -32,9 +32,8 @@ public class BlockTradeReport implements IOrder
 	private Double price = null;
 	private Long id = null;
 	private Long refId = null;
-	private ESide side = null;
-	private String company = null;
-	private String cpCompany = null;
+	private String buyer = null;
+	private String seller = null;
 	
 	private LocalDate lastTime = null;
 	
@@ -45,7 +44,7 @@ public class BlockTradeReport implements IOrder
 	}
 
 	public BlockTradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
-			Integer qty, Double price, Long id, Long refId, ESide side, String company, String cpCompany)
+			Integer qty, Double price, Long id, Long refId, String buyer, String seller)
 	{
 		super();
 		this.instr = instr;
@@ -55,9 +54,8 @@ public class BlockTradeReport implements IOrder
 		this.price = price;
 		this.id = id;
 		this.refId = refId;
-		this.side = side;
-		this.company = company;
-		this.cpCompany = cpCompany;
+		this.buyer = buyer;
+		this.seller = seller;
 	}
 
 	public void add(TradeReport tr) {
@@ -69,24 +67,24 @@ public class BlockTradeReport implements IOrder
 		return list;
 	}
 
-	public String getCpCompany()
+	public String getBuyer()
 	{
-		return cpCompany;
+		return buyer;
 	}
 
-	public void setCpCompany(String cpCompany)
+	public void setBuyer(String buyer)
 	{
-		this.cpCompany = cpCompany;
+		this.buyer = buyer;
 	}
 
-	public String getCompany()
+	public String getSeller()
 	{
-		return company;
+		return seller;
 	}
 
-	public void setCompany(String company)
+	public void setSeller(String seller)
 	{
-		this.company = company;
+		this.seller = seller;
 	}
 
 	public EOrderStatus getStatus()
@@ -164,17 +162,6 @@ public class BlockTradeReport implements IOrder
 		return price;
 	}
 
-	
-	public ESide getSide()
-	{
-		return side;
-	}
-
-	public void setSide(ESide side)
-	{
-		this.side = side;
-	}
-
 	public ETradeReportType getTradeReportType()
 	{
 		return tradeReportType;
@@ -189,8 +176,8 @@ public class BlockTradeReport implements IOrder
 	public String toString()
 	{
 		return "TradeReport [logger=" + logger + ", instr=" + instr + ", status=" + status + ", tradeReportType="
-				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id + ", side=" + side + ", company="
-				+ company + ", cpCompany=" + cpCompany + ", lastTime=" + lastTime + "]";
+				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id  + ", buyer="
+				+ buyer + ", seller=" + seller + ", lastTime=" + lastTime + "]";
 	}
 
 //	public byte[] toBytes()
@@ -223,11 +210,10 @@ public class BlockTradeReport implements IOrder
 		buf.put((byte)tradeReportType.value());
 		buf.putInt(qty);
 		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
-		buf.put((byte)side.getAsInt());
 		buf.putLong(id);
 		buf.putLong(refId);
-		buf.put(StringUtils.rightPad(this.company, 7).getBytes());
-		buf.put(StringUtils.rightPad(this.cpCompany, 7).getBytes());
+		buf.put(StringUtils.rightPad(this.buyer, 7).getBytes());
+		buf.put(StringUtils.rightPad(this.seller, 7).getBytes());
 		
 		buf.flip();
 		return buf.array();
@@ -264,9 +250,9 @@ public class BlockTradeReport implements IOrder
 		builder.add(CmmfJson.ORDER_ID, this.id);
 		builder.add(CmmfJson.REFERENCE_ID, this.refId);
 		builder.add(CmmfJson.TRADE_REPORT_TYPE, this.tradeReportType.getName());
-		builder.add(CmmfJson.COUNTER_PARTY, this.cpCompany);
+		builder.add(CmmfJson.BUYER, this.buyer);
+		builder.add(CmmfJson.SELLER, this.seller);
 		builder.add(CmmfJson.QTY, this.qty);
-		builder.add(CmmfJson.SIDE, this.side.name());
 		if (this.instr instanceof IDerivative) {
 			IDerivative deriv = (IDerivative)this.instr;
 			String expiry = deriv.getExpiry();
