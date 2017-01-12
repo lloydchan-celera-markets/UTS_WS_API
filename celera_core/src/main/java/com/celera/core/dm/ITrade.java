@@ -12,8 +12,8 @@ public interface ITrade
 	public void setPrice(Double price);
 	public Integer getQty();
 	public void setQty(Integer qty);
-	public LocalDate getTime();
-	public void setTime(LocalDate time);
+	public Long getLastUpdateTime();
+	public void setLastUpdateTime(Long time);
 	
 	public JsonObject json();
 }

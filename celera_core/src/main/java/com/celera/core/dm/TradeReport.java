@@ -30,11 +30,12 @@ public class TradeReport implements IOrder, ITrade
 	private String buyer = null;
 	private String seller = null;
 	
-	private LocalDate lastTime = null;
+	private Long lastUpdateTime = null;
 	
 
 	public TradeReport()
 	{
+		lastUpdateTime = System.currentTimeMillis();
 	}
 
 	public TradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
@@ -50,6 +51,8 @@ public class TradeReport implements IOrder, ITrade
 		this.refId = refId;
 		this.buyer = buyer;
 		this.seller = seller;
+		
+		lastUpdateTime = System.currentTimeMillis();
 	}
 
 	public String getCpCompany()
@@ -115,14 +118,14 @@ public class TradeReport implements IOrder, ITrade
 		this.logger = logger;
 	}
 
-	public LocalDate getLastTime()
+	public Long getLastUpdateTime()
 	{
-		return lastTime;
+		return lastUpdateTime;
 	}
 
-	public void setLastTime(LocalDate lastTime)
+	public void setLastUpdateTime(Long lastTime)
 	{
-		this.lastTime = lastTime;
+		this.lastUpdateTime = lastTime;
 	}
 
 	// @Override
@@ -152,7 +155,7 @@ public class TradeReport implements IOrder, ITrade
 	{
 		return "TradeReport [logger=" + logger + ", instr=" + instr + ", status=" + status + ", tradeReportType="
 				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id  + ", buyery="
-				+ buyer + ", seller=" + seller + ", lastTime=" + lastTime + "]";
+				+ buyer + ", seller=" + seller + ", lastTime=" + lastUpdateTime + "]";
 	}
 
 //	public byte[] toBytes()
@@ -265,18 +268,6 @@ public class TradeReport implements IOrder, ITrade
 	{
 	}
 
-	@Override
-	public LocalDate getTime()
-	{
-		return this.lastTime;
-	}
-
-	@Override
-	public void setTime(LocalDate time)
-	{
-		this.lastTime = time;
-	};
-	
 //	@Override
 //	public LocalDate getTime()
 //	{

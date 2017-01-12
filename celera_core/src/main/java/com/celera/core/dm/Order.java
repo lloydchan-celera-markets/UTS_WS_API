@@ -29,12 +29,13 @@ public class Order implements IOrder
 	private Long refId = null;
 	private String entity = null;
 	private Double price = null;
-	private LocalDate lastTime = null;
+	private Long lastUpdateTime = null;
 	private Integer qty = null;
 	private ESide side = null;
 
 	public Order()
 	{
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	public Order(EOrderStatus status, IInstrument instr, EOrderType type, Long id, Long refId, String entity,
@@ -50,6 +51,8 @@ public class Order implements IOrder
 		this.price = price;
 		this.qty = qty;
 		this.side = side;
+		
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	public EOrderStatus getStatus()
@@ -116,14 +119,14 @@ public class Order implements IOrder
 		this.logger = logger;
 	}
 
-	public LocalDate getLastTime()
+	public Long getLastUpdateTime()
 	{
-		return lastTime;
+		return lastUpdateTime;
 	}
 
-	public void setLastTime(LocalDate lastTime)
+	public void setLastUpdateTime(Long lastUpdateTime)
 	{
-		this.lastTime = lastTime;
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
 	// @Override
@@ -164,7 +167,7 @@ public class Order implements IOrder
 	public String toString()
 	{
 		return "Order [status=" + status + ", instr=" + instr + ", orderType=" + orderType + ", id=" + id + ", refId="
-				+ refId + ", entity=" + entity + ", price=" + price + ", lastTime=" + lastTime + ", qty=" + qty
+				+ refId + ", entity=" + entity + ", price=" + price + ", lastTime=" + lastUpdateTime + ", qty=" + qty
 				+ ", side=" + side + "]";
 	}
 

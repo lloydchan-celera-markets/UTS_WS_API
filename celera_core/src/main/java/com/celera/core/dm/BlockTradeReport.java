@@ -1,11 +1,9 @@
 package com.celera.core.dm;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.json.Json;
@@ -35,12 +33,13 @@ public class BlockTradeReport implements IOrder
 	private String buyer = null;
 	private String seller = null;
 	
-	private LocalDate lastTime = null;
+	private Long lastUpdateTime = null;
 	
 	private List<TradeReport> list = new ArrayList<TradeReport>();
 
 	public BlockTradeReport()
 	{
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	public BlockTradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
@@ -56,6 +55,8 @@ public class BlockTradeReport implements IOrder
 		this.refId = refId;
 		this.buyer = buyer;
 		this.seller = seller;
+		
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	public void add(TradeReport tr) {
@@ -140,14 +141,14 @@ public class BlockTradeReport implements IOrder
 		this.logger = logger;
 	}
 
-	public LocalDate getLastTime()
+	public Long getLastUpdateTime()
 	{
-		return lastTime;
+		return lastUpdateTime;
 	}
 
-	public void setLastTime(LocalDate lastTime)
+	public void setLastUpdateTime(Long lastTime)
 	{
-		this.lastTime = lastTime;
+		this.lastUpdateTime = lastTime;
 	}
 
 	// @Override
@@ -177,7 +178,7 @@ public class BlockTradeReport implements IOrder
 	{
 		return "TradeReport [logger=" + logger + ", instr=" + instr + ", status=" + status + ", tradeReportType="
 				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id  + ", buyer="
-				+ buyer + ", seller=" + seller + ", lastTime=" + lastTime + "]";
+				+ buyer + ", seller=" + seller + ", lastUpdateTime=" + lastUpdateTime + "]";
 	}
 
 //	public byte[] toBytes()
@@ -253,6 +254,7 @@ public class BlockTradeReport implements IOrder
 		builder.add(CmmfJson.BUYER, this.buyer);
 		builder.add(CmmfJson.SELLER, this.seller);
 		builder.add(CmmfJson.QTY, this.qty);
+		builder.add(CmmfJson.LAST_UPDATE_TIME, this.lastUpdateTime);
 		if (this.instr instanceof IDerivative) {
 			IDerivative deriv = (IDerivative)this.instr;
 			String expiry = deriv.getExpiry();

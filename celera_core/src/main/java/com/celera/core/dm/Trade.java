@@ -12,7 +12,12 @@ public class Trade implements ITrade
 	private Integer qty = null;
 	private LocalDate time = null;
 	private String comment = null;
+	private Long lastUpdateTime = null;
 
+	public Trade() {
+		lastUpdateTime = System.currentTimeMillis(); 
+	}
+	
 	public Long getId()
 	{
 		return id;
@@ -85,5 +90,17 @@ public class Trade implements ITrade
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Long getLastUpdateTime()
+	{
+		return lastUpdateTime;
+	}
+
+	@Override
+	public void setLastUpdateTime(Long time)
+	{
+		lastUpdateTime = time;		
 	}
 }

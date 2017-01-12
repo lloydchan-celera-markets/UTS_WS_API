@@ -15,10 +15,10 @@ public class Quote implements IQuote
 	private String entity = null;
 	private String quoteType = null;
 	private Double bidPrice = null;
-	private LocalDate bidTime = null;
+	private Long bidTime = null;
 	private Long bidQty = null;
 	private Double askPrice = null;
-	private LocalDate askTime = null;
+	private Long askTime = null;
 	private Long askQty = null;
 	
 	private List<Addressee> addressees = new ArrayList<Addressee>();
@@ -28,7 +28,7 @@ public class Quote implements IQuote
 	}
 	
 	public Quote(EOrderStatus status, IInstrument instr, Long id, Long refId, String entity, String quoteType, Double bidPrice,
-			LocalDate bidTime, Long bidQty, Double askPrice, LocalDate askTime, Long askQty)
+			Long bidTime, Long bidQty, Double askPrice, Long askTime, Long askQty)
 	{
 		super();
 		this.status = status;
@@ -125,12 +125,12 @@ public class Quote implements IQuote
 			this.bidPrice = bidPrice;
 	}
 
-	public LocalDate getBidTime()
+	public Long getBidTime()
 	{
 		return bidTime;
 	}
 
-	public void setBidTime(LocalDate bidTime)
+	public void setBidTime(Long bidTime)
 	{
 		if (bidTime != null)
 			this.bidTime = bidTime;
@@ -158,12 +158,12 @@ public class Quote implements IQuote
 			this.askPrice = askPrice;
 	}
 
-	public LocalDate getAskTime()
+	public Long getAskTime()
 	{
 		return askTime;
 	}
 
-	public void setAskTime(LocalDate askTime)
+	public void setAskTime(Long askTime)
 	{
 		if (askTime != null)
 			this.askTime = askTime;
@@ -247,5 +247,11 @@ public class Quote implements IQuote
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Long getLastUpdateTime()
+	{
+		return this.bidTime.compareTo(this.askTime) > 0 ? this.bidTime : this.askTime;
 	}
 }

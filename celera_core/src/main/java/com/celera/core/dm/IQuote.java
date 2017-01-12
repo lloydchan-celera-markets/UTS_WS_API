@@ -6,14 +6,14 @@ public interface IQuote extends IOrder
 {
 	public Double getBidPrice();
 	public void setBidPrice(Double bidPrice);
-	public LocalDate getBidTime();
-	public void setBidTime(LocalDate bidTime);
+	public Long getBidTime();
+	public void setBidTime(Long bidTime);
 	public Long getBidQty();
 	public void setBidQty(Long bidQty);
 	public Double getAskPrice();
 	public void setAskPrice(Double askPrice);
-	public LocalDate getAskTime();
-	public void setAskTime(LocalDate askTime);
+	public Long getAskTime();
+	public void setAskTime(Long askTime);
 	public Long getAskQty();
 	public void setAskQty(Long askQty);
 }

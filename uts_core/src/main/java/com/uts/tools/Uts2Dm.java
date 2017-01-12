@@ -18,7 +18,10 @@ public class Uts2Dm
 {
 	final static Logger logger = LoggerFactory.getLogger(Uts2Dm.class);
 
-	static final DateTimeFormatter UTS_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+	private final static String UTS_LOCAL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	
+	static final DateTimeFormatter UTS_FORMATTER = DateTimeFormatter.ofPattern(UTS_LOCAL_DATE_FORMAT);
+	
 	static final SimpleDateFormat UTS_SDF = new SimpleDateFormat("dd-MMM-yy");
 	public static final String DB_NULL = "DBNull";
 	static final DecimalFormat format = (DecimalFormat) NumberFormat.getInstance();

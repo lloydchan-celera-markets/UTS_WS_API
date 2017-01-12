@@ -2,6 +2,9 @@ package come.celera.core.oms;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -109,6 +112,11 @@ public class OMS implements IOMS, IOrderGatewayListener
 			if (order instanceof TradeReport || order instanceof BlockTradeReport)
 				l.add(order);
 		}
+		Collections.sort(l, new Comparator<IOrder>() {
+			public int compare(IOrder o1, IOrder o2) {
+				return o1.getLastUpdateTime().compareTo(o2.getLastUpdateTime());
+			}
+		});
 		return l;
 	}
 }

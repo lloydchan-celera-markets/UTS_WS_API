@@ -1,6 +1,7 @@
 package com.celera.core.dm;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import javax.json.JsonObject;
 
@@ -21,6 +22,8 @@ public interface IOrder
 	public Integer getQty();
 	public void setPrice(Double p);
 	public Double getPrice();
+	
+	public Long getLastUpdateTime();
 	
 	public byte[] toCmmf() throws IOException;
 	public JsonObject json();

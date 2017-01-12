@@ -494,10 +494,10 @@ public class UtsMessageProcessor
 		quote.setEntity(u.getQuoteCreatorEntityCode());
 		quote.setAskPrice(Uts2Dm.toDouble(u.getAskPrice()));
 		quote.setAskQty(Uts2Dm.toLong(u.getAskSize()));
-		quote.setAskTime(Uts2Dm.toLocalDate(u.getAskTime()));
+		quote.setAskTime(Uts2Dm.toLong(u.getAskTime()));
 		quote.setBidPrice(Uts2Dm.toDouble(u.getBidPrice()));
 		quote.setBidQty(Uts2Dm.toLong(u.getBidSize()));
-		quote.setBidTime(Uts2Dm.toLocalDate(u.getBidTime()));
+		quote.setBidTime(Uts2Dm.toLong(u.getBidTime()));
 		quote.setAddressees(list);
 		
 		OMS.instance().onQuote(quote);
