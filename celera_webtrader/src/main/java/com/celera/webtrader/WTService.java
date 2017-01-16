@@ -190,7 +190,29 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 				String symbol = jsonbject.getString(CmmfJson.SYMBOL);
 				
 				switch (trType) {
-				case T1_SELF_CROSS: {
+				case T1_SELF_CROSS: 
+				case T4_INTERBANK_CROSS: {
+					JSONArray ary = jsonbject.getJSONArray(CmmfJson.LEGS);
+
+					for (Object o: ary) {
+						JSONObject jo = (JSONObject)o;
+						
+						String ul = jo.getString(CmmfJson.UL);
+						String sType = ul.split(" " )[1];
+						EInstrumentType instrType = EInstrumentType.get(sType);
+						
+						Double price = jo.getDouble(CmmfJson.PRICE);
+						qty = jo.getInt(CmmfJson.QTY);
+						buyer = jo.getString(CmmfJson.BUYER);
+						seller = jo.getString(CmmfJson.SELLER);
+						symbol = jo.getString(CmmfJson.INSTRUMENT);
+						String expiry = jo.getString(CmmfJson.EXPIRY);
+						IInstrument deriv = new Derivative("HK", symbol, instrType, null, null, null, null, null, expiry, null,
+								false, delta);
+						TradeReport tr = new TradeReport(deriv, EOrderStatus.SENT, trType, qty, price, null, refId,
+								buyer, seller);
+						oms.sendTradeReport(tr);
+					}
 					break;
 				}
 				case T2_COMBO_CROSS: {
@@ -234,9 +256,6 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 						block.add(tr);
 					}
 					oms.sendBlockTradeReport(block);
-					break;
-				}
-				case T4_INTERBANK_CROSS: {
 					break;
 				}
 					default :
@@ -293,7 +312,8 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 	}
 	
 	public void onTradeReport(IOrder l) {
-		
+		String msg = buildTradeReport(l, EMessageType.RESPONSE);
+		this.taskChannel.sink(msg.getBytes());
 	}
 	
 	public void onBlockTradeReport(IOrder blockTradeReport)

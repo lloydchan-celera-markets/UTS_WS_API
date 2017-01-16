@@ -83,6 +83,22 @@ public class OMS implements IOMS, IOrderGatewayListener
 
 	public void sendTradeReport(IOrder order)
 	{
+		try
+		{
+			long id = this.id++;
+			// TODO: simulate result for testing
+			Thread.sleep(1000);
+			order.setId(id);
+			order.setStatus(EOrderStatus.SENT);
+			for (IOMSListener l : listeners) {
+				l.onTradeReport(order);
+			}
+			orders.put(id, order);
+			
+		} catch (InterruptedException e)
+		{
+			logger.error("{}", e);
+		}
 	}
 	
 	public void sendBlockTradeReport(BlockTradeReport block)

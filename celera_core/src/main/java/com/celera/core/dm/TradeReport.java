@@ -240,7 +240,7 @@ public class TradeReport implements IOrder, ITrade
 			if (strike != null)
 				builder.add(CmmfJson.STRIKE, strike);
 		}
-		builder.add(CmmfJson.STATUS, this.status.ordinal());
+		builder.add(CmmfJson.STATUS, this.status.toString());
 		
 		JsonObject empJsonObject = builder.build();
 
