@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Instrument implements IInstrument
 {
 	protected final String market;
-	protected final String symbol;
+	protected String symbol;
 	protected final EInstrumentType type;
 	protected final String name;
 	protected final String ISIN;
@@ -76,5 +76,11 @@ public class Instrument implements IInstrument
 		return "Instrument [market=" + market + ", symbol=" + symbol + ", type=" + type + ", name=" + name + ", ISIN="
 				+ ISIN + ", BLOOMBERG_CODE=" + BLOOMBERG_CODE + ", RIC=" + RIC + ", status=" + status + ", lastUpdate="
 				+ lastUpdate + "]";
+	}
+
+	@Override
+	public void setSymbol(String symbol)
+	{
+		this.symbol = symbol;
 	}
 }

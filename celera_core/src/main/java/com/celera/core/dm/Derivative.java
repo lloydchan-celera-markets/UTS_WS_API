@@ -62,7 +62,7 @@ public class Derivative extends Instrument implements IDerivative
 	{
 		String s = super.toString();
 		s += "Derivative [strike=" + strike + ", expiry=" + expiry + ", price=" + price + ", isPriceInPercent="
-				+ isPriceInPercent + ", Legs[";
+				+ isPriceInPercent + ",delta=" + delta + ", Legs[";
 		for (Leg e : legs.values())
 		{
 			s += e.toString() + ",";

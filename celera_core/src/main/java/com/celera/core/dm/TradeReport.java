@@ -14,21 +14,25 @@ import org.slf4j.LoggerFactory;
 
 import com.celera.message.cmmf.CmmfJson;
 
-public class TradeReport implements IOrder, ITrade
+public class TradeReport implements ITradeReport
 {
 	Logger logger = LoggerFactory.getLogger(TradeReport.class);
 
-	private static final int CMMF_SIZE = 69;
+	private static final int CMMF_SIZE = 81;
 
 	private IInstrument instr = null;
 	private EOrderStatus status = null;
 	private ETradeReportType tradeReportType = null;
+	private ESide side = null;
 	private Double price = null;
 	private Integer qty = null;
 	private Long id = null;
 	private Long refId = null;
+	private Long groupId = null;
 	private String buyer = null;
 	private String seller = null;
+	
+	private String remark = null;
 	
 	private Long lastUpdateTime = null;
 	
@@ -38,13 +42,14 @@ public class TradeReport implements IOrder, ITrade
 		lastUpdateTime = System.currentTimeMillis();
 	}
 
-	public TradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
+	public TradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType, ESide side, 
 			Integer qty, Double price, Long id, Long refId, String buyer, String seller)
 	{
 		super();
 		this.instr = instr;
 		this.status = status;
 		this.tradeReportType = tradeReportType;
+		this.side = side;
 		this.qty = qty;
 		this.price = price;
 		this.id = id;
@@ -55,24 +60,44 @@ public class TradeReport implements IOrder, ITrade
 		lastUpdateTime = System.currentTimeMillis();
 	}
 
-	public String getCpCompany()
+	public Long getGroupId()
 	{
-		return seller;
+		return groupId;
 	}
 
-	public void setCpCompany(String cpCompany)
+	public void setGroupId(Long groupId)
 	{
-		this.seller = cpCompany;
+		this.groupId = groupId;
+	}
+	
+	public String getRemark()
+	{
+		return remark;
 	}
 
-	public String getCompany()
+	public void setRemark(String remark)
+	{
+		this.remark = remark;
+	}
+	
+	public String getBuyer()
 	{
 		return buyer;
 	}
 
-	public void setCompany(String company)
+	public void setBuyer(String buyer)
 	{
-		this.buyer = company;
+		this.buyer = buyer;
+	}
+
+	public String getSeller()
+	{
+		return seller;
+	}
+
+	public void setSeller(String seller)
+	{
+		this.seller = seller;
 	}
 
 	public EOrderStatus getStatus()
@@ -153,9 +178,10 @@ public class TradeReport implements IOrder, ITrade
 	@Override
 	public String toString()
 	{
-		return "TradeReport [logger=" + logger + ", instr=" + instr + ", status=" + status + ", tradeReportType="
-				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id  + ", buyery="
-				+ buyer + ", seller=" + seller + ", lastTime=" + lastUpdateTime + "]";
+		return "TradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
+				+ tradeReportType + ", side=" + side + ", price=" + price + ", qty=" + qty + ", id=" + id + ", refId="
+				+ refId + ", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime="
+				+ lastUpdateTime + "]";
 	}
 
 //	public byte[] toBytes()
@@ -188,8 +214,9 @@ public class TradeReport implements IOrder, ITrade
 		buf.put((byte)tradeReportType.value());
 		buf.putLong(qty);
 		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
-		buf.put((byte)ESide.CROSS.getAsInt());
+		buf.put((byte)side.ordinal());
 		buf.putLong(id);
+		buf.putLong(refId);
 		buf.put(StringUtils.rightPad(this.buyer, 7).getBytes());
 		buf.put(StringUtils.rightPad(this.seller, 7).getBytes());
 		

@@ -1,10 +1,7 @@
 package com.celera.backoffice;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -21,11 +18,8 @@ import com.celera.message.cmmf.CmmfApp;
 import com.celera.message.cmmf.EApp;
 import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.ICmmfConst;
-import com.celera.mongo.entity.ICustomizeMongoDocument;
 import com.celera.mongo.entity.IMongoDocument;
 import com.celera.mongo.entity.Invoice;
-import com.celera.mongo.entity.TradeConfo;
-import com.uts.tradeconfo.UtsTradeConfoSummary;
 
 public class BOServiceManager extends CmmfApp implements ILifeCycle
 {
@@ -94,7 +88,6 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		{
 		case EMAIL_INVOICE:
 		{
-			
 			String param = msg.substring(ICmmfConst.HEADER_SIZE);
 			String[] params = param.split(",");
 			
@@ -121,22 +114,22 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 			}
 			break;
 		}
-//		case CREATE_INVOICE:
-//		{
-//			try
-//			{
-//				String temp = new String(data);
-//				String key = temp.substring(ICmmfConst.HEADER_SIZE);
-//				
-//				DbCreateInvoice gen = new DbCreateInvoice(key);
-//				gen.createInvoice();
-//				
-//			} catch (Exception e)
-//			{
-//				logger.error("", e);
-//			}
-//			break;
-//		}
+		case CREATE_INVOICE:
+		{
+			try
+			{
+				String temp = new String(data);
+				String key = temp.substring(ICmmfConst.HEADER_SIZE);
+				
+				DbCreateInvoice gen = new DbCreateInvoice(key);
+				gen.createInvoice();
+				
+			} catch (Exception e)
+			{
+				logger.error("", e);
+			}
+			break;
+		}
 		case UPDATE_INVOICE:
 		{
 			String id = null;
@@ -353,5 +346,4 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		// TODO Auto-generated method stub
 		
 	}
-
 }

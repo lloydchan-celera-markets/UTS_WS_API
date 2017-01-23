@@ -25,13 +25,18 @@ public enum EOrderStatus
 	INACTIVE("INACTIVE", 15),
 	SENT("SENT", 16),
 	NEW("NEW", 17),
+	PARTIAL_SENT("PARTIAL_SENT", 18),
+	PARTIAL_REJECT("PARTIAL_REJECT", 19),
 	;
 	
 	private static final Map<Integer, EOrderStatus> map = new LinkedHashMap<Integer, EOrderStatus>();
+	private static final Map<String, EOrderStatus> nameMap = new LinkedHashMap<String, EOrderStatus>();
 	static
 	{
-		for (EOrderStatus e : EOrderStatus.values())
+		for (EOrderStatus e : EOrderStatus.values()) {
 			map.put(e.value, e);
+			nameMap.put(e.name, e);
+		}
 	}
 	
 	private final String name;
@@ -54,5 +59,10 @@ public enum EOrderStatus
 	public static EOrderStatus get(final Integer asChar)
 	{
 		return map.get(asChar);
+	}
+
+	public static EOrderStatus get(final String name)
+	{
+		return nameMap.get(name);
 	}
 }

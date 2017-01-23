@@ -59,6 +59,7 @@ public class DbCreateInvoice implements Runnable
 	
 	public static Long getNextInvNum() 
 	{
+//		return 160181l;
 		String invNumber = DatabaseAdapter.getMaxInvoiceNumber();
 		logger.info("Max invoice number {} ", invNumber);
 		Long invoice_Num = Uts2Dm.toLong(invNumber.replaceAll(PRE_INVOICE_NUMBER, ""));
@@ -84,41 +85,42 @@ public class DbCreateInvoice implements Runnable
 //	}
 
 	public DbCreateInvoice(){}
-//	public DbCreateInvoice(String key)
-//	{
-//		String[] token = key.split("_");
-//		this.company = token[0];
-//		this.currency = token[1];
-//		
-//		String MMyy = token[2];
-//		Date dMonth;
-//		try
-//		{
-//			dMonth = sdf_mm_yy.parse(MMyy);
-//			Calendar start = Calendar.getInstance();
-//			start.setTime(dMonth);
-//			start.set(Calendar.DAY_OF_MONTH, 1);
-//			start.set(Calendar.HOUR_OF_DAY, 0);
-//			start.set(Calendar.MINUTE, 0);
-//			start.set(Calendar.SECOND, 0);
-//			start.set(Calendar.MILLISECOND, 0);
-//			
-//			int lastDay = start.getActualMaximum(Calendar.DAY_OF_MONTH);
-//			Calendar lastDayCal = Calendar.getInstance();
-//			lastDayCal.setTime(start.getTime());
-//			lastDayCal.set(Calendar.DAY_OF_MONTH, lastDay);
-//			lastDayCal.set(Calendar.HOUR_OF_DAY, 23);
-//			lastDayCal.set(Calendar.MINUTE, 59);
-//			lastDayCal.set(Calendar.SECOND, 59);
-//			lastDayCal.set(Calendar.MILLISECOND, 999);
-//			
-//			this.start = start.getTime();
-//			this.end = lastDayCal.getTime();
-//		} catch (ParseException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
+	
+	public DbCreateInvoice(String key)
+	{
+		String[] token = key.split("_");
+		this.company = token[0];
+		this.currency = token[1];
+		
+		String MMyy = token[2];
+		Date dMonth;
+		try
+		{
+			dMonth = sdf_mm_yy.parse(MMyy);
+			Calendar start = Calendar.getInstance();
+			start.setTime(dMonth);
+			start.set(Calendar.DAY_OF_MONTH, 1);
+			start.set(Calendar.HOUR_OF_DAY, 0);
+			start.set(Calendar.MINUTE, 0);
+			start.set(Calendar.SECOND, 0);
+			start.set(Calendar.MILLISECOND, 0);
+			
+			int lastDay = start.getActualMaximum(Calendar.DAY_OF_MONTH);
+			Calendar lastDayCal = Calendar.getInstance();
+			lastDayCal.setTime(start.getTime());
+			lastDayCal.set(Calendar.DAY_OF_MONTH, lastDay);
+			lastDayCal.set(Calendar.HOUR_OF_DAY, 23);
+			lastDayCal.set(Calendar.MINUTE, 59);
+			lastDayCal.set(Calendar.SECOND, 59);
+			lastDayCal.set(Calendar.MILLISECOND, 999);
+			
+			this.tradeDateStart = start.getTime();
+			this.tradeDateEnd = lastDayCal.getTime();
+		} catch (ParseException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	
 	public void setDate(Date invMonth)
 	{
@@ -226,12 +228,15 @@ public class DbCreateInvoice implements Runnable
 		return cal.getTime();
 	}
 	
+	public Invoice createInvoice() {
+		return createInvoice(this.tradeDateStart, this.tradeDateEnd);
+	}
+	
 	public Invoice createInvoice(Date start, Date end)
 	{
 		List<TradeConfo> client2TradeConfo = new ArrayList<TradeConfo>();
 		
 		// (firm + currency) -> trade confo
-//		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(tradeDateStart, tradeDateEnd);
 		List<TradeConfo> dbList = DatabaseAdapter.getHistTradeConfo(start, end);
 		
 		String myKey = Invoice.key(this.company, this.currency, this.invMonth);
@@ -241,6 +246,7 @@ public class DbCreateInvoice implements Runnable
 //int count = 0;
 		for (TradeConfo e : dbList)
 		{
+logger.debug(e.toString());
 			String tmpCurncy = e.getCurncy();
 			String buyer = e.getBuyer();
 			String seller = e.getSeller();
@@ -276,7 +282,7 @@ public class DbCreateInvoice implements Runnable
 		{
 			// update hasSent
 			tc.setHasInvoiceCreated(true);
-			DatabaseAdapter.update(tc);
+//			DatabaseAdapter.update(tc);
 			
 			TradeDetail tradeDetail = new TradeDetail();
 			tradeDetail.setDate(Uts2Dm.toDateString(tc.getTradeDate()));	// same format
@@ -356,6 +362,9 @@ public class DbCreateInvoice implements Runnable
 			if (invNumber != null)
 			{
 				inv.setInvoice_number(invNumber);
+			}
+			else {
+				System.exit(-1);
 			}
 			inv.setKey(Invoice.key(company, curncy, this.invMonth));
 			
@@ -571,11 +580,12 @@ logger.info("save database {}", inv);
 			cal.set(Calendar.DAY_OF_MONTH, 9);
 			cal.add(Calendar.MONTH, 1);
 			String invdate = sdf_dd_MMMM_yy.format(cal.getTime());
-			
-			cal.add(Calendar.MONTH, 1);
-			String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
 			inv.setInvoice_date(invdate);
-			inv.setDue_date(invduedate);
+			
+//			cal.add(Calendar.MONTH, 1);
+//			String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
+//			inv.setDue_date(invduedate);
+			inv.setDue_date(invdate);
 //		} catch (ParseException e)
 //		{
 //			// TODO Auto-generated catch block
@@ -612,33 +622,35 @@ logger.info("save database {}", inv);
 //			String keyUsd = tokens[0] + "_" + tokens[1].replace("KRW", "USD").replace("JPY", "USD") + "_" + fileMonth;
 		String keyUsd = company + "_" + currency.replace("KRW", "USD").replace("JPY", "USD") + "_" + tradeDate_mmyy;
 		keyUsd = keyUsd.toUpperCase();
+
+		return padInvNum(getNextInvNum());
 		
-		InvoiceRegister register = UtsTradeConfoSummary.map.get(keyUsd);
-		if (register == null)
-		{
-			// dont fxxking care recon
-			logger.error("Invoice register not found in UTS {}", keyUsd);
-		}
-		else {
-			if (register.getAmount().equals(totalFee)){
-				logger.info("=============same amount============== {}, {}, {}", company, register.getAmount(), totalFee);
-				String invNum = padInvNum(getNextInvNum());
-//				return (PRE_INVOICE_NUMBER + getInvoiceNumber());
-				return invNum;
-			}
-			else {
-				if (register.getAmount().equals(totalFee/2))
-				{
-					logger.error("=============double amount==============" + company + "," + register.getAmount() +"," + totalFee );
-					inv.showDetailsList();
-				}
-				else {
-					logger.error("=============incorrect amount============== {}, {}, {}", keyUsd, register.getAmount(), totalFee );
-					inv.showDetailsList();
-				}
-			}
-		}
-		return null;
+//		InvoiceRegister register = UtsTradeConfoSummary.map.get(keyUsd);
+//		if (register == null)
+//		{
+//			// dont fxxking care recon
+//			logger.error("Invoice register not found in UTS {}", keyUsd);
+//		}
+//		else {
+//			if (register.getAmount().equals(totalFee)){
+//				logger.info("=============same amount============== {}, {}, {}", company, register.getAmount(), totalFee);
+//				String invNum = padInvNum(getNextInvNum());
+////				return (PRE_INVOICE_NUMBER + getInvoiceNumber());
+//				return invNum;
+//			}
+//			else {
+//				if (register.getAmount().equals(totalFee/2))
+//				{
+//					logger.error("=============double amount==============" + company + "," + register.getAmount() +"," + totalFee );
+//					inv.showDetailsList();
+//				}
+//				else {
+//					logger.error("=============incorrect amount============== {}, {}, {}", keyUsd, register.getAmount(), totalFee );
+//					inv.showDetailsList();
+//				}
+//			}
+//		}
+//		return null;
 	}
 	
 //	public static String createInvNumber(String company, String currency, String inv_mmyy, Double totalFee, Invoice inv) {
@@ -741,23 +753,19 @@ InvoiceTemplate.regenerateWordDocProcessor(inv);
 		}
 	}
 	
-	public static void main_test(String[] args) 
+	public static void main(String[] args) 
 	{
 		DatabaseAdapter dba = new DatabaseAdapter();
 		dba.start();
 		dba.loadAll();
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		Date start = new Date(cal.getTimeInMillis());
-		Date end = new Date();
+		String key = "HKD_1217_Vivienne Court Trading pty Ltd";
 		DbCreateInvoice gen = new DbCreateInvoice();
-		cal.add(Calendar.MONTH, 1);
-		gen.setDate(cal.getTime());
-		gen.run();
+		gen.createInvoice();
+//		gen.run();
 	}
 
-	public static void main(String[] args) 
+	public static void main_test(String[] args) 
 	{
 		DatabaseAdapter dba = new DatabaseAdapter();
 		dba.start();

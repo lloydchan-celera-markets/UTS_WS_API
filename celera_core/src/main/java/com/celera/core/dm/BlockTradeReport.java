@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -15,13 +19,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.message.cmmf.CmmfBuilder;
 import com.celera.message.cmmf.CmmfJson;
+import com.celera.message.cmmf.EApp;
+import com.celera.message.cmmf.ECommand;
+import com.celera.message.cmmf.EMessageType;
+import com.itextpdf.text.pdf.events.IndexEvents.Entry;
 
-public class BlockTradeReport implements IOrder
+public class BlockTradeReport implements IBlockTradeReport
 {
 	Logger logger = LoggerFactory.getLogger(BlockTradeReport.class);
 
-	private static final int CMMF_SIZE = 69;
+	private static final int CMMF_SIZE = 13;
 
 	private IInstrument instr = null;
 	private EOrderStatus status = null;
@@ -29,19 +38,36 @@ public class BlockTradeReport implements IOrder
 	private Integer qty = null;
 	private Double price = null;
 	private Long id = null;
-	private Long refId = null;
+	private Long refId = null;	// Web UI assigned
+	private Long groupId = null;	// Web UI assigned 
 	private String buyer = null;
 	private String seller = null;
+	private String remark = null;
 	
 	private Long lastUpdateTime = null;
 	
-	private List<TradeReport> list = new ArrayList<TradeReport>();
+	private Map<Long, List<ITradeReport>> map = new LinkedHashMap<Long, List<ITradeReport>>();
 
 	public BlockTradeReport()
 	{
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
+	public BlockTradeReport(BlockTradeReport other) {
+		super();
+		this.instr = other.instr;
+		this.status = other.status;
+		this.tradeReportType = other.tradeReportType;
+		this.qty = other.qty;
+		this.price = other.price;
+		this.id = other.id;
+		this.refId = other.refId;
+		this.buyer = other.buyer;
+		this.seller = other.seller;
+		
+		this.lastUpdateTime = System.currentTimeMillis();
+	}
+	
 	public BlockTradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
 			Integer qty, Double price, Long id, Long refId, String buyer, String seller)
 	{
@@ -59,13 +85,28 @@ public class BlockTradeReport implements IOrder
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
-	public void add(TradeReport tr) {
-		list.add(tr);
+	public void add(ITradeReport tr) {
+		Long id = tr.getId();
+		List l = map.get(id);
+		if (l == null) {
+			l = new ArrayList<ITradeReport>();
+			map.put(id, l);
+		}
+		l.add(tr);
 	}
-	
-	public List<TradeReport> getList()
+
+	@SuppressWarnings("unchecked")
+	public List<ITradeReport> getList()
 	{
-		return list;
+		List<ITradeReport> l = new ArrayList<ITradeReport>();
+		for (List<ITradeReport> e: map.values()) {
+			for (ITradeReport tr : e) {
+				l.add(tr);
+			}
+		}
+		return l;
+//		List<ITradeReport> list = new ArrayList<ITradeReport>((Collection<? extends ITradeReport>) map.values());
+//		return list;
 	}
 
 	public String getBuyer()
@@ -93,12 +134,114 @@ public class BlockTradeReport implements IOrder
 		return status;
 	}
 
-	public void setStatus(EOrderStatus status)
+//	public void setStatus(EOrderStatus status)
+//	{
+//		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet()) {
+//			for (ITradeReport tr : e.getValue()) {
+//				if (tr instanceof IBlockTradeReport) {}
+//				else {
+//					tr.setStatus(status);
+//				}
+//			}
+//		}
+//	}
+	
+	public void setBlockStatus(EOrderStatus status, Long groupId)
 	{
-		if (status != null)
-			this.status = status;
+		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet()) {
+			for (ITradeReport tr : e.getValue()) {
+				Long myId = tr.getId();
+				if (myId == groupId) {
+					if (tr instanceof IBlockTradeReport) {
+						((IBlockTradeReport)tr).setBlockStatus(status, groupId);
+					}
+					else {
+						tr.setStatus(status);
+					}
+				}
+			}
+		}
+		
+		boolean hasFilled = false;
+		boolean hasDiff = false;
+		EOrderStatus prev = null;
+		
+		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet()) {
+			ITradeReport tr = e.getValue().get(0);
+			EOrderStatus current = tr.getStatus();
+			if (prev == null) {
+				prev = current;
+			}
+			else {
+				if (prev != current) 
+					hasDiff = true;
+				if (current == EOrderStatus.FILLED)
+					hasFilled = true;
+			}
+		}
+		String sStatus = "";
+		if (hasFilled) {
+			sStatus += "FILLED";
+			if (hasDiff) {
+				sStatus = "PARTIAL_" + sStatus;
+			}
+		}
+		else {
+			sStatus += "REJECTED";
+		}
+		EOrderStatus ordStatus = EOrderStatus.get(sStatus);
+		this.status = ordStatus;
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
+//	public void setBlockStatus(EOrderStatus status, Long id)
+//	{
+//		EOrderStatus minStatus = null;
+//		EOrderStatus maxStatus = null;
+//		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet()) {
+//			ITradeReport tr = e.getValue().get(0);
+//			EOrderStatus current = tr.getStatus();
+//			Long currentId = tr.getId();
+//			
+//			if (minStatus == null) {
+//				minStatus = current;
+//				maxStatus = current;
+//			}
+//			else {
+//				
+//				if (minStatus.ordinal() > current.ordinal()) {
+//					minStatus = current;
+//				}
+//				if (maxStatus.ordinal() < current.ordinal()) {
+//					maxStatus = current;
+//				}
+//			}
+//			if (id == currentId) {
+//				tr.setStatus(status);
+//			}
+//		}
+//		this.lastUpdateTime = System.currentTimeMillis();
+//	}
 
+	private EOrderStatus deduceStatus(EOrderStatus s1, EOrderStatus s2) {
+		if (s1.ordinal() == s2.ordinal()) 
+			return s1;
+		
+		EOrderStatus sts;
+		if (s1.ordinal() > s2.ordinal()) {
+			sts =  EOrderStatus.get("PARTIAL_" + s2.getName());
+			if (sts == null) {
+				sts = EOrderStatus.get("PARTIAL_" + s1.getName());
+			}
+		}
+		else {
+			sts =  EOrderStatus.get("PARTIAL_" + s1.getName());
+			if (sts == null) {
+				sts = EOrderStatus.get("PARTIAL_" + s2.getName());
+			}
+		}
+		return sts;
+	}
+	
 	public IInstrument getInstr()
 	{
 		return instr;
@@ -176,9 +319,10 @@ public class BlockTradeReport implements IOrder
 	@Override
 	public String toString()
 	{
-		return "TradeReport [logger=" + logger + ", instr=" + instr + ", status=" + status + ", tradeReportType="
-				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id  + ", buyer="
-				+ buyer + ", seller=" + seller + ", lastUpdateTime=" + lastUpdateTime + "]";
+		return "BlockTradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
+				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id + ", refId=" + refId + ", buyer="
+				+ buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime=" + lastUpdateTime + ", map="
+				+ map + "]";
 	}
 
 //	public byte[] toBytes()
@@ -201,23 +345,29 @@ public class BlockTradeReport implements IOrder
 	// TODO Unit test
 	public byte[] toCmmf() throws IOException
 	{
-//		ByteBuffer buf = ByteBuffer.allocate(5);
-//		buf.put((byte)1);
-//		buf.putInt(1);
-
-		ByteBuffer buf = ByteBuffer.allocate(CMMF_SIZE);
-		buf.put(StringUtils.rightPad(instr.getSymbol(), 32).getBytes());
-		buf.put((byte)status.ordinal());
+		ByteBuffer buf = ByteBuffer.allocate(1024);
 		buf.put((byte)tradeReportType.value());
-		buf.putInt(qty);
-		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
 		buf.putLong(id);
-		buf.putLong(refId);
-		buf.put(StringUtils.rightPad(this.buyer, 7).getBytes());
-		buf.put(StringUtils.rightPad(this.seller, 7).getBytes());
-		
+		buf.putInt(this.map.size());
+		for (Map.Entry<Long, List<ITradeReport>> e: this.map.entrySet()) {
+			for (ITradeReport l : e.getValue())
+				buf.put(l.toCmmf());
+		}
 		buf.flip();
-		return buf.array();
+		int limit = buf.limit();
+		byte[] b = new byte[limit];
+		buf.get(b, 0, limit);
+		return b;
+	}
+
+	public Long getGroupId()
+	{
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId)
+	{
+		this.groupId = groupId;
 	}
 
 	@Override
@@ -273,8 +423,17 @@ public class BlockTradeReport implements IOrder
 		builder.add(CmmfJson.STATUS, this.status.toString());
 		
 		JsonArrayBuilder legs = Json.createArrayBuilder();
-		for (TradeReport tr : this.list) {
-			legs.add(tr.json());
+		for (Map.Entry<Long, List<ITradeReport>> e : this.map.entrySet()) {
+			for (ITradeReport tr : e.getValue()) {
+				if (tr instanceof IBlockTradeReport) {
+					for (ITradeReport leg : ((IBlockTradeReport)tr).getList()) {
+						legs.add(leg.json());
+					}
+				}
+				else {
+					legs.add(tr.json());
+				}
+			}
 		}
 		
 		builder.add(CmmfJson.LEGS, legs);
@@ -283,5 +442,27 @@ public class BlockTradeReport implements IOrder
 		logger.debug("Block Trade Report JSON {}", empJsonObject);
 
 		return empJsonObject;
+	}
+
+	@Override
+	public String getRemark()
+	{
+		return remark;		
+	}
+
+	@Override
+	public void setRemark(String text)
+	{
+		this.remark = text;
+	}
+
+	@Override
+	public void setStatus(EOrderStatus status)
+	{
+		logger.error("obsolete setStatus to [{}]", status);
+	}
+	
+	public boolean hasSplit() {
+		return this.map.keySet().size() > 1;
 	}
 }

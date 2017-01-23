@@ -2,7 +2,9 @@ package com.celera.webtrader;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -22,11 +24,15 @@ import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.EOrderStatus;
 import com.celera.core.dm.ESide;
+import com.celera.core.dm.EStatus;
 import com.celera.core.dm.ETradeReportType;
+import com.celera.core.dm.IBlockTradeReport;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.ITrade;
+import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.TradeReport;
+import com.celera.gateway.OrderGatewayManager;
 //import com.celera.exchange.HKExOapi;
 import com.celera.ipc.ILifeCycle;
 import com.celera.ipc.PipelineClient;
@@ -64,7 +70,9 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 	private final static SimpleDateFormat cmmfSdf = new SimpleDateFormat(ICmmfConst.MONTH_FORMAT);
 	
 	private PipelineClient taskChannel;
-	private IOMS oms;
+	private OrderGatewayManager ogManager = OrderGatewayManager.instance();
+	
+	static IOMS oms = OMS.instance();
 	
 	static
 	{
@@ -84,8 +92,6 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 	public WTService()
 	{
 		super(EApp.WEB_TRADER);
-		
-		oms = new OMS();
 		oms.addListener(this);
 	}
 	
@@ -99,9 +105,9 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 		{
 		case TRADE_REPORT:
 		{
-			List<IOrder> l = oms.getAllTradeReport();
-			for (IOrder order : l) {
-				onBlockTradeReport(order);
+			List<ITradeReport> l = oms.getAllTradeReport();
+			for (ITradeReport order : l) {
+				onTradeReport(order);
 			}
 			
 //			try
@@ -209,12 +215,22 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 						String expiry = jo.getString(CmmfJson.EXPIRY);
 						IInstrument deriv = new Derivative("HK", symbol, instrType, null, null, null, null, null, expiry, null,
 								false, delta);
-						TradeReport tr = new TradeReport(deriv, EOrderStatus.SENT, trType, qty, price, null, refId,
+						
+						ESide side = ESide.CROSS;
+						if (trType == ETradeReportType.T4_INTERBANK_CROSS) {
+							if (buyer.trim().equals("HKCEL"))
+								side = ESide.BUY;
+							else 
+								side = ESide.SELL;
+						}
+						
+						TradeReport tr = new TradeReport(deriv, EOrderStatus.SENT, trType, side, qty, price, null, refId,
 								buyer, seller);
 						oms.sendTradeReport(tr);
 					}
 					break;
 				}
+				// TODO : unit test
 				case T2_COMBO_CROSS: {
 					JSONArray ary = jsonbject.getJSONArray(CmmfJson.LEGS);
 
@@ -223,10 +239,11 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 //							Boolean isPriceInPercent, Double delta)
 					
 					IInstrument deriv = new Derivative("HK", symbol, null, null, null, null, null, null, futMat, null, false, delta);
-					BlockTradeReport block = new BlockTradeReport(deriv, EOrderStatus.SENT, trType, qty, null,
+					BlockTradeReport block = new BlockTradeReport(deriv, EOrderStatus.UNSENT, trType, qty, null,
 							null, refId, buyer, seller);
+					block.setGroupId(1l);
 					
-					List<IOrder> l = new ArrayList<IOrder>();
+					Map<Long, List<ITradeReport>> split = new HashMap<Long, List<ITradeReport>>();
 					for (Object o: ary) 
 					{
 						JSONObject jo = (JSONObject)o;
@@ -243,7 +260,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 						seller = jo.getString(CmmfJson.SELLER);
 						symbol = jo.getString(CmmfJson.INSTRUMENT);
 						String expiry = jo.getString(CmmfJson.EXPIRY);
-						
+						Long groupId = jo.getLong(CmmfJson.GROUP);
 						Double strike = null;
 						try {
 							strike = jo.getDouble(CmmfJson.STRIKE);	// future no strike
@@ -252,10 +269,21 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 						IInstrument instr = new Derivative("HK", symbol, instrType, ul, "", "",
 								"", strike, expiry, price, false, null);
 						
-						TradeReport tr = new TradeReport(instr, EOrderStatus.SENT, trType, qty, price, null, refId, buyer, seller);
-						block.add(tr);
+						TradeReport tr = new TradeReport(instr, EOrderStatus.SENT, trType, ESide.CROSS, qty, price,
+								groupId, refId, buyer, seller);
+						tr.setGroupId(groupId);
+						
+						ArrayList<ITradeReport> l = (ArrayList<ITradeReport>) split.get(groupId);
+						if (l == null) {
+							l = new ArrayList<ITradeReport>();
+							split.put(groupId, l);
+						}
+						l.add(tr);
+
 					}
-					oms.sendBlockTradeReport(block);
+					
+//					block.build(map);
+					oms.sendBlockTradeReport(block, split);
 					break;
 				}
 					default :
@@ -311,18 +339,18 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 		
 	}
 	
-	public void onTradeReport(IOrder l) {
+	public void onTradeReport(ITradeReport l) {
 		String msg = buildTradeReport(l, EMessageType.RESPONSE);
 		this.taskChannel.sink(msg.getBytes());
 	}
 	
-	public void onBlockTradeReport(IOrder blockTradeReport)
-	{
-		String msg = buildTradeReport(blockTradeReport, EMessageType.RESPONSE);
-		this.taskChannel.sink(msg.getBytes());
-	}
+//	public void onBlockTradeReport(ITradeReport blockTradeReport)
+//	{
+//		String msg = buildTradeReport(blockTradeReport, EMessageType.RESPONSE);
+//		this.taskChannel.sink(msg.getBytes());
+//	}
 	
-	public String buildTradeReport(IOrder o, EMessageType type)
+	public String buildTradeReport(ITradeReport o, EMessageType type)
 	{
 		JsonObjectBuilder ansBuilder = Json.createObjectBuilder();
 		ansBuilder.add("sender", EApp.OMS.toString());
@@ -331,6 +359,11 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 		ansBuilder.add("command", ECommand.TRADE_REPORT.toString());
 		ansBuilder.add("tradeReport", o.json());
 		return ansBuilder.build().toString();
+	}
+	
+	public void onInstrumentUpdate(String symbol, EStatus status)
+	{
+		// TODO Auto-generated method stub
 	}
 	
 //	public static void main_test(String[] arg)
@@ -366,17 +399,26 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener
 ////		System.out.println(o);
 //	}
 	
+	public void Test_setup() {
+		ogManager.init();
+		ogManager.start();
+		ogManager.test("HHI10400X7,HSI22000L7,HSI24000L7,HHIH7,HSIJ7,HHI10400L7,HHI8000F7,HHI9000F7,HHI10000F7,HHI11000F7,HHIG7");
+		ogManager.testSOD();
+	}
+	
 	public static void main(String[] args)
 	{
 		int interval = 10000;
 //		DatabaseAdapter dba = new DatabaseAdapter();
 //		dba.start();
 //		DatabaseAdapter.loadAll();
-		
+
 		WTService sm = new WTService();
 		sm.init();
 		sm.start();
 
+		sm.Test_setup();
+		
 		for (;;)
 		{
 			try

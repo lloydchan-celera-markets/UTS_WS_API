@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -90,8 +91,16 @@ public class UtsEmailProcessor implements IMailListener, IOverrideConfig
 		
 		try
 		{
-			EMAIL_START_DATE = sdf.parse(ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_FILTER_STARTDATE));
-			DB_START_DATE = dbSdf.format(EMAIL_START_DATE);
+			DB_START_DATE = ResourceManager.getProperties(IResourceProperties.PROP_EMAIL_FILTER_STARTDATE);
+			EMAIL_START_DATE = sdf.parse(DB_START_DATE);
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(EMAIL_START_DATE);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			EMAIL_START_DATE = cal.getTime();
 		} catch (ParseException e)
 		{
 			logger.error("{} invalid patter", IResourceProperties.PROP_EMAIL_FILTER_STARTDATE, e);

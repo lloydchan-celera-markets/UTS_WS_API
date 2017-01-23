@@ -45,6 +45,8 @@ public class SendAttachmentInEmail
 	
 	private static final SimpleDateFormat sdf_ddMMMMyyyy = new SimpleDateFormat("dd MMMM, yyyy");
 	private static final SimpleDateFormat sdf_MMddyy = new SimpleDateFormat("MM/dd/yy");
+	private static final SimpleDateFormat sdf_ddMMMyyyy = new SimpleDateFormat("dd-MMM-yy");
+	private static final SimpleDateFormat sdf_MMMMyyyy = new SimpleDateFormat("MMMM yyyy");
 	
 	public static String buildHtmlContent(List<Invoice> l)
 	{
@@ -80,7 +82,7 @@ public class SendAttachmentInEmail
 		return msg;
 	}
 	
-	public static void sendEmail(List<Invoice> invList)
+	public static void sendEmail(List<Invoice> invList) throws ParseException
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
@@ -143,7 +145,9 @@ public class SendAttachmentInEmail
 		{
 			List<Invoice> l = e.getValue();
 			String company = l.get(0).getCompany();
-			String invDate = l.get(0).getInvoice_date().substring(3).replaceAll(",", "");
+			String sTradeMonth = l.get(0).getTradeDetail().get(0).getDate();
+			Date dTradeMonth = sdf_ddMMMyyyy.parse(sTradeMonth);
+			String invMonth = sdf_MMMMyyyy.format(dTradeMonth);
 			String text = buildHtmlContent(l);
 			String invNum_List = "";
 
@@ -159,7 +163,7 @@ public class SendAttachmentInEmail
 				message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to_2));
 
 				// Set Subject: header field
-				message.setSubject(company + " -" + invDate + " Invoices- Celera Markets limited");
+				message.setSubject(company + " -" + invMonth + " Invoices- Celera Markets limited");
 
 				// Create a multipar message
 				Multipart multipart = new MimeMultipart();

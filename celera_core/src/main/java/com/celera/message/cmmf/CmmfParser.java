@@ -6,8 +6,12 @@ import java.nio.ByteOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.EOGAdmin;
 import com.celera.core.dm.EOrderStatus;
+import com.celera.core.dm.EStatus;
+import com.celera.core.dm.IInstrument;
+import com.celera.core.dm.Instrument;
 
 
 public class CmmfParser
@@ -55,7 +59,7 @@ public class CmmfParser
 				sender, type, cmd, id, status, reason);
 	}
 	
-	public static void parseCmmfOrderResponse(byte[] data)
+	public static void parseCmmfOrderResponse(byte[] data, ICmmfProcessor cb)
 	{
 		ByteBuffer buf = ByteBuffer.allocate(data.length);
 		buf.order(ByteOrder.LITTLE_ENDIAN);
@@ -69,6 +73,49 @@ public class CmmfParser
 		String reason = new String(data, 12, 50);
 		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
 				sender, type, cmd, id, status, reason);
+		
+//		cb.onTradeReport(id, status, reason);
+	}
+	
+	public static void parseCmmfTradeReportResponse(byte[] data, ICmmfProcessor cb)
+	{
+		ByteBuffer buf = ByteBuffer.allocate(data.length);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		buf.put(data);
+		buf.flip();
+		EApp sender = EApp.get((char)buf.get());
+		EMessageType type = EMessageType.get((char)buf.get());
+		ECommand cmd = ECommand.get((char)buf.get());
+		Long id = buf.getLong();
+//		Long refId = buf.getLong();
+		EOrderStatus status = EOrderStatus.get((int)buf.get());
+		String reason = new String(data, 12, 50);
+		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] status[{}] reason[{}]",
+				sender, type, cmd, id, status, reason);
+		
+		cb.onTradeReport(id, status, reason);
+	}
+	
+	public static void parseCmmfInstrumentUpdateResponse(byte[] data, ICmmfProcessor cb)
+	{
+		ByteBuffer buf = ByteBuffer.allocate(data.length);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		buf.put(data);
+		buf.flip();
+		EApp sender = EApp.get((char)buf.get());
+		EMessageType msgType = EMessageType.get((char)buf.get());
+		ECommand cmd = ECommand.get((char)buf.get());
+		
+		byte[] bSymbol = new byte[32];
+		buf.get(bSymbol, 0, 32);
+		buf.position(32);
+		String symbol = new String(bSymbol);
+		EStatus status = EStatus.get(buf.get());
+//		String reason = new String(data, 12, 50);
+		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
+				sender, msgType, cmd, symbol, status);
+		
+		cb.onInstrumentUpdate(symbol, status);
 	}
 	
 	public static void print(byte[] data) 
@@ -109,5 +156,4 @@ public class CmmfParser
 	{
 
 	}
-
 }

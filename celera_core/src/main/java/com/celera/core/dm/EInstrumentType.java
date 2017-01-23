@@ -413,7 +413,9 @@ public enum EInstrumentType
 	WOP_PERCENT("Worst Of Put %"),
 	
 	CALL("Call"),
-	PUT("Put");
+	PUT("Put"),
+	FUTURE("Future"),
+	UNKNOWN("Unknown");
 
 	private final String name;
 	private static final Map<String, EInstrumentType> map = new LinkedHashMap<String, EInstrumentType>();
@@ -433,5 +435,42 @@ public enum EInstrumentType
 
 	public String getName() {
 		return name;
+	}
+	
+	static public EInstrumentType bySymbol(String symbol){
+		int len = symbol.length();
+		if (Character.isDigit(symbol.charAt(len - 3)))
+			return byMonth(symbol.charAt(len - 2), true); 
+		return byMonth(symbol.charAt(len - 2), false);
+	}
+	
+	static private EInstrumentType byMonth(char month, boolean hasStrike) {
+		int iMonth = (int) month;
+		if (iMonth > 64 && iMonth < 91) {
+			if (hasStrike) { 
+				if (iMonth < 77)
+					return EInstrumentType.CALL;
+				if (iMonth > 76)
+					return EInstrumentType.PUT;
+			}
+			else {
+				switch (month) {
+					case 'F': 
+					case 'G': 
+					case 'H': 
+					case 'J': 
+					case 'K': 
+					case 'M': 
+					case 'N': 
+					case 'Q': 
+					case 'U': 
+					case 'V': 
+					case 'X': 
+					case 'Z':
+						return EInstrumentType.FUTURE;
+				}
+			}
+		}
+		return EInstrumentType.UNKNOWN;
 	}
 }

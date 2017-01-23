@@ -1,14 +1,12 @@
 package com.celera.gateway;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.json.JsonObject;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,13 +18,14 @@ import com.celera.core.dm.EOGAdmin;
 import com.celera.core.dm.EOrderStatus;
 import com.celera.core.dm.EOrderType;
 import com.celera.core.dm.ESide;
-import com.celera.core.dm.IDerivative;
+import com.celera.core.dm.EStatus;
+import com.celera.core.dm.IBlockTradeReport;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.IQuote;
+import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.Instrument;
 import com.celera.core.dm.Order;
-import com.celera.core.dm.TradeReport;
 import com.celera.ipc.ILifeCycle;
 import com.celera.ipc.PipelineServer;
 import com.celera.ipc.PipelineSinkCollector;
@@ -37,8 +36,11 @@ import com.celera.message.cmmf.EApp;
 import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
 import com.celera.message.cmmf.ICmmfListener;
+import com.celera.message.cmmf.ICmmfProcessor;
 
-public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGatewayService
+import come.celera.core.oms.OMS;
+
+public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcessor, IOrderGateway
 {
 	Logger logger = LoggerFactory.getLogger(HkexOapiGateway.class);
 
@@ -50,8 +52,12 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 	private final PipelineSinkCollector sink;
 	private final PipelineServer server;
 	
-	
 	private AtomicBoolean isWaitAdminResp = new AtomicBoolean(false);
+
+	private Map<String, IInstrument> m_tradableInstr = new HashMap<String, IInstrument>();
+	private Map<Long, ITradeReport> m_tradeReportMap = new HashMap<Long, ITradeReport>();
+	
+	private IOrderGatewayListener m_oms = OMS.instance();
 	
 	static
 	{
@@ -96,14 +102,23 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 		ECommand cmd = ECommand.get((char)data[2]);
 		switch (cmd) {
 		case ORDER_REQUEST: 
-		case TRADE_REPORT: 
 		{
-			CmmfParser.parseCmmfOrderResponse(data);
+			CmmfParser.parseCmmfOrderResponse(data, this);
+			break;
+		}
+		case TRADE_REPORT: 
+		case BLOCK_TRADE_REPORT: 
+		{
+			CmmfParser.parseCmmfTradeReportResponse(data, this);
 			break;
 		}
 		case ADMIN_REQUEST: {
 			boolean result = CmmfParser.parseCmmfOgAdminResponse(data);
 			isWaitAdminResp.set(false);
+			break;
+		}
+		case UPDATE_INSTRUMENT: {
+			CmmfParser.parseCmmfInstrumentUpdateResponse(data, this);
 			break;
 		}
 		default:
@@ -120,10 +135,6 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 			onResponse(data);
 			break;
 		}
-//		case TASK: {
-//			onResponse(data);
-//			break;
-//		}
 		default:
 			break;
 		}
@@ -132,6 +143,8 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 	@Override
 	public void onSink(byte[] data)
 	{
+		logger.debug("{}", new String(data));
+		
 		EMessageType type = EMessageType.get((char)data[1]);
 		switch (type) {
 		case RESPONSE: {
@@ -199,9 +212,7 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.TASK, ECommand.TRADE_REPORT, b);
 //			JsonObject json = o.json();
 //			byte b[] = json.toString().getBytes();
-			for (int i=0; i<msg.length; i++) {
-				System.out.print((int)msg[i] + ",");
-			}
+test_Print_Bytes(msg);
 			server.send(msg);
 		} catch (Exception e)
 		{
@@ -210,31 +221,38 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, IOrderGateway
 	}
 	
 	@Override
-	public void createBlockTradeReport(List<IOrder> tradeReportList, Long id, String synSymbol)
+	public void createBlockTradeReport(IBlockTradeReport block)
 	{
+		m_tradeReportMap.put(block.getId(), block);
+		
 		ByteBuffer buf = ByteBuffer.allocate(1024);
 		try
 		{
-			for (IOrder o : tradeReportList) {
-				o.setStatus(EOrderStatus.PENDING_NEW);
-				byte b[] = o.toCmmf();
-				buf.put(b);
-			}
+			block.setStatus(EOrderStatus.PENDING_NEW);
+			
+			byte b[] = block.toCmmf();
+			buf.put(b);
+			
 			buf.flip();
 			int size = buf.limit();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.TASK, ECommand.TRADE_REPORT, buf.array(), size);
-//			JsonObject json = o.json();
-//			byte b[] = json.toString().getBytes();
-			for (int i=0; i<msg.length; i++) {
-				System.out.print((int)msg[i] + ",");
-			}
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.TASK, ECommand.BLOCK_TRADE_REPORT, buf.array(), size);
+				
+test_Print_Bytes(msg);
 			server.send(msg);
+			
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
 
+	private void test_Print_Bytes(byte[] msg) {
+		for (int i=0; i<msg.length; i++) {
+			System.out.print((int)msg[i] + ",");
+		}
+		System.out.println("");
+	}
+	
 	@Override
 	public void cancelTradeReport(IOrder o)
 	{
@@ -448,5 +466,53 @@ CmmfParser.print(msg);
 		{
 			e.printStackTrace();
 		}	
+	}
+
+	@Override
+	public boolean isTradedSymbol(String symbol)
+	{
+		return m_tradableInstr.containsKey(symbol);
+	}
+
+	@Override
+	public void onInstrumentUpdate(IInstrument i)
+	{
+		String symbol = i.getSymbol();
+//		IInstrument old = m_tradeInstr.get(symbol);
+//		if (old == null) {
+//			old = i;
+		m_tradableInstr.put(symbol, i);
+//		}
+	}
+
+	@Override
+	public void onInstrumentUpdate(String symbol, EStatus status)
+	{
+		logger.info("symbol[{}] status[{}]", symbol, status.name());
+		
+		EInstrumentType type = EInstrumentType.bySymbol(symbol);
+		IInstrument i = new Instrument("HK", symbol, type, type.getName(), null, null, null);
+		i.setStatus(status);
+		onInstrumentUpdate(i);
+	}
+
+	@Override
+	public void onTradeReport(Long id, EOrderStatus status, String reason)
+	{
+		ITradeReport tr = m_tradeReportMap.get(id);
+		if (tr != null) {
+			tr.setStatus(status);
+			tr.setRemark(reason);
+			m_oms.onTradeReport(tr);
+		}
+		else {
+			logger.error("trade report id[{}] not found", id);
+		}
+	}
+
+	@Override
+	public void startTestSOD(String password)
+	{
+		this.start(password);
 	}
 }

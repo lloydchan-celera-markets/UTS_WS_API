@@ -20,4 +20,5 @@ public class CmmfJson
 	public static final String FUTURE_MATURITY = "FutMat"; 
 	public static final String BUYER = "Buyer"; 
 	public static final String SELLER = "Seller"; 
+	public static final String GROUP = "Group"; 
 }

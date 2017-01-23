@@ -17,6 +17,7 @@ public enum ECommand
 	ORDER_REQUEST('O'),
 	TRADE('T'),
 	UPDATE_INSTRUMENT('P'),
+	BLOCK_TRADE_REPORT('N'),
 	TRADE_REPORT('R'),
 	ADMIN_REQUEST('H'),
 	LOG('L');

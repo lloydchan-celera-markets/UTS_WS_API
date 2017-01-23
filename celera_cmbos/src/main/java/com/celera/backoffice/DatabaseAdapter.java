@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import com.celera.core.configure.IOverrideConfig;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
+import com.celera.core.dm.EStatus;
 import com.celera.ipc.ILifeCycle;
 import com.celera.ipc.RrServer;
 import com.celera.message.cmmf.CmmfApp;
@@ -485,7 +486,8 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 					gen.setCompany(company);
 					gen.setCurrency(currency);
 					gen.setDate(dInvMonth);
-					Invoice inv = gen.createInvoice(start.getTime(), lastDayCal.getTime());
+//					Invoice inv = gen.createInvoice(start.getTime(), lastDayCal.getTime());
+					Invoice inv = gen.createInvoice();
 					
 					if (inv != null)
 						msg = buildDWRGResponse(inv, null);
@@ -795,17 +797,24 @@ System.out.println(all.size());
 		return o;
 	}
 	
-//	public static void updateInvoiceKeytoUpper() {
-//		for (IMongoDocument o : customizedMap.values()) {
-//			if (o instanceof Invoice) {
-//				((Invoice) o).setKey(((Invoice) o).getKey());
-//				MongoDbAdapter.instance().save(o); // save will also do update
-//				logger.info("update invoce key {}", o.toString());
-//			}
-//		}
-//	}
-	
 	public static void main(String[] arg)
+	{
+//		byte[] b = {87, 68, 84, 85, 123, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
+		String s = "WDQGHKD1216Vivienne Court Trading Pty Ltd";
+		byte[] b = s.getBytes();
+		DatabaseAdapter dba = new DatabaseAdapter();
+		dba.start();
+		dba.loadAll();
+		dba.onQuery(b);
+		
+		String temp = new String(b).substring(ICmmfConst.HEADER_SIZE);
+		System.out.println(temp);
+		JSONObject jsnobject = new JSONObject(temp);
+		
+		System.out.println(jsnobject);
+	}
+	
+	public static void main1(String[] arg)
 	{
 //		byte[] b = {87, 68, 84, 85, 123, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
 		String s = "WDQGHKD1016UBS AG London Branch";
@@ -852,5 +861,4 @@ System.out.println(all.size());
 		// TODO Auto-generated method stub
 		
 	}
-
 }

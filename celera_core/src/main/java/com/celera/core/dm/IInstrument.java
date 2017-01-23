@@ -7,6 +7,7 @@ public interface IInstrument
 	public static final int CMMF_PRICE_FACTOR = 10000;
 	
 	public String key();
+	public void setSymbol(String symbol);
 	public void setStatus(EStatus status);
 	public EStatus getStatus();
 	public LocalDate getLastUpdate();

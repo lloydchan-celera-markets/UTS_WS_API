@@ -1,12 +1,14 @@
 package com.celera.gateway;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 
+import com.celera.core.dm.BlockTradeReport;
 import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.EOGAdmin;
@@ -170,7 +172,7 @@ public class HKExCertTest
 							// ETradeReportType tradeReportType,
 							// Integer qty, Double price, Long id, ESide
 							// side, String company
-							order = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.get(trType), qty, price,
+							order = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.get(trType), ESide.CROSS, qty, price,
 									orderId, null, myCompany, cpCompany);
 							gw.createTradeReport(order);
 							map.put(orderId, order);
@@ -180,7 +182,7 @@ public class HKExCertTest
 						}
 						break;
 					}
-					case "TB":	// TN,HHI9800O7,2,439,100,buy,T4,HKTOM    (interbank cross T4)
+					case "T2":	// T2,2,3,439,100,buy,HSI22000L7,HSI24000L7,HSIJ7    (interbank cross T4)
 					{
 						int pos = 1;
 						int size = tokens.length;
@@ -188,23 +190,28 @@ public class HKExCertTest
 						{
 							ArrayList<IOrder> list = new ArrayList<IOrder>();
 							Long orderId = Long.parseLong(tokens[pos++]);
-							String synSymbol = tokens[pos++];
-							for (int i=1; i<size; i++) 
-							{
-								String legSymbol = tokens[pos++];
-								Double legPrice = Double.parseDouble(tokens[pos++]);
-								Integer legQty = Integer.parseInt(tokens[pos++]);
-								String legSide = tokens[pos++].toUpperCase();
-								String legMyCompany = tokens[pos++];
-								String legCpCompany = tokens[pos++];
-								
-								IInstrument instr = new Derivative("HK", legSymbol, EInstrumentType.EP, "European Put", null,
-										null, null, null, "", null, false, 0d);
-								order = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.T2_COMBO_CROSS, legQty, legPrice,
-										orderId, null, legMyCompany, legCpCompany);
+							Integer numLegs = Integer.parseInt(tokens[pos++]);
+							Double legPrice = Double.parseDouble(tokens[pos++]);
+							Integer legQty = Integer.parseInt(tokens[pos++]);
+							String legSide = tokens[pos++].toUpperCase();
+							String sTrType = tokens[pos++];
+							EInstrumentType trtype = EInstrumentType.get(sTrType);
+							
+ 							for (int i=0; i<numLegs; i++) {
+ 								String legSymbol = tokens[pos++];
+								EInstrumentType legTrType = EInstrumentType.bySymbol(legSymbol);
+								IInstrument instr = new Derivative("HK", legSymbol, legTrType, legTrType.getName(),
+										null, null, null, null, "", null, false, 0d);
+								order = new TradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+										ESide.CROSS, legQty, legPrice, orderId, null, "HKCEL", "HKCEL");
 								list.add(order);
 							}
-							gw.createBlockTradeReport(list, orderId, synSymbol);
+							
+							IInstrument instr = new Derivative("HK", "SYHN", trtype, trtype.getName(), null,
+									null, null, null, "", null, false, 0d);
+							BlockTradeReport block = new BlockTradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+									legQty, legPrice, orderId, new Date().getTime(), "HKCEL", "HKCEL");
+							gw.createBlockTradeReport(block);
 							blocks.put(orderId, list);
 						} catch (Exception e)
 						{
