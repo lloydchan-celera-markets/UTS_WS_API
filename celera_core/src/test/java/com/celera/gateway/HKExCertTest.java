@@ -18,19 +18,24 @@ import com.celera.core.dm.ESide;
 import com.celera.core.dm.ETradeReportType;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
+import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.Order;
 import com.celera.core.dm.TradeReport;
 import com.celera.message.cmmf.ECommand;
 import com.itextpdf.text.List;
 
+import come.celera.core.oms.OMS;
+
 public class HKExCertTest
 {
 	public static void main(String[] args)
 	{
-		HkexOapiGateway gw = new HkexOapiGateway();
-		gw.init();
-		gw.start();
-
+//		HkexOapiGateway gw = new HkexOapiGateway();
+		OrderGatewayManager gwm = OrderGatewayManager.instance();
+		gwm.init();
+		gwm.start();
+		IOrderGateway gw = gwm.getOrderGateway("HSI18600L7");
+		
 		Map<Long, IOrder> map = new HashMap<Long, IOrder>();
 		Map<Long, ArrayList<IOrder>> blocks = new HashMap<Long, ArrayList<IOrder>>();
 
@@ -45,6 +50,8 @@ public class HKExCertTest
 		// IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT,
 		// 1l, "", 439d, 100, ESide.BUY);
 
+		OMS oms = OMS.instance();
+		
 		while (true)
 		{
 			try
@@ -59,7 +66,9 @@ public class HKExCertTest
 					{
 					case "START": // 1) HI,geniumtesting
 					{
-						gw.start(tokens[1]);
+//						gw.init();
+//						gw.start();
+//						gw.start(tokens[1]);
 						break;
 					}
 					case "LOGIN": // 1) HI,geniumtesting
@@ -80,6 +89,11 @@ public class HKExCertTest
 					case "LOGOUT": // 4) HO
 					{ // optional) Logout
 						gw.logout();
+						break;
+					}
+					case "CLOSE": // 4) HO
+					{ // optional) Logout
+						gwm.stop();
 						break;
 					}
 					case "CHANGE_PASSWORD": // 5) HC,password,newPassword
@@ -157,14 +171,14 @@ public class HKExCertTest
 					{
 						try
 						{
-							String symbol = tokens[1];
-							Long orderId = Long.parseLong(tokens[2]);
-							Double price = Double.parseDouble(tokens[3]);
-							Integer qty = Integer.parseInt(tokens[4]);
-							String side = tokens[5].toUpperCase();
-							String trType = tokens[6].toUpperCase();
-							String myCompany = tokens[7];
-							String cpCompany = tokens[8];
+							int pos = 1;
+							String symbol = tokens[pos++];
+							Long refId = new Date().getTime();
+							Double price = Double.parseDouble(tokens[pos++]);
+							Integer qty = Integer.parseInt(tokens[pos++]);
+							String trType = tokens[pos++].toUpperCase();
+							String myCompany = tokens[pos++];
+							String cpCompany = tokens[pos++];
 
 							IInstrument instr = new Derivative("HK", symbol, EInstrumentType.EP, "European Put", null,
 									null, null, null, "", null, false, 0d);
@@ -172,10 +186,10 @@ public class HKExCertTest
 							// ETradeReportType tradeReportType,
 							// Integer qty, Double price, Long id, ESide
 							// side, String company
-							order = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.get(trType), ESide.CROSS, qty, price,
-									orderId, null, myCompany, cpCompany);
-							gw.createTradeReport(order);
-							map.put(orderId, order);
+							ITradeReport tr = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.get(trType), ESide.CROSS, qty, price,
+									null, refId, myCompany, cpCompany);
+							tr.setGroupId(1l);
+							oms.sendTradeReport(tr);
 						} catch (Exception e)
 						{
 							e.printStackTrace();
@@ -185,34 +199,44 @@ public class HKExCertTest
 					case "T2":	// T2,2,3,439,100,buy,HSI22000L7,HSI24000L7,HSIJ7    (interbank cross T4)
 					{
 						int pos = 1;
-						int size = tokens.length;
 						try
 						{
-							ArrayList<IOrder> list = new ArrayList<IOrder>();
-							Long orderId = Long.parseLong(tokens[pos++]);
+							Long groupId = Long.parseLong(tokens[pos++]);
 							Integer numLegs = Integer.parseInt(tokens[pos++]);
 							Double legPrice = Double.parseDouble(tokens[pos++]);
 							Integer legQty = Integer.parseInt(tokens[pos++]);
-							String legSide = tokens[pos++].toUpperCase();
 							String sTrType = tokens[pos++];
-							EInstrumentType trtype = EInstrumentType.get(sTrType);
+//							ETradeReportType trtype = ETradeReportType.get(sTrType);
+							
+							Long refId = new Date().getTime();
+							
+							IInstrument instr = new Derivative("HK", "SYHN", EInstrumentType.ECDIAG,
+									EInstrumentType.ECDIAG.getName(), null, null, null, null, "", null, false, 0d);
+							BlockTradeReport block = new BlockTradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+									legQty, legPrice, null, refId, "HKCEL", "HKCEL");
+							block.setGroupId(groupId);
+							
+							String legSymbol = null;
+							Map<Long, java.util.List<ITradeReport>> split = new HashMap<Long, java.util.List<ITradeReport>>();
+							ArrayList<ITradeReport> l = new ArrayList<ITradeReport>();
 							
  							for (int i=0; i<numLegs; i++) {
- 								String legSymbol = tokens[pos++];
+ 								legSymbol = tokens[pos++];
+ 								legPrice = Double.parseDouble(tokens[pos++]);
+ 								legQty = Integer.parseInt(tokens[pos++]);
 								EInstrumentType legTrType = EInstrumentType.bySymbol(legSymbol);
-								IInstrument instr = new Derivative("HK", legSymbol, legTrType, legTrType.getName(),
+								instr = new Derivative("HK", legSymbol, legTrType, legTrType.getName(),
 										null, null, null, null, "", null, false, 0d);
-								order = new TradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
-										ESide.CROSS, legQty, legPrice, orderId, null, "HKCEL", "HKCEL");
-								list.add(order);
+								ITradeReport tr = new TradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+										ESide.CROSS, legQty, legPrice, null, refId, "HKCEL", "HKCEL");
+								tr.setGroupId(groupId);
+								l.add(tr);
 							}
-							
-							IInstrument instr = new Derivative("HK", "SYHN", trtype, trtype.getName(), null,
-									null, null, null, "", null, false, 0d);
-							BlockTradeReport block = new BlockTradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
-									legQty, legPrice, orderId, new Date().getTime(), "HKCEL", "HKCEL");
-							gw.createBlockTradeReport(block);
-							blocks.put(orderId, list);
+ 							split.put(groupId, l);
+ 							
+// 							IOrderGateway gw1 = og.getOrderGateway(legSymbol);
+//							gw.createBlockTradeReport(block);
+							oms.sendBlockTradeReport(block, split);
 						} catch (Exception e)
 						{
 							e.printStackTrace();

@@ -9,6 +9,9 @@ public class ResourceManager
 {
 	private static final String file;
 	private static ResourceManager _instance;
+	
+	public static boolean IS_TESTING = true;
+	
 	static
 	{
 		file = System.getProperty("config.file", null);

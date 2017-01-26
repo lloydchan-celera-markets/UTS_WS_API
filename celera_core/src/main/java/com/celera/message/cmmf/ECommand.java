@@ -20,7 +20,8 @@ public enum ECommand
 	BLOCK_TRADE_REPORT('N'),
 	TRADE_REPORT('R'),
 	ADMIN_REQUEST('H'),
-	LOG('L');
+	LOG('L'),
+	SOD('S');
 
 	private static final Map<Character, ECommand> map = new LinkedHashMap<Character, ECommand>();
 	static

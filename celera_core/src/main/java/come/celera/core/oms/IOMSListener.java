@@ -1,5 +1,6 @@
 package come.celera.core.oms;
 
+import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.ITrade;
 import com.celera.core.dm.ITradeReport;
@@ -11,5 +12,6 @@ public interface IOMSListener
 	public void onTrade(ITrade t); 
 	
 	public void onTradeReport(ITradeReport tr); 
-//	public void onBlockTradeReport(ITradeReport block); 
+//	public void onBlockTradeReport(ITradeReport block);
+	public void onInstrumentUpdate(IInstrument i);
 }

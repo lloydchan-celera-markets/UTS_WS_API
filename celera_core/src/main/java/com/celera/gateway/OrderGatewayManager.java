@@ -42,6 +42,14 @@ public class OrderGatewayManager implements IOrderGatewayService
 			}
 		}
 	}
+
+	static synchronized public void stop() {
+		for (IOrderGateway gw : gwList) {
+			if (gw instanceof ILifeCycle) {
+				((ILifeCycle)gw).stop();
+			}
+		}
+	}
 	
 	static synchronized public void testSOD() {
 		for (IOrderGateway gw : gwList) {
@@ -59,17 +67,6 @@ public class OrderGatewayManager implements IOrderGatewayService
 				return l;
 		}
 		return null;
-	}
-	
-	static synchronized public void test(String lSymbol) {
-		String[] tokens = lSymbol.split(",");
-		for (IOrderGateway gw : gwList) {
-			if (gw instanceof ICmmfProcessor) {
-				for (String symbol : tokens) {
-					((ICmmfProcessor)gw).onInstrumentUpdate(symbol, EStatus.ACTIVE);
-				}
-			}
-		}
 	}
 	
 }

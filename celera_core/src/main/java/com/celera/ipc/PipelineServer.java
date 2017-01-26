@@ -66,7 +66,7 @@ public class PipelineServer extends AbstractCmmfService implements ILifeCycle, I
 	@Override
 	public void send(byte b[])
 	{
-		logger.info("send");
+		logger.info("send {}", new String(b));
 		// Process tasks forever
 //		int count = 0;
 //		while (!Thread.currentThread().isInterrupted())

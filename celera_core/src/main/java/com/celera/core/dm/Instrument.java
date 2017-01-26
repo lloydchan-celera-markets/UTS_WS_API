@@ -2,8 +2,18 @@ package com.celera.core.dm;
 
 import java.time.LocalDate;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
+import org.slf4j.Logger;
+
+import com.celera.message.cmmf.CmmfJson;
+
 public class Instrument implements IInstrument
 {
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Instrument.class);
+	
 	protected final String market;
 	protected String symbol;
 	protected final EInstrumentType type;
@@ -47,11 +57,11 @@ public class Instrument implements IInstrument
 	public void setStatus(EStatus status)
 	{
 		LocalDate now = LocalDate.now();
-		if (now.isAfter(this.lastUpdate))
-		{
+//		if (now.isAfter(this.lastUpdate))
+//		{
 			this.status = status;
 			this.lastUpdate = now;
-		}
+//		}
 	}
 
 	public String getName()
@@ -83,4 +93,25 @@ public class Instrument implements IInstrument
 	{
 		this.symbol = symbol;
 	}
+
+	@Override
+	public JsonObject json()
+	{
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		String symbol = this.symbol;
+		if (symbol != null)
+			builder.add(CmmfJson.SYMBOL, symbol.trim());
+		builder.add(CmmfJson.STATUS, this.status.getInt());
+		
+		JsonObject empJsonObject = builder.build();
+
+//		logger.debug("Instrument JSON {}", empJsonObject);
+
+		return empJsonObject;
+	}
+
+	public static void main(String arg[]) {
+		System.out.println(EStatus.ACTIVE.ordinal());
+	}
+	
 }

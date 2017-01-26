@@ -108,11 +108,12 @@ public class CmmfParser
 		
 		byte[] bSymbol = new byte[32];
 		buf.get(bSymbol, 0, 32);
-		buf.position(32);
+//		buf.position(32);
 		String symbol = new String(bSymbol);
-		EStatus status = EStatus.get(buf.get());
+		byte bSts = (byte)buf.get();
+		EStatus status = EStatus.get(bSts);
 //		String reason = new String(data, 12, 50);
-		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
+		logger.info("sender[{}], type[{}], cmd[{}] symbol[{}] status[{}]",
 				sender, msgType, cmd, symbol, status);
 		
 		cb.onInstrumentUpdate(symbol, status);

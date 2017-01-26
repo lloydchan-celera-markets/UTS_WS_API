@@ -180,7 +180,7 @@ public class TradeReport implements ITradeReport
 	{
 		return "TradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
 				+ tradeReportType + ", side=" + side + ", price=" + price + ", qty=" + qty + ", id=" + id + ", refId="
-				+ refId + ", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime="
+				+ refId + ", groupId=" + groupId + ", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime="
 				+ lastUpdateTime + "]";
 	}
 
@@ -214,7 +214,7 @@ public class TradeReport implements ITradeReport
 		buf.put((byte)tradeReportType.value());
 		buf.putLong(qty);
 		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
-		buf.put((byte)side.ordinal());
+		buf.put((byte)side.getAsInt());
 		buf.putLong(id);
 		buf.putLong(refId);
 		buf.put(StringUtils.rightPad(this.buyer, 7).getBytes());
@@ -242,11 +242,16 @@ public class TradeReport implements ITradeReport
 			builder.add(CmmfJson.ORDER_ID, this.id);
 		if (this.refId != null)
 			builder.add(CmmfJson.REFERENCE_ID, this.refId);
+		if (this.groupId != null)
+			builder.add(CmmfJson.GROUP, this.groupId);
 		
+		builder.add(CmmfJson.TRADE_REPORT_TYPE, this.tradeReportType.toString());
 		
 		String symbol = this.instr.getSymbol();
 		if (symbol != null)
 			builder.add(CmmfJson.INSTRUMENT, symbol);
+		if (symbol != null)
+			builder.add(CmmfJson.SYMBOL, symbol);
 		String ul = this.instr.getName();
 		if (ul != null)
 			builder.add(CmmfJson.UL, ul);
@@ -268,6 +273,8 @@ public class TradeReport implements ITradeReport
 				builder.add(CmmfJson.STRIKE, strike);
 		}
 		builder.add(CmmfJson.STATUS, this.status.toString());
+		builder.add(CmmfJson.REMARK, this.remark == null ? "" : this.remark);
+		builder.add(CmmfJson.LAST_UPDATE_TIME, this.lastUpdateTime);
 		
 		JsonObject empJsonObject = builder.build();
 

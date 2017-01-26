@@ -27,6 +27,9 @@ import com.celera.core.dm.IOrder;
 import com.celera.core.dm.ITrade;
 import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.TradeReport;
+import com.celera.core.service.staticdata.IStaticDataListener;
+import com.celera.core.service.staticdata.IStaticDataService;
+import com.celera.core.service.staticdata.StaticDataService;
 import com.celera.gateway.IOrderGatewayListener;
 import com.celera.gateway.OrderGatewayManager;
 import com.celera.gateway.IOrderGateway;
@@ -100,37 +103,41 @@ public class OMS implements IOMS, IOrderGatewayListener
 	public void sendOrder(IOrder order){}
 	public void updateOrder(IOrder order){}
 
-	public void sendTradeReport(ITradeReport order)
+	public boolean sendTradeReport(ITradeReport order)
 	{
-		try
-		{
-			long id = this.id++;
-			// TODO: simulate result for testing
-			
-			Thread.sleep(1000);
-			order.setId(id);
-			order.setStatus(EOrderStatus.SENT);
+		boolean isSucc = true;
+		String remark = "";
+		long id = this.id++;
+		// TODO: simulate result for testing
+		
+//			Thread.sleep(1000);
+		order.setId(id);
+		order.setStatus(EOrderStatus.SENT);
 
-			String symbol = order.getInstr().getSymbol();
-			IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
+		String symbol = order.getInstr().getSymbol();
+		IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
 
-			if (gw == null) {
-				order.setStatus(EOrderStatus.REJECTED);
-				order.setRemark("instrument[" + symbol + "] not tradable");
-			}
-			else {
-				gw.createTradeReport(order);
-			}
-			
-			m_tradeReports.put(id, order);
-			for (IOMSListener l : listeners) {
-				l.onTradeReport(order);
-			}
-			
-		} catch (InterruptedException e)
-		{
-			logger.error("{}", e);
+		if (gw == null) {
+			remark = "instrument[" + symbol + "] not tradable";
+			isSucc = false;
 		}
+		else if (!gw.isReady()) {
+			remark = "order gateway not ready";
+			isSucc = false;
+		}
+		else {
+			gw.createTradeReport(order);
+		}
+		
+		m_tradeReports.put(id, order);
+		
+		if (!isSucc)
+		{
+			order.setStatus(EOrderStatus.REJECTED);
+			order.setRemark(remark);
+		}
+		
+		return isSucc;
 	}
 	
 //	public void sendBlockTradeReport(IBlockTradeReport temp)
@@ -173,8 +180,11 @@ public class OMS implements IOMS, IOrderGatewayListener
 	public List<ITradeReport> getAllTradeReport() {
 		List<ITradeReport> l = new ArrayList<ITradeReport>();
 		for (ITradeReport order : this.m_tradeReports.values()) {
-			if (order instanceof ITradeReport)
-				l.add(order);
+			if (order instanceof ITradeReport) {
+				long legId = order.getId();
+				if (!m_leg2Block.containsKey(legId))	// skip leg as reported as Block
+					l.add(order);
+			}
 		}
 		Collections.sort(l, new Comparator<ITradeReport>() {
 			public int compare(ITradeReport o1, ITradeReport o2) {
@@ -184,21 +194,26 @@ public class OMS implements IOMS, IOrderGatewayListener
 		return l;
 	}
 
+	public List<IInstrument> getAllInstrument() {
+		IStaticDataService sds = StaticDataService.instance();
+		List<IInstrument> l = sds.getAllInstruments();
+		return l;
+	}
+
 	@Override
-	public void onTradeReport(ITradeReport t)
+//	public void onTradeReport(ITradeReport t)
+	public void onTradeReport(Long _id, EOrderStatus status, String remark)
 	{
-		ITradeReport tr = m_tradeReports.get(t.getId());
+		ITradeReport tr = m_tradeReports.get(_id);
 		if (tr == null) {
-			logger.error("trade report [{}] not found" ,t.getId() );
+			logger.error("trade report [{}] not found" , _id);
 			return;
 		}
 		
-		logger.debug("{}", t);
-		
 		Long id = tr.getId();
 		Long groupId = tr.getGroupId();
-		EOrderStatus status = t.getStatus();
-		String remark = t.getRemark();
+//		EOrderStatus status = status;
+//		String remark = t.getRemark();
 		ITradeReport block = null;
 		
 //		if (tr instanceof IBlockTradeReport) {
@@ -208,7 +223,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 				if (blockId != null) {	// split block
 					block = m_tradeReports.get(blockId);
 					if (block instanceof IBlockTradeReport) {
-						((IBlockTradeReport)block).setBlockStatus(status, groupId);
+						((IBlockTradeReport)block).setBlockStatus(status, remark, groupId);
 					}
 					else {
 						block.setStatus(status);
@@ -218,7 +233,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 				else {
 					block = m_tradeReports.get(id);
 					if (block instanceof IBlockTradeReport) {
-						((IBlockTradeReport)block).setBlockStatus(status, groupId);
+						((IBlockTradeReport)block).setBlockStatus(status, remark, groupId);
 					}
 					else {
 						block.setStatus(status);
@@ -240,6 +255,8 @@ public class OMS implements IOMS, IOrderGatewayListener
 //				l.onTradeReport(single);
 //			}
 //		}
+			
+		logger.debug("{}", tr);
 	}
 	
 	public List<ITradeReport> split2SingleBlock(IBlockTradeReport block) {
@@ -311,9 +328,12 @@ public class OMS implements IOMS, IOrderGatewayListener
 
 	// TODO unit test
 	@Override
-	public void sendBlockTradeReport(BlockTradeReport block ,Map<Long, List<ITradeReport>> map)
+	public boolean sendBlockTradeReport(BlockTradeReport block ,Map<Long, List<ITradeReport>> map)
 	{
-		block.setId(this.id++);
+		long id = this.id++;
+		logger.debug("add order id {}", id);
+		
+		block.setId(id);
 		
 		if (map.keySet().size() > 1) {
 			for (Map.Entry<Long, List<ITradeReport>> e : map.entrySet()) {
@@ -322,7 +342,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 				if (l.size() > 1) {
 					// clone block trade report info
 					BlockTradeReport subBlock = new BlockTradeReport(block);
-					long id = this.id++;
+					id = this.id++;
 					subBlock.setId(id);
 					subBlock.setGroupId(groupId);
 					
@@ -336,6 +356,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 					ITradeReport tr = l.get(0);
 					tr.setId(this.id++);
 					tr.setGroupId(groupId);
+					tr.setTradeReportType(ETradeReportType.T1_SELF_CROSS);
 					block.add(tr);	// single leg trade report
 				}
 			}
@@ -349,12 +370,15 @@ public class OMS implements IOMS, IOrderGatewayListener
 				}
 			}
 		}
-		sendBlockTradeReport(block);
+		return sendBlockTradeReport(block);
 	}
 	
-	public void sendBlockTradeReport(IBlockTradeReport block) {
+	public boolean sendBlockTradeReport(IBlockTradeReport block) {
 		IOrderGateway gw = null;
 		String symbol = null;
+		boolean isSucc = true;
+		String remark = "";
+		
 		try
 		{
 //			if (block.hasSplit()) {
@@ -363,16 +387,29 @@ public class OMS implements IOMS, IOrderGatewayListener
 					long groupId = o.getGroupId();
 					
 					// first leg to determine which ordergateway to send
-					symbol = o.getInstr().getSymbol();
+					if (o instanceof IBlockTradeReport) {
+						symbol = ((IBlockTradeReport) o).getList().get(0).getInstr().getSymbol();
+					}
+					else {
+						symbol = o.getInstr().getSymbol();
+					}
 					gw = OrderGatewayManager.instance().getOrderGateway(symbol);
-					if (gw == null) {
+					if (gw == null || !gw.isReady()) {
+						if (gw == null) { 
+							remark = "instrument[" + symbol + "] not tradable";
+//							o.setRemark("instrument[" + symbol + "] not tradable");
+						}
+						else {
+							remark = "order gateway not open";
+//							o.setRemark("order gateway not open");
+						}
 						if (o instanceof IBlockTradeReport) {
-							((IBlockTradeReport)o).setBlockStatus(EOrderStatus.REJECTED, groupId);	
+							((IBlockTradeReport)o).setBlockStatus(EOrderStatus.REJECTED, remark, groupId);	
 						}
 						else {
 							o.setStatus(EOrderStatus.REJECTED);
 						}
-						o.setRemark("instrument[" + symbol + "] not tradable");
+						isSucc = false;
 					}
 					else {
 						if (o instanceof IBlockTradeReport) {
@@ -382,7 +419,6 @@ public class OMS implements IOMS, IOrderGatewayListener
 							gw.createTradeReport(o);
 						}
 					}
-					block.setBlockStatus(EOrderStatus.REJECTED, groupId);	
 				}
 //			}
 //			else {
@@ -401,8 +437,21 @@ public class OMS implements IOMS, IOrderGatewayListener
 		catch (Exception e)
 		{
 			logger.error("Symbol[{}]  Block[{}] ", symbol, block, e);
+			isSucc = false;
 		}
+		if (!isSucc) {
+			block.setBlockStatus(EOrderStatus.REJECTED, remark, 1l);
+		}
+		return isSucc;
 		
+	}
+	
+	@Override
+	public void onInstrumentUpdate(IInstrument instr)
+	{
+		for (IOMSListener l : listeners) {
+			l.onInstrumentUpdate(instr);
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -447,6 +496,6 @@ public class OMS implements IOMS, IOrderGatewayListener
 		OMS oms = new OMS();
 		oms.sendBlockTradeReport(block, split);
 		
-		oms.onTradeReport(block);
+		oms.onTradeReport(ordId, EOrderStatus.FILLED, "");
 	}
 }

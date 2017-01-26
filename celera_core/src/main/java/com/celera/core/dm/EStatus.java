@@ -5,39 +5,44 @@ import java.util.Map;
 
 public enum EStatus
 {
-	ACTIVE('A', (byte)1), SUSPEND('S', (byte)2), ISSUED('I', (byte)3), DELISTED('D', (byte)4), CLOSE('C', (byte)5), OBSOLETED('O', (byte)6);
+	ACTIVE('A', 1), SUSPEND('S', 2), ISSUED('I',3), DELISTED('D', 4), CLOSE('C', 5), OBSOLETED('O', 6);
 
 	private static final Map<Character, EStatus> map = new LinkedHashMap<Character, EStatus>();
-	private static final Map<Byte, EStatus> bMap = new LinkedHashMap<Byte, EStatus>();
+	private static final Map<Integer, EStatus> intMap = new LinkedHashMap<Integer, EStatus>();
 	static
 	{
 		for (EStatus e : EStatus.values()) {
-			map.put(e.value, e);
-			bMap.put(e.b, e);
+			map.put(e.asChar, e);
+			intMap.put(e.asInt, e);
 		}
 	}
 	
-	private final char value;
-	private final byte b;
+	private final char asChar;
+	private final int asInt;
 
-	EStatus(char c, byte b)
+	EStatus(char _asChar, int _asInt)
 	{
-		this.value = c;
-		this.b = b;
+		this.asChar = _asChar;
+		this.asInt = _asInt;
 	};
 
 	public char getChar()
 	{
-		return value;
-	}
-	
-	public static EStatus get(final char asChar)
-	{
-		return map.get(asChar);
+		return asChar;
 	}
 
-	public static EStatus get(final byte as)
+	public int getInt()
 	{
-		return bMap.get(as);
+		return asInt;
+	}
+	
+	public static EStatus get(final char _asChar)
+	{
+		return map.get(_asChar);
+	}
+
+	public static EStatus get(final int _asInt)
+	{
+		return intMap.get(_asInt);
 	}
 }

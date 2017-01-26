@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +26,8 @@ import com.celera.message.cmmf.EApp;
 import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
 import com.itextpdf.text.pdf.events.IndexEvents.Entry;
+
+import come.celera.core.oms.OMS;
 
 public class BlockTradeReport implements IBlockTradeReport
 {
@@ -86,11 +89,11 @@ public class BlockTradeReport implements IBlockTradeReport
 	}
 
 	public void add(ITradeReport tr) {
-		Long id = tr.getId();
-		List l = map.get(id);
+		Long groupId = tr.getGroupId();
+		List l = map.get(groupId);
 		if (l == null) {
 			l = new ArrayList<ITradeReport>();
-			map.put(id, l);
+			map.put(groupId, l);
 		}
 		l.add(tr);
 	}
@@ -146,31 +149,42 @@ public class BlockTradeReport implements IBlockTradeReport
 //		}
 //	}
 	
-	public void setBlockStatus(EOrderStatus status, Long groupId)
+	public void setBlockStatus(EOrderStatus status, String remark, Long groupId)
 	{
-		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet()) {
-			for (ITradeReport tr : e.getValue()) {
-				Long myId = tr.getId();
-				if (myId == groupId) {
+//		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet()) {
+//			for (ITradeReport tr : e.getValue()) {
+		List<ITradeReport> l = this.map.get(groupId);
+		if (l == null) {
+			logger.error("group id[{}] not exist in block {}" , groupId, this.toString());
+			return;
+		}
+		
+			for (ITradeReport tr : l) {
+//				Long myId = tr.getId();
+//				if (myId == groupId) {
 					if (tr instanceof IBlockTradeReport) {
-						((IBlockTradeReport)tr).setBlockStatus(status, groupId);
+						((IBlockTradeReport)tr).setBlockStatus(status, remark, groupId);
 					}
 					else {
 						tr.setStatus(status);
+						tr.setRemark(remark);
 					}
-				}
+//				}
 			}
-		}
+//		}
 		
 		boolean hasFilled = false;
 		boolean hasDiff = false;
 		EOrderStatus prev = null;
 		
-		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet()) {
+		for (Map.Entry<Long, List<ITradeReport>>  e : this.map.entrySet())
+		{
 			ITradeReport tr = e.getValue().get(0);
 			EOrderStatus current = tr.getStatus();
 			if (prev == null) {
 				prev = current;
+				if (current == EOrderStatus.FILLED)
+					hasFilled = true;
 			}
 			else {
 				if (prev != current) 
@@ -320,8 +334,8 @@ public class BlockTradeReport implements IBlockTradeReport
 	public String toString()
 	{
 		return "BlockTradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
-				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id + ", refId=" + refId + ", buyer="
-				+ buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime=" + lastUpdateTime + ", map="
+				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id + ", refId=" + refId + ", groupId=" + groupId + 
+				", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime=" + lastUpdateTime + ", map="
 				+ map + "]";
 	}
 
@@ -348,10 +362,15 @@ public class BlockTradeReport implements IBlockTradeReport
 		ByteBuffer buf = ByteBuffer.allocate(1024);
 		buf.put((byte)tradeReportType.value());
 		buf.putLong(id);
-		buf.putInt(this.map.size());
+		List<ITradeReport> l = new ArrayList<ITradeReport>();
 		for (Map.Entry<Long, List<ITradeReport>> e: this.map.entrySet()) {
-			for (ITradeReport l : e.getValue())
-				buf.put(l.toCmmf());
+			for (ITradeReport tr : e.getValue()) {
+				l.add(tr);
+			}
+		}
+		buf.putInt(l.size());
+		for (ITradeReport tr : l) {
+			buf.put(tr.toCmmf());
 		}
 		buf.flip();
 		int limit = buf.limit();
@@ -421,6 +440,7 @@ public class BlockTradeReport implements IBlockTradeReport
 			}
 		}
 		builder.add(CmmfJson.STATUS, this.status.toString());
+		builder.add(CmmfJson.REMARK, this.remark == null ? "" : this.remark.toString());
 		
 		JsonArrayBuilder legs = Json.createArrayBuilder();
 		for (Map.Entry<Long, List<ITradeReport>> e : this.map.entrySet()) {
@@ -464,5 +484,279 @@ public class BlockTradeReport implements IBlockTradeReport
 	
 	public boolean hasSplit() {
 		return this.map.keySet().size() > 1;
+	}
+	
+	public static void main_block_split_PartialFilled(String[] arg)
+	{
+		OMS oms = OMS.instance();
+
+		int pos = 1;
+		Long groupId = 1l;
+		Integer numLegs = 3;
+		// Double legPrice = Double.parseDouble(tokens[pos++]);
+		// Integer legQty = Integer.parseInt(tokens[pos++]);
+		// String sTrType = tokens[pos++];
+		// ETradeReportType trtype = ETradeReportType.get(sTrType);
+
+		Long refId = new Date().getTime();
+
+		IInstrument instr = new Derivative("HK", "SYHN", EInstrumentType.ECDIAG, EInstrumentType.ECDIAG.getName(), null,
+				null, null, null, "", null, false, 10d);
+		BlockTradeReport block = new BlockTradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				1100, 10d, null, refId, "HKCEL", "HKCEL");
+		block.setGroupId(1l);
+
+		Map<Long, java.util.List<ITradeReport>> split = new HashMap<Long, java.util.List<ITradeReport>>();
+		ArrayList<ITradeReport> l1 = new ArrayList<ITradeReport>();
+
+		IInstrument instr1 = new Derivative("HK", "HSI18600L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr1 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 20d, null, refId, "HKCEL", "HKCEL");
+		tr1.setGroupId(groupId);
+		l1.add(tr1);
+
+		IInstrument instr2 = new Derivative("HK", "HSI19400L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr2 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 8d, null, refId, "HKCEL", "HKCEL");
+		tr2.setGroupId(groupId);
+		l1.add(tr2);
+
+		IInstrument instr3 = new Derivative("HK", "HSIG7", EInstrumentType.FUTURE, EInstrumentType.FUTURE.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr3 = new TradeReport(instr3, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 110, 19300d, null, refId, "HKCEL", "HKCEL");
+		tr3.setGroupId(groupId);
+		l1.add(tr3);
+
+		split.put(groupId, l1);
+
+		// split
+		groupId = 2l;
+		ArrayList<ITradeReport> l2 = new ArrayList<ITradeReport>();
+		ITradeReport tr4 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 100, 20d, null, refId, "HKCEL", "HKCEL");
+		tr4.setGroupId(groupId);
+		l2.add(tr4);
+		ITradeReport tr5 = new TradeReport(instr3, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 375, 8d, null, refId, "HKCEL", "HKCEL");
+		tr5.setGroupId(groupId);
+		l2.add(tr5);
+		split.put(groupId, l2);
+		
+		oms.sendBlockTradeReport(block, split);
+		block.setBlockStatus(EOrderStatus.FILLED, "", groupId);
+		
+		System.out.println(block);
+	}
+	
+//	public static void main_block_split(String[] arg)
+	public static void main(String[] arg)
+	{
+		OMS oms = OMS.instance();
+
+		int pos = 1;
+		Long groupId = 1l;
+		Integer numLegs = 3;
+		// Double legPrice = Double.parseDouble(tokens[pos++]);
+		// Integer legQty = Integer.parseInt(tokens[pos++]);
+		// String sTrType = tokens[pos++];
+		// ETradeReportType trtype = ETradeReportType.get(sTrType);
+
+		Long refId = new Date().getTime();
+
+		IInstrument instr = new Derivative("HK", "SYHN", EInstrumentType.ECDIAG, EInstrumentType.ECDIAG.getName(), null,
+				null, null, null, "", null, false, 10d);
+		BlockTradeReport block = new BlockTradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				1100, 10d, null, refId, "HKCEL", "HKCEL");
+		block.setGroupId(1l);
+
+		Map<Long, java.util.List<ITradeReport>> split = new HashMap<Long, java.util.List<ITradeReport>>();
+		ArrayList<ITradeReport> l1 = new ArrayList<ITradeReport>();
+
+		IInstrument instr1 = new Derivative("HK", "HSI18600L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr1 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 20d, null, refId, "HKCEL", "HKCEL");
+		tr1.setGroupId(groupId);
+		l1.add(tr1);
+
+		IInstrument instr2 = new Derivative("HK", "HSI19400L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr2 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 8d, null, refId, "HKCEL", "HKCEL");
+		tr2.setGroupId(groupId);
+		l1.add(tr2);
+
+		IInstrument instr3 = new Derivative("HK", "HSIG7", EInstrumentType.FUTURE, EInstrumentType.FUTURE.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr3 = new TradeReport(instr3, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 110, 19300d, null, refId, "HKCEL", "HKCEL");
+		tr3.setGroupId(groupId);
+		l1.add(tr3);
+
+		split.put(groupId, l1);
+
+		// split 2
+		groupId = 2l;
+		ArrayList<ITradeReport> l2 = new ArrayList<ITradeReport>();
+		ITradeReport tr4 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 20d, null, refId, "HKCEL", "HKCEL");
+		tr4.setGroupId(groupId);
+		l2.add(tr4);
+		ITradeReport tr5 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 8d, null, refId, "HKCEL", "HKCEL");
+		tr5.setGroupId(groupId);
+		l2.add(tr5);
+		split.put(groupId, l2);
+		
+		// split 3
+		groupId = 3l;
+		ArrayList<ITradeReport> l3 = new ArrayList<ITradeReport>();
+		ITradeReport tr6 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 100, 20d, null, refId, "HKCEL", "HKCEL");
+		tr6.setGroupId(groupId);
+		l3.add(tr6);
+		ITradeReport tr7 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 375, 8d, null, refId, "HKCEL", "HKCEL");
+		tr7.setGroupId(groupId);
+		l3.add(tr7);
+		split.put(groupId, l3);
+		
+		oms.sendBlockTradeReport(block, split);
+		block.setBlockStatus(EOrderStatus.FILLED, "", 1l);	// PARTIAL FILLED
+		System.out.println(block);
+		System.out.println("==============================");	
+		block.setBlockStatus(EOrderStatus.FILLED, "", 2l); // PARTIAL FILLED
+		System.out.println(block);
+		System.out.println("==============================");
+		block.setBlockStatus(EOrderStatus.FILLED, "", 3l); // FILLED
+		System.out.println(block);
+		System.out.println("==============================");
+		block.setBlockStatus(EOrderStatus.REJECTED, "", 1l); // PARTIAL FILLED
+		System.out.println(block);
+		System.out.println("==============================");
+	}
+	
+	public static void main_block_split_T2_T1_Filled(String[] arg)
+//	public static void main(String[] arg)
+	{
+		OMS oms = OMS.instance();
+		
+		int pos = 1;
+		Long groupId = 1l;
+		Integer numLegs = 3;
+		// Double legPrice = Double.parseDouble(tokens[pos++]);
+		// Integer legQty = Integer.parseInt(tokens[pos++]);
+		// String sTrType = tokens[pos++];
+		// ETradeReportType trtype = ETradeReportType.get(sTrType);
+		
+		Long refId = new Date().getTime();
+		
+		IInstrument instr = new Derivative("HK", "SYHN", EInstrumentType.ECDIAG, EInstrumentType.ECDIAG.getName(), null,
+				null, null, null, "", null, false, 10d);
+		BlockTradeReport block = new BlockTradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				1100, 10d, null, refId, "HKCEL", "HKCEL");
+		block.setGroupId(1l);
+		
+		Map<Long, java.util.List<ITradeReport>> split = new HashMap<Long, java.util.List<ITradeReport>>();
+		ArrayList<ITradeReport> l1 = new ArrayList<ITradeReport>();
+		
+		IInstrument instr1 = new Derivative("HK", "HSI18600L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr1 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 20d, null, refId, "HKCEL", "HKCEL");
+		tr1.setGroupId(groupId);
+		l1.add(tr1);
+		
+		IInstrument instr2 = new Derivative("HK", "HSI19400L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr2 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 8d, null, refId, "HKCEL", "HKCEL");
+		tr2.setGroupId(groupId);
+		l1.add(tr2);
+		
+		IInstrument instr3 = new Derivative("HK", "HSIG7", EInstrumentType.FUTURE, EInstrumentType.FUTURE.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr3 = new TradeReport(instr3, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 110, 19300d, null, refId, "HKCEL", "HKCEL");
+		tr3.setGroupId(groupId);
+		l1.add(tr3);
+		
+		split.put(groupId, l1);
+		
+		// split
+		groupId = 2l;
+		ArrayList<ITradeReport> l2 = new ArrayList<ITradeReport>();
+		ITradeReport tr4 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 100, 20d, null, refId, "HKCEL", "HKCEL");
+		tr4.setGroupId(groupId);
+		l2.add(tr4);
+		split.put(groupId, l2);
+		
+		oms.sendBlockTradeReport(block, split);
+		block.setBlockStatus(EOrderStatus.FILLED, "", 1l);
+		System.out.println(block);
+		block.setBlockStatus(EOrderStatus.FILLED, "", 2l);
+		System.out.println(block);
+		block.setBlockStatus(EOrderStatus.REJECTED, "", 1l);
+		System.out.println(block);
+	}
+	
+	public static void main_block_nosplit(String[] arg)
+//	public static void main(String[] arg)
+	{
+		OMS oms = OMS.instance();
+		
+		int pos = 1;
+		Long groupId = 1l;
+		Integer numLegs = 3;
+		// Double legPrice = Double.parseDouble(tokens[pos++]);
+		// Integer legQty = Integer.parseInt(tokens[pos++]);
+		// String sTrType = tokens[pos++];
+		// ETradeReportType trtype = ETradeReportType.get(sTrType);
+		
+		Long refId = new Date().getTime();
+		
+		IInstrument instr = new Derivative("HK", "SYHN", EInstrumentType.ECDIAG, EInstrumentType.ECDIAG.getName(), null,
+				null, null, null, "", null, false, 10d);
+		BlockTradeReport block = new BlockTradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				1100, 10d, null, refId, "HKCEL", "HKCEL");
+		block.setGroupId(1l);
+		
+		Map<Long, java.util.List<ITradeReport>> split = new HashMap<Long, java.util.List<ITradeReport>>();
+		ArrayList<ITradeReport> l1 = new ArrayList<ITradeReport>();
+		
+		IInstrument instr1 = new Derivative("HK", "HSI18600L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr1 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 20d, null, refId, "HKCEL", "HKCEL");
+		tr1.setGroupId(groupId);
+		l1.add(tr1);
+		
+		IInstrument instr2 = new Derivative("HK", "HSI19400L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr2 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 1000, 8d, null, refId, "HKCEL", "HKCEL");
+		tr2.setGroupId(groupId);
+		l1.add(tr2);
+		
+		IInstrument instr3 = new Derivative("HK", "HSIG7", EInstrumentType.FUTURE, EInstrumentType.FUTURE.getName(),
+				null, null, null, null, "", null, false, 0d);
+		ITradeReport tr3 = new TradeReport(instr3, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+				ESide.CROSS, 110, 19300d, null, refId, "HKCEL", "HKCEL");
+		tr3.setGroupId(groupId);
+		l1.add(tr3);
+		
+		split.put(groupId, l1);
+		
+		// split
+		
+		oms.sendBlockTradeReport(block, split);
+		block.setBlockStatus(EOrderStatus.FILLED, "", 1l);
+		System.out.println(block);
+		block.setBlockStatus(EOrderStatus.FILLED, "", 2l);
+		System.out.println(block);
 	}
 }

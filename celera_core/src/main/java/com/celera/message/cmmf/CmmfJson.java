@@ -2,9 +2,16 @@ package com.celera.message.cmmf;
 
 public class CmmfJson
 {
+	public static final String SENDER = "sender";
+	public static final String RECEIVER = "receiver";
+	public static final String MESSAGE_TYPE = "message_type";
+	public static final String COMMAND = "command";
+	
 	public static final String SYMBOL = "Symbol"; 
 	public static final String UL = "UL"; 
 	public static final String INSTRUMENT = "Instrument"; 
+	public static final String INSTRUMENTS = "Instruments"; 
+	public static final String SIZE = "Size"; 
 	public static final String DELTA = "Delta"; 
 	public static final String EXPIRY = "Expiry"; 
 	public static final String STRIKE = "Strike"; 
@@ -21,4 +28,5 @@ public class CmmfJson
 	public static final String BUYER = "Buyer"; 
 	public static final String SELLER = "Seller"; 
 	public static final String GROUP = "Group"; 
+	public static final String REMARK = "Remark"; 
 }

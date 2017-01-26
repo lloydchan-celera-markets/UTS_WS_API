@@ -32,6 +32,7 @@ public interface IOrderGateway
 	
 	void startTestSOD(String password);
 	
-	void onInstrumentUpdate(IInstrument i);
+//	void onInstrumentUpdate(IInstrument i);
 	boolean isTradedSymbol(String symbol);
+	boolean isReady();
 }

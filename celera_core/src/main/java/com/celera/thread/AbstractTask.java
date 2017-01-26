@@ -24,7 +24,7 @@ public abstract class AbstractTask implements Runnable
 	{
 		try
 		{
-			logger.info("shutting down RrServer");
+			logger.info("shutting down Server");
 			exec.shutdown();
 			exec.awaitTermination(5, TimeUnit.SECONDS);
 		} catch (InterruptedException e)

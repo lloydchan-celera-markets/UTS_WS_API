@@ -15,9 +15,9 @@ public interface IOMS
 	public void sendOrder(IOrder order);
 	public void updateOrder(IOrder order);
 	
-	public void sendTradeReport(ITradeReport order);
-	public void sendBlockTradeReport(IBlockTradeReport block);
-	public void sendBlockTradeReport(BlockTradeReport block ,Map<Long, List<ITradeReport>> map);
+	public boolean sendTradeReport(ITradeReport order);
+	public boolean sendBlockTradeReport(IBlockTradeReport block);
+	public boolean sendBlockTradeReport(BlockTradeReport block ,Map<Long, List<ITradeReport>> map);
 	
 	public List<ITradeReport> getAllTradeReport();
 }

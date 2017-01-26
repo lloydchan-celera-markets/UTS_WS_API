@@ -56,6 +56,7 @@ public interface IResourceProperties
 	public static final String PROP_WEB_TRADER_CHL_SINK_PROT = "webtrader.channel.sink.protocol";
 	public static final String PROP_WEB_TRADER_CHL_SINK_IP = "webtrader.channel.sink.ip";
 	public static final String PROP_WEB_TRADER_CHL_SINK_PORT = "webtrader.channel.sink.port";
+	public static final String PROP_WEB_TRADER_TRADABLE_SYMBOL = "webtrader.tradable.symbol";
 	
 	public static final String PROP_HKEX_GATEWAY_CHL_PUSH_PROT = "hkexgw.channel.push.protocol";
 	public static final String PROP_HKEX_GATEWAY_CHL_PUSH_IP = "hkexgw.channel.push.ip";
@@ -63,5 +64,7 @@ public interface IResourceProperties
 	public static final String PROP_HKEX_GATEWAY_CHL_SINK_PROT = "hkexgw.channel.sink.protocol";
 	public static final String PROP_HKEX_GATEWAY_CHL_SINK_IP = "hkexgw.channel.sink.ip";
 	public static final String PROP_HKEX_GATEWAY_CHL_SINK_PORT = "hkexgw.channel.sink.port";
+
+	public static final String PROP_HKEX_GATEWAY_TESTING = "hkexgw.channel.testing";
 	
 }

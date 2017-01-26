@@ -2,6 +2,8 @@ package com.celera.core.dm;
 
 import java.time.LocalDate;
 
+import javax.json.JsonObject;
+
 public interface IInstrument
 {
 	public static final int CMMF_PRICE_FACTOR = 10000;
@@ -15,4 +17,7 @@ public interface IInstrument
 	public EInstrumentType getType();
 	public String toString();
 	public String getSymbol();
+	
+	public JsonObject json();
 }
+
