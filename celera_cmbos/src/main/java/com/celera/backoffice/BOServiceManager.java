@@ -182,12 +182,12 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 					inv.setIsPaid(isPaid);
 				} catch (Exception e)
 				{}
-				try
-				{
-					Boolean hasSent = jsnobject.getBoolean("hasSent");
-					inv.setHasSent(hasSent);
-				} catch (Exception e)
-				{}
+//				try
+//				{
+//					Boolean hasSent = jsnobject.getBoolean("hasSent");
+//					inv.setHasSent(hasSent);
+//				} catch (Exception e)
+//				{}
 
 				logger.info("update invoice - {}", inv);
 				
