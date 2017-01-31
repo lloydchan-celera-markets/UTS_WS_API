@@ -259,102 +259,103 @@ public class OMS implements IOMS, IOrderGatewayListener
 		logger.debug("{}", tr);
 	}
 	
-	public List<ITradeReport> split2SingleBlock(IBlockTradeReport block) {
-		List<ITradeReport> splitsBlocks = new ArrayList<ITradeReport>();
-		if (!block.hasSplit())
-		{
-			long id = block.getId();
-			m_tradeReports.put(id, block);
-			splitsBlocks.add(block);
-			return splitsBlocks;
-		}
-		
-		Long blockId = block.getId();
-		try
-		{
-			long id = 0;
-			Map<Long, List<ITradeReport>> map = new HashMap<Long, List<ITradeReport>>();
-			List<ITradeReport> split = block.getList();
-			for (ITradeReport o : split) {
-				Long groupId = o.getId();
-				List l = map.get(groupId);		// group id of legs
-				if (l == null) {
-					l = new ArrayList<ITradeReport>();
-					map.put(groupId, l);
-				}
-				l.add(o);
-			}
-			
-			// build new BlockTradeReport by group of legs
-			for (List<ITradeReport> legsSplit : map.values()) {
-				// build a new block trade
-				if (legsSplit.size() > 1) {
-					IInstrument instr = block.getInstr();
-					BlockTradeReport newBlock = new BlockTradeReport(instr, EOrderStatus.SENT, block.getTradeReportType(), block.getQty(), null,
-							null, block.getRefId(), block.getBuyer(), block.getSeller());
-					id = this.id++;
-					newBlock.setId(id);
-					m_tradeReports.put(id, newBlock);
-					// put the leg -> update also block status
-					m_leg2Block.put(id, blockId);
-					
-					for (int i =0; i<legsSplit.size(); i++) {
-						ITradeReport o = legsSplit.get(i);
-						if (i ==0) {	// use first leg for block instr
-							instr.setSymbol(o.getInstr().getSymbol());
-						}
-						newBlock.add(o);
-					}
-					splitsBlocks.add(newBlock);
-				}
-				// single trade report
-				else {
-					for (ITradeReport o : legsSplit) {
-						id = this.id++;
-						o.setId(id);
-						o.setTradeReportType(ETradeReportType.T1_SELF_CROSS);	// block trade with only one leg -> cross as T1
-						m_tradeReports.put(id, o);
-						
-						splitsBlocks.add(o);
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			logger.error("{}", e);
-		}
-		return splitsBlocks;
-	}
+//	public List<ITradeReport> split2SingleBlock(IBlockTradeReport block) {
+//		List<ITradeReport> splitsBlocks = new ArrayList<ITradeReport>();
+//		if (!block.hasSplit())
+//		{
+//			long id = block.getId();
+//			m_tradeReports.put(id, block);
+//			splitsBlocks.add(block);
+//			return splitsBlocks;
+//		}
+//		
+//		Long blockId = block.getId();
+//		try
+//		{
+//			long id = 0;
+//			Map<Long, List<ITradeReport>> map = new HashMap<Long, List<ITradeReport>>();
+//			List<ITradeReport> split = block.getList();
+//			for (ITradeReport o : split) {
+//				Long groupId = o.getId();
+//				List l = map.get(groupId);		// group id of legs
+//				if (l == null) {
+//					l = new ArrayList<ITradeReport>();
+//					map.put(groupId, l);
+//				}
+//				l.add(o);
+//			}
+//			
+//			// build new BlockTradeReport by group of legs
+//			for (List<ITradeReport> legsSplit : map.values()) {
+//				// build a new block trade
+//				if (legsSplit.size() > 1) {
+//					IInstrument instr = block.getInstr();
+//					BlockTradeReport newBlock = new BlockTradeReport(instr, EOrderStatus.SENT, block.getTradeReportType(), block.getQty(), null,
+//							null, block.getRefId(), block.getBuyer(), block.getSeller());
+//					id = this.id++;
+//					newBlock.setId(id);
+//					m_tradeReports.put(id, newBlock);
+//					// put the leg -> update also block status
+//					m_leg2Block.put(id, blockId);
+//					
+//					for (int i =0; i<legsSplit.size(); i++) {
+//						ITradeReport o = legsSplit.get(i);
+//						if (i ==0) {	// use first leg for block instr
+//							instr.setSymbol(o.getInstr().getSymbol());
+//						}
+//						newBlock.add(o);
+//					}
+//					splitsBlocks.add(newBlock);
+//				}
+//				// single trade report
+//				else {
+//					for (ITradeReport o : legsSplit) {
+//						id = this.id++;
+//						o.setId(id);
+//						o.setTradeReportType(ETradeReportType.T1_SELF_CROSS);	// block trade with only one leg -> cross as T1
+//						m_tradeReports.put(id, o);
+//						
+//						splitsBlocks.add(o);
+//					}
+//				}
+//			}
+//		}
+//		catch (Exception e) {
+//			logger.error("{}", e);
+//		}
+//		return splitsBlocks;
+//	}
 
 	// TODO unit test
 	@Override
 	public boolean sendBlockTradeReport(BlockTradeReport block ,Map<Long, List<ITradeReport>> map)
 	{
 		long id = this.id++;
-		logger.debug("add order id {}", id);
-		
 		block.setId(id);
 		
 		if (map.keySet().size() > 1) {
 			for (Map.Entry<Long, List<ITradeReport>> e : map.entrySet()) {
 				List<ITradeReport> l = e.getValue();
 				Long groupId = e.getKey();
+				id = this.id++;
 				if (l.size() > 1) {
 					// clone block trade report info
 					BlockTradeReport subBlock = new BlockTradeReport(block);
-					id = this.id++;
+//					id = this.id++;
+
 					subBlock.setId(id);
 					subBlock.setGroupId(groupId);
 					
 					for (ITradeReport tr : l) {
 						tr.setId(id);
+						tr.setGroupId(groupId);
 						subBlock.add(tr);
 					}
 					block.add(subBlock);
 				}
 				else {	// cross as single leg
 					ITradeReport tr = l.get(0);
-					tr.setId(this.id++);
+					tr.setId(id);
 					tr.setGroupId(groupId);
 					tr.setTradeReportType(ETradeReportType.T1_SELF_CROSS);
 					block.add(tr);	// single leg trade report
@@ -374,16 +375,27 @@ public class OMS implements IOMS, IOrderGatewayListener
 	}
 	
 	public boolean sendBlockTradeReport(IBlockTradeReport block) {
+		
+		logger.debug("send block {}", block);
+		
 		IOrderGateway gw = null;
 		String symbol = null;
 		boolean isSucc = true;
 		String remark = "";
 		
+		long blockId = block.getId();
+		m_tradeReports.put(blockId, block);
+		
 		try
 		{
 //			if (block.hasSplit()) {
-				List<ITradeReport> splits = this.split2SingleBlock(block);
+//				List<ITradeReport> splits = this.split2SingleBlock(block);
+				List<ITradeReport> splits = block.split2SingleBlock();
 				for (ITradeReport o : splits) {
+					long legId = o.getId();
+					m_leg2Block.put(legId, blockId);
+					m_tradeReports.put(legId, o);
+					
 					long groupId = o.getGroupId();
 					
 					// first leg to determine which ordergateway to send

@@ -118,6 +118,11 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcesso
 			CmmfParser.parseCmmfTradeReportResponse(data, this);
 			break;
 		}
+		case TRADE: 
+		{
+			CmmfParser.parseCmmfTradeResponse(data, this);
+			break;
+		}
 		case SOD: {
 			logger.info("SOD");
 			isReady.set(true);

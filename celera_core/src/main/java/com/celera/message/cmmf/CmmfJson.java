@@ -17,6 +17,7 @@ public class CmmfJson
 	public static final String STRIKE = "Strike"; 
 	public static final String QTY = "Qty"; 
 	public static final String LAST_UPDATE_TIME = "LastUpdateTime"; 
+	public static final String INPUT_TIME = "InputTime"; 
 	public static final String PRICE = "Price"; 
 	public static final String STATUS = "Status"; 
 	public static final String LEGS = "Legs"; 

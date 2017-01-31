@@ -86,9 +86,8 @@ public class SendAttachmentInEmail
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
-		String to_2 = "lloyd.chan@celera-markets.com,Amine.Larhrib@celera-markets.com";
-		// String to_1 = "Amine.Larhrib@celera-markets.com";
-//		 String to_2 = "lloyd.chan@celera-markets.com";
+		String to_2 = "lloyd.chan@celera-markets.com,Guillaume.Cunnington@celera-markets.com";
+//		String to_2 = "lloyd.chan@celera-markets.com";
 
 		// Address[] to = null;
 		// try

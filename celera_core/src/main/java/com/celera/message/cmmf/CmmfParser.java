@@ -77,6 +77,24 @@ public class CmmfParser
 //		cb.onTradeReport(id, status, reason);
 	}
 	
+	public static void parseCmmfTradeResponse(byte[] data, ICmmfProcessor cb)
+	{
+		ByteBuffer buf = ByteBuffer.allocate(data.length);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		buf.put(data);
+		buf.flip();
+		EApp sender = EApp.get((char)buf.get());
+		EMessageType type = EMessageType.get((char)buf.get());
+		ECommand cmd = ECommand.get((char)buf.get());
+		Long id = buf.getLong();
+		Long tradeId = buf.getLong();
+		EOrderStatus status = EOrderStatus.get((int)buf.get());
+		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] trade_id[{}] status[{}]",
+				sender, type, cmd, id, tradeId, status);
+		
+		cb.onTradeReport(id, status, "");
+	}
+	
 	public static void parseCmmfTradeReportResponse(byte[] data, ICmmfProcessor cb)
 	{
 		ByteBuffer buf = ByteBuffer.allocate(data.length);

@@ -47,12 +47,14 @@ public class BlockTradeReport implements IBlockTradeReport
 	private String seller = null;
 	private String remark = null;
 	
+	private Long inputTime = null;
 	private Long lastUpdateTime = null;
 	
 	private Map<Long, List<ITradeReport>> map = new LinkedHashMap<Long, List<ITradeReport>>();
 
 	public BlockTradeReport()
 	{
+		this.inputTime = System.currentTimeMillis();
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
@@ -68,6 +70,7 @@ public class BlockTradeReport implements IBlockTradeReport
 		this.buyer = other.buyer;
 		this.seller = other.seller;
 		
+		this.inputTime = System.currentTimeMillis();
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 	
@@ -85,6 +88,7 @@ public class BlockTradeReport implements IBlockTradeReport
 		this.buyer = buyer;
 		this.seller = seller;
 		
+		this.inputTime = System.currentTimeMillis();
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
@@ -333,27 +337,23 @@ public class BlockTradeReport implements IBlockTradeReport
 	@Override
 	public String toString()
 	{
-		return "BlockTradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
+		StringBuilder sb = new StringBuilder(0);
+		sb.append("BlockTradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
 				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id + ", refId=" + refId + ", groupId=" + groupId + 
-				", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime=" + lastUpdateTime + ", map="
-				+ map + "]";
+				", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime=" + lastUpdateTime + ", map {");
+		for (java.util.Map.Entry<Long, List<ITradeReport>> e : map.entrySet()) {
+			long groupId = e.getKey();
+			for (ITradeReport tr : e.getValue()) {
+				sb.append(groupId).append(" ").append(tr).append(",");
+			}
+		}
+		sb.append("}]");
+		return sb.toString();
+//		return "BlockTradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
+//				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id + ", refId=" + refId + ", groupId=" + groupId + 
+//				", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime=" + lastUpdateTime + ", map="
+//				+ map + "]";
 	}
-
-//	public byte[] toBytes()
-//	{
-//		try
-//		{
-//			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//			ObjectOutputStream out = new ObjectOutputStream(bos);
-//			writeObject(out);
-//			// out.writeObject(this);
-//			return bos.toByteArray();
-//		} catch (IOException e)
-//		{
-//			logger.error("", e);
-//		}
-//		return null;
-//	}
 	
 //	public void writeObject() throws IOException
 	// TODO Unit test
@@ -424,6 +424,8 @@ public class BlockTradeReport implements IBlockTradeReport
 		builder.add(CmmfJson.SELLER, this.seller);
 		builder.add(CmmfJson.QTY, this.qty);
 		builder.add(CmmfJson.LAST_UPDATE_TIME, this.lastUpdateTime);
+		builder.add(CmmfJson.INPUT_TIME, this.inputTime);
+		
 		if (this.instr instanceof IDerivative) {
 			IDerivative deriv = (IDerivative)this.instr;
 			String expiry = deriv.getExpiry();
@@ -484,6 +486,24 @@ public class BlockTradeReport implements IBlockTradeReport
 	
 	public boolean hasSplit() {
 		return this.map.keySet().size() > 1;
+	}
+	
+	public List<ITradeReport> split2SingleBlock() {
+		List<ITradeReport> splits = new ArrayList<ITradeReport>();
+		if (hasSplit()) {
+			for (Map.Entry<Long, List<ITradeReport>> e: this.map.entrySet())
+			{
+				List<ITradeReport> l = e.getValue();
+				if (l.size() > 1) {
+					logger.error("incorrect block trade split {}", this);
+				}
+				splits.add(l.get(0));
+			}
+		}
+		else {
+			splits.add(this);
+		}
+		return splits;
 	}
 	
 	public static void main_block_split_PartialFilled(String[] arg)
@@ -551,8 +571,8 @@ public class BlockTradeReport implements IBlockTradeReport
 		System.out.println(block);
 	}
 	
-//	public static void main_block_split(String[] arg)
-	public static void main(String[] arg)
+	public static void main_block_split_T2T2(String[] arg)
+//	public static void main(String[] arg)
 	{
 		OMS oms = OMS.instance();
 
@@ -577,21 +597,21 @@ public class BlockTradeReport implements IBlockTradeReport
 
 		IInstrument instr1 = new Derivative("HK", "HSI18600L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
 				null, null, null, null, "", null, false, 0d);
-		ITradeReport tr1 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+		ITradeReport tr1 = new TradeReport(instr1, EOrderStatus.REJECTED, ETradeReportType.T2_COMBO_CROSS,
 				ESide.CROSS, 1000, 20d, null, refId, "HKCEL", "HKCEL");
 		tr1.setGroupId(groupId);
 		l1.add(tr1);
 
 		IInstrument instr2 = new Derivative("HK", "HSI19400L7", EInstrumentType.CALL, EInstrumentType.CALL.getName(),
 				null, null, null, null, "", null, false, 0d);
-		ITradeReport tr2 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+		ITradeReport tr2 = new TradeReport(instr2, EOrderStatus.REJECTED, ETradeReportType.T2_COMBO_CROSS,
 				ESide.CROSS, 1000, 8d, null, refId, "HKCEL", "HKCEL");
 		tr2.setGroupId(groupId);
 		l1.add(tr2);
 
 		IInstrument instr3 = new Derivative("HK", "HSIG7", EInstrumentType.FUTURE, EInstrumentType.FUTURE.getName(),
 				null, null, null, null, "", null, false, 0d);
-		ITradeReport tr3 = new TradeReport(instr3, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+		ITradeReport tr3 = new TradeReport(instr3, EOrderStatus.REJECTED, ETradeReportType.T2_COMBO_CROSS,
 				ESide.CROSS, 110, 19300d, null, refId, "HKCEL", "HKCEL");
 		tr3.setGroupId(groupId);
 		l1.add(tr3);
@@ -601,28 +621,28 @@ public class BlockTradeReport implements IBlockTradeReport
 		// split 2
 		groupId = 2l;
 		ArrayList<ITradeReport> l2 = new ArrayList<ITradeReport>();
-		ITradeReport tr4 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+		ITradeReport tr4 = new TradeReport(instr1, EOrderStatus.FILLED, ETradeReportType.T2_COMBO_CROSS,
 				ESide.CROSS, 1000, 20d, null, refId, "HKCEL", "HKCEL");
 		tr4.setGroupId(groupId);
 		l2.add(tr4);
-		ITradeReport tr5 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+		ITradeReport tr5 = new TradeReport(instr2, EOrderStatus.FILLED, ETradeReportType.T2_COMBO_CROSS,
 				ESide.CROSS, 1000, 8d, null, refId, "HKCEL", "HKCEL");
 		tr5.setGroupId(groupId);
 		l2.add(tr5);
 		split.put(groupId, l2);
 		
-		// split 3
-		groupId = 3l;
-		ArrayList<ITradeReport> l3 = new ArrayList<ITradeReport>();
-		ITradeReport tr6 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
-				ESide.CROSS, 100, 20d, null, refId, "HKCEL", "HKCEL");
-		tr6.setGroupId(groupId);
-		l3.add(tr6);
-		ITradeReport tr7 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
-				ESide.CROSS, 375, 8d, null, refId, "HKCEL", "HKCEL");
-		tr7.setGroupId(groupId);
-		l3.add(tr7);
-		split.put(groupId, l3);
+//		// split 3
+//		groupId = 3l;
+//		ArrayList<ITradeReport> l3 = new ArrayList<ITradeReport>();
+//		ITradeReport tr6 = new TradeReport(instr1, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+//				ESide.CROSS, 100, 20d, null, refId, "HKCEL", "HKCEL");
+//		tr6.setGroupId(groupId);
+//		l3.add(tr6);
+//		ITradeReport tr7 = new TradeReport(instr2, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
+//				ESide.CROSS, 375, 8d, null, refId, "HKCEL", "HKCEL");
+//		tr7.setGroupId(groupId);
+//		l3.add(tr7);
+//		split.put(groupId, l3);
 		
 		oms.sendBlockTradeReport(block, split);
 		block.setBlockStatus(EOrderStatus.FILLED, "", 1l);	// PARTIAL FILLED
@@ -639,8 +659,8 @@ public class BlockTradeReport implements IBlockTradeReport
 		System.out.println("==============================");
 	}
 	
-	public static void main_block_split_T2_T1_Filled(String[] arg)
-//	public static void main(String[] arg)
+//	public static void main_block_split_T2_T1_Filled(String[] arg)
+	public static void main(String[] arg)
 	{
 		OMS oms = OMS.instance();
 		
