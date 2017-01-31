@@ -420,6 +420,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 						}
 						else {
 							o.setStatus(EOrderStatus.REJECTED);
+							o.setRemark(remark);
 						}
 						isSucc = false;
 					}

@@ -278,6 +278,7 @@ public class TradeReport implements ITradeReport
 		}
 		builder.add(CmmfJson.STATUS, this.status.toString());
 		builder.add(CmmfJson.REMARK, this.remark == null ? "" : this.remark);
+		
 		builder.add(CmmfJson.LAST_UPDATE_TIME, this.lastUpdateTime);
 		builder.add(CmmfJson.INPUT_TIME, this.inputTime);
 		

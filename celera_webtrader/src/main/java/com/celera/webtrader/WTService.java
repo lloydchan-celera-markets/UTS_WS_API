@@ -205,11 +205,18 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 				String sTrType = jsonbject.getString(CmmfJson.TRADE_REPORT_TYPE);
 				ETradeReportType trType = ETradeReportType.get(sTrType);
 //				String sSide = jsonbject.getString(CmmfJson.SIDE);
-//				ESide side = ESide.get(sSide);
+				ESide side = ESide.CROSS;
 //				String cp = jsonbject.getString("Cp");
 				String buyer = jsonbject.getString(CmmfJson.BUYER);
 				String seller = jsonbject.getString(CmmfJson.SELLER);
 				
+				if (trType == ETradeReportType.T4_INTERBANK_CROSS) {
+					side = buyer.trim().equals("HKCEL") ?  ESide.BUY : ESide.SELL;
+				}
+				else {
+					buyer = "HKCEL";
+					seller = "HKCEL";
+				}
 				// log
 				Integer qty = jsonbject.getInt(CmmfJson.QTY);
 				String futMat = jsonbject.getString(CmmfJson.FUTURE_MATURITY);
@@ -219,50 +226,46 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 				
 				switch (trType) {
 				case T1_SELF_CROSS: 
-				case T4_INTERBANK_CROSS: {
-					JSONArray ary = jsonbject.getJSONArray(CmmfJson.LEGS);
-
-					for (Object o: ary) {
-						JSONObject jo = (JSONObject)o;
-						
-						String ul = jo.getString(CmmfJson.UL);
-						String sType = ul.split(" " )[1];
-						EInstrumentType instrType = EInstrumentType.get(sType);
-						
-						Double price = jo.getDouble(CmmfJson.PRICE);
-						qty = jo.getInt(CmmfJson.QTY);
-						buyer = jo.getString(CmmfJson.BUYER);
-						seller = jo.getString(CmmfJson.SELLER);
-						symbol = jo.getString(CmmfJson.INSTRUMENT);
-						String expiry = jo.getString(CmmfJson.EXPIRY);
-						IInstrument deriv = new Derivative("HK", symbol, instrType, null, null, null, null, null, expiry, null,
-								false, delta);
-						
-						ESide side = ESide.CROSS;
-						if (trType == ETradeReportType.T4_INTERBANK_CROSS) {
-							if (buyer.trim().equals("HKCEL"))
-								side = ESide.BUY;
-							else 
-								side = ESide.SELL;
-						}
-						
-						TradeReport tr = new TradeReport(deriv, EOrderStatus.SENT, trType, side, qty, price, null, refId,
-								buyer, seller);
-						boolean succ = oms.sendTradeReport(tr);
-						if (!succ) {	// order gateway problem
-							onTradeReport(tr);
-						}
-					}
-					break;
-				}
+				case T4_INTERBANK_CROSS: 
+//					JSONArray ary = jsonbject.getJSONArray(CmmfJson.LEGS);
+//
+//					for (Object o: ary) {
+//						JSONObject jo = (JSONObject)o;
+//						
+//						String ul = jo.getString(CmmfJson.UL);
+//						String sType = ul.split(" " )[1];
+//						EInstrumentType instrType = EInstrumentType.get(sType);
+//						
+//						Double price = jo.getDouble(CmmfJson.PRICE);
+//						qty = jo.getInt(CmmfJson.QTY);
+//						buyer = jo.getString(CmmfJson.BUYER);
+//						seller = jo.getString(CmmfJson.SELLER);
+//						symbol = jo.getString(CmmfJson.INSTRUMENT);
+//						String expiry = jo.getString(CmmfJson.EXPIRY);
+//						IInstrument deriv = new Derivative("HK", symbol, instrType, null, null, null, null, null, expiry, null,
+//								false, delta);
+//						
+//						ESide side = ESide.CROSS;
+//						if (trType == ETradeReportType.T4_INTERBANK_CROSS) {
+//							if (buyer.trim().equals("HKCEL"))
+//								side = ESide.BUY;
+//							else 
+//								side = ESide.SELL;
+//						}
+//						
+//						TradeReport tr = new TradeReport(deriv, EOrderStatus.SENT, trType, side, qty, price, null, refId,
+//								buyer, seller);
+//						boolean succ = oms.sendTradeReport(tr);
+//						if (!succ) {	// order gateway problem
+//							onTradeReport(tr);
+//						}
+//					}
+//					break;
+//				}
 				// TODO : unit test
 				case T2_COMBO_CROSS: {
 					JSONArray ary = jsonbject.getJSONArray(CmmfJson.LEGS);
 
-//					public Derivative(String market, String symbol, EInstrumentType type, String name, String iSIN, String bLOOMBERG_CODE,
-//							String rIC, Double strike, String expiry, Double price,
-//							Boolean isPriceInPercent, Double delta)
-					
 					IInstrument deriv = new Derivative("HK", symbol, null, null, null, null, null, null, futMat, null, false, delta);
 					BlockTradeReport block = new BlockTradeReport(deriv, EOrderStatus.SENT, trType, qty, null,
 							null, refId, buyer, seller);
@@ -279,10 +282,8 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 						
 						Double price = jo.getDouble(CmmfJson.PRICE);
 						qty = jo.getInt(CmmfJson.QTY);
-						buyer = "HKCEL";
-						seller = "HKCEL";
-//						buyer = jo.getString(CmmfJson.BUYER);
-//						seller = jo.getString(CmmfJson.SELLER);
+//						buyer = "HKCEL";
+//						seller = "HKCEL";
 						symbol = jo.getString(CmmfJson.INSTRUMENT);
 						String expiry = jo.getString(CmmfJson.EXPIRY);
 						Long groupId = jo.getLong(CmmfJson.GROUP);
@@ -307,7 +308,6 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 
 					}
 					
-//					block.build(map);
 					boolean succ = oms.sendBlockTradeReport(block, split);
 					if (!succ) {
 						onTradeReport(block);
