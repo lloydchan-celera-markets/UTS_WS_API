@@ -7,16 +7,17 @@ import org.zeromq.ZMQ;
 import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.ICmmfServer;
 import com.celera.message.cmmf.AbstractCmmfService;
+import com.celera.message.cmmf.ICmmfClient;
 
-public class PipelineServer extends AbstractCmmfService implements ILifeCycle, ICmmfServer
+public class PipelineServer extends AbstractCmmfService implements ILifeCycle, ICmmfServer, ICmmfClient
 {
 	Logger logger = LoggerFactory.getLogger(PipelineServer.class);
 
 	private final ZMQ.Context context = ZMQ.context(1);
 	// socket to send task
 	private ZMQ.Socket push = context.socket(ZMQ.PUSH);
-	// Socket to sink tasks
-	private ZMQ.Socket sink = context.socket(ZMQ.PUSH);
+//	// Socket to sink tasks
+//	private ZMQ.Socket sink = context.socket(ZMQ.PUSH);
 
 	private final String pushUrl;
 
@@ -30,7 +31,7 @@ public class PipelineServer extends AbstractCmmfService implements ILifeCycle, I
 	@Override
 	public void init()
 	{
-		bind();
+//		bind();
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class PipelineServer extends AbstractCmmfService implements ILifeCycle, I
 	{
 		super.shutdown();
 		
-		sink.close();
+//		sink.close();
 		push.close();
 		context.term();
 	}
@@ -56,6 +57,21 @@ public class PipelineServer extends AbstractCmmfService implements ILifeCycle, I
 			push.bind(pushUrl);
 			
 			logger.info("bind push {}", pushUrl);
+		} catch (Exception e)
+		{
+			logger.error("connect error", e);
+			System.exit(-1);
+		}
+	}
+	
+	@Override
+	public void connect()
+	{
+		try
+		{
+			push.connect(pushUrl);
+			
+			logger.info("connect push {}", pushUrl);
 		} catch (Exception e)
 		{
 			logger.error("connect error", e);
@@ -133,4 +149,5 @@ public class PipelineServer extends AbstractCmmfService implements ILifeCycle, I
 		sink.close();
 		context.term();
 	}
+
 }

@@ -103,6 +103,12 @@ public class HKExCertTest
 						gw.changePassword(password, newPassword);
 						break;
 					}
+					case "QUERY": // 5) HC,password,newPassword
+					{ // optional) Logout
+						String command = tokens[1];
+						gw.query(command);
+						break;
+					}
 					case "ON":
 					{
 						try

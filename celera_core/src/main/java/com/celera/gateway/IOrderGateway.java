@@ -29,6 +29,7 @@ public interface IOrderGateway
 	void SOD();
 	void subscribeMarketData();
 	void unsubscribeMarketData();
+	void query(String command);
 	
 	void startTestSOD(String password);
 	

@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
@@ -41,6 +42,7 @@ import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
 import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.ICmmfProcessor;
+//import com.itextpdf.text.pdf.StringUtils;
 
 import come.celera.core.oms.OMS;
 
@@ -48,7 +50,9 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcesso
 {
 	Logger logger = LoggerFactory.getLogger(HkexOapiGateway.class);
 
+	private static final int CMMF_QUERY_ADMIN_SIZE = 5;
 	private static final int CMMF_LOGIN_ADMIN_SIZE = 68;
+	private static final int CMMF_PASSWORD_SIZE = 32;
 	
 	public static final URL PUSH_URL;// = "tcp://10.100.1.119:20010";
 	public static final URL SINK_URL;// = "tcp://10.100.1.119:20011";
@@ -182,7 +186,8 @@ test_Print_Bytes(data);
 	public void init()
 	{
 		sink.init();
-		server.init();
+//		server.init();
+		server.connect();
 	}
 
 	@Override
@@ -362,10 +367,13 @@ CmmfParser.print(msg);
 	{
 		try
 		{
+			String padPwd = StringUtils.rightPad(password, CMMF_PASSWORD_SIZE);
+			String padNewPwd = StringUtils.rightPad(newPassword, CMMF_PASSWORD_SIZE);
+			
 			ByteBuffer buf = ByteBuffer.allocate(CMMF_LOGIN_ADMIN_SIZE);
 			buf.put((byte)EOGAdmin.CHANGE_PASSWORD.getChar());
-			buf.put(password.getBytes());
-			buf.put(newPassword.getBytes());
+			buf.put(padPwd.getBytes());
+			buf.put(padNewPwd.getBytes());
 			buf.flip();
 			byte b[] = buf.array();
 			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
@@ -439,9 +447,12 @@ CmmfParser.print(msg);
 	{
 		try
 		{
+			String padRightSpace = StringUtils.rightPad(password, CMMF_PASSWORD_SIZE);
+			
 			ByteBuffer buf = ByteBuffer.allocate(CMMF_LOGIN_ADMIN_SIZE);
 			buf.put((byte)EOGAdmin.LOGIN.getChar());
-			buf.put(password.getBytes());
+			
+			buf.put(padRightSpace.getBytes());
 			buf.flip();
 			byte b[] = buf.array();
 			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ADMIN_REQUEST, b);
@@ -516,6 +527,27 @@ CmmfParser.print(msg);
 	}
 
 	@Override
+	public void query(String command)
+	{
+		try
+		{
+			String padCmd = StringUtils.rightPad(command, CMMF_QUERY_ADMIN_SIZE);
+			ByteBuffer buf = ByteBuffer.allocate(CMMF_QUERY_ADMIN_SIZE);
+			buf.put(padCmd.getBytes());
+			buf.flip();
+			byte b[] = buf.array();
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ORDER_REQUEST, b);
+			for (int i=0; i<msg.length; i++) {
+				System.out.print((int)msg[i] + ",");
+			}
+			server.send(msg);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}	
+	}
+	
+	@Override
 	public boolean isTradedSymbol(String symbol)
 	{
 		return m_tradableInstr.contains(symbol);
@@ -549,7 +581,7 @@ CmmfParser.print(msg);
 		String symbol = _symbol.trim();
 		logger.info("symbol[{}] status[{}]", symbol, status.name());
 
-if (!ResourceManager.IS_TESTING) {
+//if (!ResourceManager.IS_TESTING) {
 		addTradableInstrument(symbol);
 		EInstrumentType type = EInstrumentType.bySymbol(symbol);
 		IInstrument i = new Instrument("HK", symbol, type, type.getName(), null, null, null);
@@ -557,7 +589,7 @@ if (!ResourceManager.IS_TESTING) {
 	
 		IStaticDataService sds = StaticDataService.instance();
 		sds.onInstrumentUpdate(i);
-}
+//}
 	}
 
 	@Override

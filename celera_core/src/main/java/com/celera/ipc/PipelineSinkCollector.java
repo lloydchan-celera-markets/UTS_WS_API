@@ -7,8 +7,9 @@ import org.zeromq.ZMQ;
 import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.ICmmfServer;
 import com.celera.message.cmmf.AbstractCmmfService;
+import com.celera.message.cmmf.ICmmfClient;
 
-public class PipelineSinkCollector extends AbstractCmmfService implements ILifeCycle, ICmmfServer
+public class PipelineSinkCollector extends AbstractCmmfService implements ILifeCycle, ICmmfClient
 {
 	Logger logger = LoggerFactory.getLogger(PipelineSinkCollector.class);
 
@@ -26,7 +27,7 @@ public class PipelineSinkCollector extends AbstractCmmfService implements ILifeC
 	@Override
 	public void init()
 	{
-		bind();
+		connect();
 	}
 
 	@Override
@@ -44,24 +45,19 @@ public class PipelineSinkCollector extends AbstractCmmfService implements ILifeC
 		context.term();
 	}
 
-	public void bind()
-	{
-		try
-		{
-			sink.bind(sinkUrl);
-			logger.info("bind sink {}", sinkUrl);
-		} catch (Exception e)
-		{
-			logger.error("connect error", e);
-			System.exit(-1);
-		}
-	}
+//	public void bind()
+//	{
+//		try
+//		{
+//			sink.bind(sinkUrl);
+//			logger.info("bind sink {}", sinkUrl);
+//		} catch (Exception e)
+//		{
+//			logger.error("connect error", e);
+//			System.exit(-1);
+//		}
+//	}
 
-	@Override
-	public void send(byte b[])
-	{
-	}
-	
 	@Override
 	public void run()
 	{
@@ -108,5 +104,19 @@ public class PipelineSinkCollector extends AbstractCmmfService implements ILifeC
 		sender.close();
 		sink.close();
 		context.term();
+	}
+
+	@Override
+	public void connect()
+	{
+		try
+		{
+			sink.connect(sinkUrl);
+			logger.info("connect sink {}", sinkUrl);
+		} catch (Exception e)
+		{
+			logger.error("connect error", e);
+			System.exit(-1);
+		}		
 	}
 }
