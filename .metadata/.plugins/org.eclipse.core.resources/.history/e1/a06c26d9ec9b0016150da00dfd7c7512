@@ -1,3 +1,0 @@
-celera.cmbos.channel.protocol=tcp
-celera.cmbos.channel.ip=127.0.0.1
-celera.cmbos.channel.port=11001

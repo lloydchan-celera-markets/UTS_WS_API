@@ -1,6 +1,0 @@
-1476771897206	Rename type 'rrserver'
-1476776452903	Rename type 'RrServer'
-1476776464864	Rename type 'local_lat'
-1476782946688	Rename type 'TcpServerListener'
-1476785103328	Rename type 'TcpServer'
-1476785707514	Move compilation units

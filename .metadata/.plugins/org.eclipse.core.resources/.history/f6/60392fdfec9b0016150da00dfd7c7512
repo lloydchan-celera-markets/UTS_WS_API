@@ -1,6 +1,0 @@
-celera.cmbos.channel.pull.protocol=tcp
-celera.cmbos.channel.pull.ip=127.0.0.1
-celera.cmbos.channel.pull.port=11001
-celera.cmbos.channel.sink.protocol=tcp
-celera.cmbos.channel.sink.ip=127.0.0.1
-celera.cmbos.channel.pull.port=11001

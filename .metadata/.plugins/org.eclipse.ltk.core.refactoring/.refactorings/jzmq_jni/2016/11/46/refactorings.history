@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;jzmq_jni/pom.xml&apos; to &apos;pom.xml.bak&apos;" description="Rename resource &apos;pom.xml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="pom.xml" name="pom.xml.bak" stamp="1478504157853" updateReferences="true"/>
-</session>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Move element &apos;Uts2Dm.java&apos; to &apos;uts_core/src/main/java/com.uts.tools&apos;&#x0A;- Original project: &apos;uts_wsdl_soap&apos;&#x0A;- Destination element: &apos;uts_core/src/main/java/com.uts.tools&apos;&#x0A;- Original element: &apos;com.vectails.message.processor.Uts2Dm.java&apos;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="=uts_core/src\/main\/java&lt;com.uts.tools" element1="/src\/main\/java&lt;com.vectails.message.processor{Uts2Dm.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1477299272300" units="1" version="1.0"/>
-</session>
