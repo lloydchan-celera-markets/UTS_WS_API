@@ -50,11 +50,12 @@ public class SendAttachmentInEmail
 	
 	public static String buildHtmlContent(List<Invoice> l)
 	{
-		String msg = "<div class=WordSection1>"  
-				+ "<p class=MsoPlainText>I hope this email finds you well,</p>"
-				+ "<p>Please find attached the monthly invoice and details below, as well as single trade confirmations.</p>"
-				+ "<p>Kindly make the necessary payment and let us know when we can expect it .</p>"
-				+ "<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=557 style='width:418.1pt;border-collapse:collapse'>";
+		String msg = "<div style='font-family: Calibri'>"  
+				+ "<p>Dear Sir, Madam,</p>"
+				+ "<p>I hope this email finds you well,</p>"
+				+ "<p>Find attached monthly invoice as well as single trade confirmations and summary below.</p>"
+				+ "<p>Please kindly make necessary payments and let us know expected pay date.</p>"
+				+ "<table border=0 cellspacing=0 cellpadding=0 width=557 style='width:418.1pt;border-collapse:collapse'>";
 		for (Invoice inv: l) 
 		{
 			Date invDate;
@@ -77,18 +78,79 @@ public class SendAttachmentInEmail
 			}
 		}
 		msg += 	"</table>"
-				+ "<p class=MsoPlainText>If you require any extra information please don&#8217;t hesitate to contact us .</p>"
+				+ "<p>If you require any extra information please don&#8217;t hesitate to contact us.</p>"
+				+ "<p>Thank you very much in advance.<br></p><br>"
+				+ "<p style='font-size:11pt'>Guillaume Cunnington<br>"
+				+ "<span style='color:gray'>Head of Brokerage <br>Celera Markets Limited<br>Office +852 3746 3803 Mobile +852 9089 7796"
+				+ "</span></p>"
+				+ "<p><span lang=FR style='font-size:7.5pt;color:#848484'>PLEASE READ: The information contained in this e-mail " 
+				+ "is confidential and intended for the named recipient(s) only. If you are not an intended recipient of this e-mail you must not "
+				+ "copy, distribute or take any further action in reliance upon it and you should delete it and notify the sender immediately. "
+				+ "E-mail is not a secure method of communication. Celera Markets Limited cannot accept responsibility for the accuracy or "
+				+ "completeness of this message or any attachment(s). This transmission could contain viruses, be corrupted, destroyed, "
+				+ "incomplete, intercepted, lost or arrive late. If verification of this e-mail is sought then please request a hard copy. " 
+				+ "Unless otherwise stated any views or opinions presented are solely those of the author and do not represent those of "
+				+ "Celera Markets Limited. This e-mail is intended for information purposes only and is not a solicitation or offer to "
+				+ "buy or sell securities or related financial instruments.</span></p>"
 				+ "</div>";
 		return msg;
 	}
+//	
+//	public static String buildHtmlContent(List<Invoice> l)
+//	{
+//		String msg = "<div class=WordSection1>"  
+//				+ "<p class=MsoPlainText>Dear Sir, Madam,</p>"
+//				+ "<p class=MsoPlainText>I hope this email finds you well,</p>"
+//				+ "<p>Find attached monthly invoice as well as single trade confirmations and summary below.</p>"
+//				+ "<p>Please kindly make necessary payments and let us know expected pay date.</p>"
+//				+ "<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=557 style='width:418.1pt;border-collapse:collapse'>";
+//		for (Invoice inv: l) 
+//		{
+//			Date invDate;
+//			try
+//			{
+//				invDate = sdf_ddMMMMyyyy.parse(inv.getInvoice_date());
+//				String sInvDate = sdf_MMddyy.format(invDate);
+//				msg += "<tr style='height:16.5pt'><td width=84 nowrap valign=top style='width:63.0pt;border:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt;height:16.5pt'><p class=MsoNormal>"
+//						+ sInvDate + "</p></td>"
+//						+ "<td width=97 nowrap valign=top style='width:73.0pt;border:solid windowtext 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;height:16.5pt'><p class=MsoNormal>"
+//						+ inv.getInvoice_number() + "</p></td>"
+//						+ "<td width=184 nowrap valign=top style='width:138.1pt;border:solid windowtext 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;height:16.5pt'><p class=MsoNormal>"
+//						+ inv.getCompany() + "</p></td><td width=90 nowrap valign=top style='width:67.5pt;border:solid windowtext 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;height:16.5pt'><p class=MsoNormal>"
+//						+ inv.getAmount_due() + "</p></td>"
+//						+ "</tr>";
+//			} catch (ParseException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		msg += 	"</table>"
+//				+ "<p class=MsoPlainText>If you require any extra information please don&#8217;t hesitate to contact us.</p>"
+//				+ "<p class=MsoPlainText>Thank you very much in advance.<br><br></p>"
+//				+ "<p class=MsoNormal>Guillaume Cunnington<br>"
+//				+ "<span style='font-size:10pt;color:gray'>Head of Brokerage <br>Celera Markets Limited<br>Office +852 3746 3803 Mobile +852 9089 7796"
+//				+ "</span></p>"
+//				+ "<p class=MsoNormal><span lang=FR style='font-size:7.5pt;color:#848484'>PLEASE READ: The information contained in this e-mail " 
+//				+ "is confidential and intended for the named recipient(s) only. If you are not an intended recipient of this e-mail you must not "
+//				+ "copy, distribute or take any further action in reliance upon it and you should delete it and notify the sender immediately. "
+//				+ "E-mail is not a secure method of communication. Celera Markets Limited cannot accept responsibility for the accuracy or "
+//				+ "completeness of this message or any attachment(s). This transmission could contain viruses, be corrupted, destroyed, "
+//				+ "incomplete, intercepted, lost or arrive late. If verification of this e-mail is sought then please request a hard copy. " 
+//				+ "Unless otherwise stated any views or opinions presented are solely those of the author and do not represent those of "
+//				+ "Celera Markets Limited. This e-mail is intended for information purposes only and is not a solicitation or offer to "
+//				+ "buy or sell securities or related financial instruments.</span></p>"
+//				+ "</div>";
+//		return msg;
+//	}
 	
 	public static void sendEmail(List<Invoice> invList) throws ParseException
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
-		String to_2 = "invoices@celera-markets.com";
+//		String to_2 = "invoices@celera-markets.com";
 //		String to_2 = "lloyd.chan@celera-markets.com,Guillaume.Cunnington@celera-markets.com";
-//		String to_2 = "lloyd.chan@celera-markets.com";
+		String to_2 = "lloyd.chan@celera-markets.com";
 
 		// Address[] to = null;
 		// try
@@ -284,15 +346,14 @@ public class SendAttachmentInEmail
 			BodyPart messageBodyPart = new MimeBodyPart();
 
 			String msg = "\n" +
-"Dear Sir or Madam,\n\nI hope this email finds you well,\n\n" +  
-"Please Find attached the monthly invoice, as well as single trade confirmations.\n" +  
-"Kindly make the necessary payment and let us know when we can expect it .\n\n" +
+"Dear Sir, Madam,\n\nI hope this email finds you well,\n\n" +  
+"Find attached monthly invoice as well as single trade confirmations and summary below\n" +  
+"Please kindly make the necessary payments and let us know expected pay date.\n\n" +
 "If you require any extra information please don’t hesitate to contact us .\n\n" +
-"Best regards,\n" + 
-"Amine Larhrib\n" +
-"Celera Markets Limited\n" +
-"Office: (852) 3746-3800\n" +
-"Cell : ( 852) 6603 4121";
+"Thank you very much in advance.\n\n" +
+
+"Guillaume Cunnington\n" +
+"Head of Brokerage\nCelera Markets Limited\nOffice: +852 3746 3803 Mobile +852 9090 7796\n";
 
 			// Now set the actual message
 			messageBodyPart.setText(msg);
