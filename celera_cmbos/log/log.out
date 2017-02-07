@@ -969,3 +969,5 @@
 2017-02-07 13:55:20,175 [pool-2-thread-1] DEBUG org.springframework.data.mongodb.core.MongoTemplate.saveDBObject(MongoTemplate.java:1039) - Saving DBObject containing fields: [_class, _id, company, address, attn, sentTo, invoice_number, invoice_date, account_number, due_date, amount_due, description, amount, key, isPaid, hasSent, currency, paymentBankName, paymentBankAddress, paymentBankCode, paymentBranchCode, paymentAccountNumber, paymentAccountBeneficiary, paymentSwift, file, size, hedge, total_fee, tradeDetail, lastModified]
 2017-02-07 13:55:20,176 [pool-2-thread-1] DEBUG org.springframework.data.mongodb.core.MongoDbUtils.doGetDB(MongoDbUtils.java:122) - Getting Mongo Database name=[cm]
 2017-02-07 13:55:20,449 [pool-2-thread-1] INFO  com.celera.backoffice.service.SendAttachmentInEmail.sendEmail(SendAttachmentInEmail.java:288) - Sent email successfully CEL-160255, 
+2017-02-07 13:56:49,796 [main] DEBUG com.celera.backoffice.BOServiceManager.main(BOServiceManager.java:294) - sleep 100000
+2017-02-07 13:58:29,796 [main] DEBUG com.celera.backoffice.BOServiceManager.main(BOServiceManager.java:294) - sleep 100000
