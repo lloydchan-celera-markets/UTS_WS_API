@@ -30,10 +30,13 @@ public class HKExCertTest
 	public static void main(String[] args)
 	{
 //		HkexOapiGateway gw = new HkexOapiGateway();
-		OrderGatewayManager gwm = OrderGatewayManager.instance();
-		gwm.init();
-		gwm.start();
-		IOrderGateway gw = gwm.getOrderGateway("HSI18600L7");
+//		OrderGatewayManager gwm = OrderGatewayManager.instance();
+//		gwm.init();
+//		gwm.start();
+		HkexOapiGateway gw = new HkexOapiGateway();
+		gw.init();
+		gw.start();
+//		IOrderGateway gw = gwm.getOrderGateway("HSI18600L7");
 		
 		Map<Long, IOrder> map = new HashMap<Long, IOrder>();
 		Map<Long, ArrayList<IOrder>> blocks = new HashMap<Long, ArrayList<IOrder>>();
@@ -50,6 +53,7 @@ public class HKExCertTest
 		// 1l, "", 439d, 100, ESide.BUY);
 
 		OMS oms = OMS.instance();
+		oms.init();
 		
 		while (true)
 		{
@@ -66,7 +70,7 @@ public class HKExCertTest
 					case "START": // 1) HI,geniumtesting
 					{
 //						gw.init();
-//						gw.start();
+						gw.start();
 //						gw.start(tokens[1]);
 						break;
 					}
@@ -92,7 +96,7 @@ public class HKExCertTest
 					}
 					case "CLOSE": // 4) HO
 					{ // optional) Logout
-						gwm.stop();
+						gw.stop();
 						break;
 					}
 					case "CHANGE_PASSWORD": // 5) HC,password,newPassword

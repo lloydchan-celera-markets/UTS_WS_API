@@ -51,7 +51,7 @@ public class SendAttachmentInEmail
 	public static String buildHtmlContent(List<Invoice> l)
 	{
 		String msg = "<div style='font-family: Calibri'>"  
-				+ "<p>Dear Sir, Madam,</p>"
+				+ "<p>Dear Sir or Madam,</p>"
 				+ "<p>I hope this email finds you well,</p>"
 				+ "<p>Find attached monthly invoice as well as single trade confirmations and summary below.</p>"
 				+ "<p>Please kindly make necessary payments and let us know expected pay date.</p>"
@@ -79,19 +79,19 @@ public class SendAttachmentInEmail
 		}
 		msg += 	"</table>"
 				+ "<p>If you require any extra information please don&#8217;t hesitate to contact us.</p>"
-				+ "<p>Thank you very much in advance.<br></p><br>"
-				+ "<p style='font-size:11pt'>Guillaume Cunnington<br>"
-				+ "<span style='color:gray'>Head of Brokerage <br>Celera Markets Limited<br>Office +852 3746 3803 Mobile +852 9089 7796"
-				+ "</span></p>"
-				+ "<p><span lang=FR style='font-size:7.5pt;color:#848484'>PLEASE READ: The information contained in this e-mail " 
-				+ "is confidential and intended for the named recipient(s) only. If you are not an intended recipient of this e-mail you must not "
-				+ "copy, distribute or take any further action in reliance upon it and you should delete it and notify the sender immediately. "
-				+ "E-mail is not a secure method of communication. Celera Markets Limited cannot accept responsibility for the accuracy or "
-				+ "completeness of this message or any attachment(s). This transmission could contain viruses, be corrupted, destroyed, "
-				+ "incomplete, intercepted, lost or arrive late. If verification of this e-mail is sought then please request a hard copy. " 
-				+ "Unless otherwise stated any views or opinions presented are solely those of the author and do not represent those of "
-				+ "Celera Markets Limited. This e-mail is intended for information purposes only and is not a solicitation or offer to "
-				+ "buy or sell securities or related financial instruments.</span></p>"
+				+ "<p>Thank you very much in advance.<br></p>"
+//				+ "<p style='font-size:11pt'>Guillaume Cunnington<br>"
+//				+ "<span style='color:gray'>Head of Brokerage <br>Celera Markets Limited<br>Office +852 3746 3803 Mobile +852 9089 7796"
+//				+ "</span></p>"
+//				+ "<p><span lang=FR style='font-size:7.5pt;color:#848484'>PLEASE READ: The information contained in this e-mail " 
+//				+ "is confidential and intended for the named recipient(s) only. If you are not an intended recipient of this e-mail you must not "
+//				+ "copy, distribute or take any further action in reliance upon it and you should delete it and notify the sender immediately. "
+//				+ "E-mail is not a secure method of communication. Celera Markets Limited cannot accept responsibility for the accuracy or "
+//				+ "completeness of this message or any attachment(s). This transmission could contain viruses, be corrupted, destroyed, "
+//				+ "incomplete, intercepted, lost or arrive late. If verification of this e-mail is sought then please request a hard copy. " 
+//				+ "Unless otherwise stated any views or opinions presented are solely those of the author and do not represent those of "
+//				+ "Celera Markets Limited. This e-mail is intended for information purposes only and is not a solicitation or offer to "
+//				+ "buy or sell securities or related financial instruments.</span></p>"
 				+ "</div>";
 		return msg;
 	}
@@ -148,9 +148,9 @@ public class SendAttachmentInEmail
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
-		String to_2 = "invoices@celera-markets.com";
+//		String to_2 = "invoices@celera-markets.com";
 //		String to_2 = "lloyd.chan@celera-markets.com,Guillaume.Cunnington@celera-markets.com";
-//		String to_2 = "lloyd.chan@celera-markets.com";
+		String to_2 = "lloyd.chan@celera-markets.com";
 
 		// Address[] to = null;
 		// try
@@ -225,7 +225,7 @@ public class SendAttachmentInEmail
 				message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to_2));
 
 				// Set Subject: header field
-				message.setSubject(company + " -" + invMonth + " Invoices- Celera Markets limited");
+				message.setSubject(company + " -" + invMonth + " Invoices- Celera Markets Limited");
 
 				// Create a multipar message
 				Multipart multipart = new MimeMultipart();
@@ -348,8 +348,8 @@ public class SendAttachmentInEmail
 			String msg = "\n" +
 "Dear Sir, Madam,\n\nI hope this email finds you well,\n\n" +  
 "Find attached monthly invoice as well as single trade confirmations and summary below\n" +  
-"Please kindly make the necessary payments and let us know expected pay date.\n\n" +
-"If you require any extra information please don’t hesitate to contact us .\n\n" +
+"Please kindly make the necessary payment and let us know expected pay date.\n\n" +
+"If you require any extra information, please don’t hesitate to contact us.\n\n" +
 "Thank you very much in advance.\n\n" +
 
 "Guillaume Cunnington\n" +

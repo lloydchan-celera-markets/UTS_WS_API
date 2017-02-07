@@ -200,8 +200,8 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 			order.setRemark(remark);
 		}
 		
-		IMongoDocument doc = order.toEntityObject();
-		ols.create(doc);
+//		IMongoDocument doc = order.toEntityObject();
+//		ols.create(doc);
 		
 		return isSucc;
 	}
