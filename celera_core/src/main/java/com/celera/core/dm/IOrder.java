@@ -13,8 +13,8 @@ public interface IOrder
 	public void setInstr(IInstrument instr);
 	public EOrderType getOrderType();
 	public void setOrderType(EOrderType ordType);
-	public Long getId();
-	public void setId(Long id);
+	public Long getOrderId();
+	public void setOrderId(Long id);
 	public Long getRefId();
 	public void setRefId(Long id);
 	

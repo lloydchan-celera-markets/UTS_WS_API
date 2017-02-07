@@ -8,5 +8,7 @@ public interface IStaticDataService
 {
 	public IInstrument getInstr(String name);
 	public List<IInstrument> getAllInstruments();
+	public String getClearingMember(String code);
+	
 	public void onInstrumentUpdate(IInstrument i);
 }

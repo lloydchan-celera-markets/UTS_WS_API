@@ -3,6 +3,9 @@ package com.celera.core.dm;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -12,25 +15,33 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.core.service.staticdata.StaticDataService;
+import com.celera.gateway.HkexOapiUtil;
 import com.celera.message.cmmf.CmmfJson;
+import com.celera.mongo.entity.ICustomizeMongoDocument;
+import com.celera.mongo.repo.TradeReportRepo;
 
 public class TradeReport implements ITradeReport
 {
-	Logger logger = LoggerFactory.getLogger(TradeReport.class);
+	private static final Logger logger = LoggerFactory.getLogger(TradeReport.class);
 
 	private static final int CMMF_SIZE = 81;
 
+//	private String id = null;
+	
 	private IInstrument instr = null;
 	private EOrderStatus status = null;
 	private ETradeReportType tradeReportType = null;
 	private ESide side = null;
 	private Double price = null;
 	private Integer qty = null;
-	private Long id = null;
+	private Long ordId = null;
 	private Long refId = null;
 	private Long groupId = null;
 	private String buyer = null;
 	private String seller = null;
+	private String bGiveup = null;
+	private String sGiveup = null;
 	
 	private String remark = null;
 	
@@ -45,20 +56,23 @@ public class TradeReport implements ITradeReport
 	}
 
 	public TradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType, ESide side, 
-			Integer qty, Double price, Long id, Long refId, String buyer, String seller)
+			Integer qty, Double price, Long ordId, Long refId, String buyer, String seller)
 	{
 		super();
+//		this.id = id;
+		
 		this.instr = instr;
 		this.status = status;
 		this.tradeReportType = tradeReportType;
 		this.side = side;
 		this.qty = qty;
 		this.price = price;
-		this.id = id;
+		this.ordId = ordId;
 		this.refId = refId;
 		this.buyer = buyer;
 		this.seller = seller;
-		
+		this.bGiveup = StaticDataService.instance().getClearingMember(buyer);
+		this.sGiveup = StaticDataService.instance().getClearingMember(seller);
 		inputTime = System.currentTimeMillis();
 		lastUpdateTime = System.currentTimeMillis();
 	}
@@ -126,25 +140,20 @@ public class TradeReport implements ITradeReport
 			this.instr = instr;
 	}
 
-	public Long getId()
+	public Long getOrderId()
 	{
-		return id;
+		return ordId;
 	}
 
-	public void setId(Long id)
+	public void setOrderId(Long id)
 	{
 		if (id != null)
-			this.id = id;
+			this.ordId = id;
 	}
 
 	public Logger getLogger()
 	{
 		return logger;
-	}
-
-	public void setLogger(Logger logger)
-	{
-		this.logger = logger;
 	}
 
 	public Long getLastUpdateTime()
@@ -155,6 +164,16 @@ public class TradeReport implements ITradeReport
 	public void setLastUpdateTime(Long lastTime)
 	{
 		this.lastUpdateTime = lastTime;
+	}
+
+	public Long getInputTime()
+	{
+		return inputTime;
+	}
+
+	public void setInputTime(Long inputTime)
+	{
+		this.inputTime = inputTime;
 	}
 
 	// @Override
@@ -182,10 +201,10 @@ public class TradeReport implements ITradeReport
 	@Override
 	public String toString()
 	{
-		return "TradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
-				+ tradeReportType + ", side=" + side + ", price=" + price + ", qty=" + qty + ", id=" + id + ", refId="
-				+ refId + ", groupId=" + groupId + ", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime="
-				+ lastUpdateTime + "]";
+		return "TradeReport [instr=" + instr + ", status=" + status + ", tradeReportType=" + tradeReportType + ", side="
+				+ side + ", price=" + price + ", qty=" + qty + ", ordId=" + ordId + ", refId=" + refId + ", groupId="
+				+ groupId + ", buyer=" + buyer + ", seller=" + seller + ", bGiveup=" + bGiveup + ", sGiveup=" + sGiveup
+				+ ", remark=" + remark + ", inputTime=" + inputTime + ", lastUpdateTime=" + lastUpdateTime + "]";
 	}
 
 //	public byte[] toBytes()
@@ -219,11 +238,12 @@ public class TradeReport implements ITradeReport
 		buf.putLong(qty);
 		buf.putLong((long)(price * (double) IInstrument.CMMF_PRICE_FACTOR));
 		buf.put((byte)side.getAsInt());
-		buf.putLong(id);
+		buf.putLong(ordId);
 		buf.putLong(refId);
-		buf.put(StringUtils.rightPad(this.buyer, 7).getBytes());
-		buf.put(StringUtils.rightPad(this.seller, 7).getBytes());
-		
+		buf.put(HkexOapiUtil.rightPad(this.buyer, HkexOapiUtil.SIZE_CUSTOMER_INFO).getBytes());
+		buf.put(HkexOapiUtil.rightPad(this.seller, HkexOapiUtil.SIZE_CUSTOMER_INFO).getBytes());
+		buf.put(HkexOapiUtil.rightPad(this.bGiveup, HkexOapiUtil.SIZE_GIVEUP_MEMBER).getBytes());
+		buf.put(HkexOapiUtil.rightPad(this.sGiveup, HkexOapiUtil.SIZE_GIVEUP_MEMBER).getBytes());
 		buf.flip();
 		return buf.array();
 	}
@@ -242,8 +262,8 @@ public class TradeReport implements ITradeReport
 	public JsonObject json()
 	{
 		JsonObjectBuilder builder = Json.createObjectBuilder();
-		if (this.id != null)
-			builder.add(CmmfJson.ORDER_ID, this.id);
+		if (this.ordId != null)
+			builder.add(CmmfJson.ORDER_ID, this.ordId);
 		if (this.refId != null)
 			builder.add(CmmfJson.REFERENCE_ID, this.refId);
 		if (this.groupId != null)
@@ -306,5 +326,32 @@ public class TradeReport implements ITradeReport
 
 	public void setOrderType(EOrderType ordType)
 	{
+	}
+
+	public ESide getSide()
+	{
+		return side;
+	}
+
+	public void setSide(ESide side)
+	{
+		this.side = side;
+	}
+
+	@Override
+	public com.celera.mongo.entity.TradeReport toEntityObject()
+	{
+		String symbol = this.instr.getSymbol();
+		String status = this.status.getName();
+		String tradeReportType = this.tradeReportType.getName();
+		Date dInputTime = new Date(this.inputTime);;
+		Date dLastModified = new Date(this.lastUpdateTime);
+		String side = this.side.getName();
+		
+//		List legs = new ArrayList();
+		com.celera.mongo.entity.TradeReport tr = new com.celera.mongo.entity.TradeReport(null, symbol, status,
+				tradeReportType, side, qty, price, ordId.toString(), refId.toString(), groupId.toString(), buyer, seller,
+				remark, dInputTime, dLastModified, null);
+		return tr;
 	}
 }

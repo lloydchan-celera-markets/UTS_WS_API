@@ -2,19 +2,30 @@ package com.celera.backoffice;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BOFormatter
 {
+	private static final Logger logger = LoggerFactory.getLogger(BOFormatter.class);
+	
     private static final NumberFormat nf = new DecimalFormat("#,###.#");
 	
-	public static String displayFee(Double fee, String currency) 
+	public static String displayFee(Double fee, String currency) throws Exception 
 	{
-		switch (currency)
-		{
-		case "HKD": return "HK$" + nf.format(fee);
-		case "USD": return "US$" + nf.format(fee);
-		case "KRW": return "US$" + nf.format(fee);
-		case "JPY": return "JP$" + nf.format(fee);
-		default: return currency + nf.format(fee); 
+		try {
+			switch (currency)
+			{
+			case "HKD": return "HK$" + nf.format(fee);
+			case "USD": return "US$" + nf.format(fee);
+			case "KRW": return "US$" + nf.format(fee);
+			case "JPY": return "JP$" + nf.format(fee);
+			default: return currency + nf.format(fee); 
+			}
+		}
+		catch (Exception e) {
+			logger.error("fee[{}] currency[{}]", fee, currency, e);
+			throw new Exception();
 		}
 	}
 

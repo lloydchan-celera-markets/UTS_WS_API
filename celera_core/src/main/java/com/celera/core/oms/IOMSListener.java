@@ -1,4 +1,4 @@
-package come.celera.core.oms;
+package com.celera.core.oms;
 
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;

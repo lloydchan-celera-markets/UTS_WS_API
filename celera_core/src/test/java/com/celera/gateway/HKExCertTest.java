@@ -21,10 +21,9 @@ import com.celera.core.dm.IOrder;
 import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.Order;
 import com.celera.core.dm.TradeReport;
+import com.celera.core.oms.OMS;
 import com.celera.message.cmmf.ECommand;
 import com.itextpdf.text.List;
-
-import come.celera.core.oms.OMS;
 
 public class HKExCertTest
 {
@@ -103,6 +102,11 @@ public class HKExCertTest
 						gw.changePassword(password, newPassword);
 						break;
 					}
+					case "GET_INSTRUMENT": // get all instrument from hkex oapi
+					{
+						gw.getAllInstrument();
+						break;
+					}
 					case "QUERY": // 5) HC,password,newPassword
 					{ // optional) Logout
 						String command = tokens[1];
@@ -146,7 +150,7 @@ public class HKExCertTest
 							order = map.get(orderId);
 							Double price = Double.parseDouble(tokens[2]);
 							Integer qty = Integer.parseInt(tokens[3]);
-							order.setId(orderId);
+							order.setOrderId(orderId);
 							order.setPrice(price);
 							order.setQty(qty);
 							order.setStatus(EOrderStatus.AMEND);
@@ -163,7 +167,7 @@ public class HKExCertTest
 						{
 							Long orderId = Long.parseLong(tokens[1]);
 							order = map.get(orderId);
-							order.setId(orderId);
+							order.setOrderId(orderId);
 							order.setStatus(EOrderStatus.CANCELLED);
 							gw.cancelOrder(order);
 						} catch (Exception e)
@@ -192,8 +196,8 @@ public class HKExCertTest
 							// ETradeReportType tradeReportType,
 							// Integer qty, Double price, Long id, ESide
 							// side, String company
-							ITradeReport tr = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.get(trType), ESide.CROSS, qty, price,
-									null, refId, myCompany, cpCompany);
+							ITradeReport tr = new TradeReport(instr, EOrderStatus.NEW, ETradeReportType.get(trType),
+									ESide.CROSS, qty, price, null, refId, myCompany, cpCompany);
 							tr.setGroupId(1l);
 							oms.sendTradeReport(tr);
 						} catch (Exception e)
@@ -233,8 +237,9 @@ public class HKExCertTest
 								EInstrumentType legTrType = EInstrumentType.bySymbol(legSymbol);
 								instr = new Derivative("HK", legSymbol, legTrType, legTrType.getName(),
 										null, null, null, null, "", null, false, 0d);
-								ITradeReport tr = new TradeReport(instr, EOrderStatus.PENDING_NEW, ETradeReportType.T2_COMBO_CROSS,
-										ESide.CROSS, legQty, legPrice, null, refId, "HKCEL", "HKCEL");
+								ITradeReport tr = new TradeReport(instr, EOrderStatus.PENDING_NEW,
+										ETradeReportType.T2_COMBO_CROSS, ESide.CROSS, legQty, legPrice, null, refId,
+										"HKCEL", "HKCEL");
 								tr.setGroupId(groupId);
 								l.add(tr);
 							}
@@ -255,7 +260,7 @@ public class HKExCertTest
 						{
 							Long orderId = Long.parseLong(tokens[1]);
 							order = map.get(orderId);
-							order.setId(orderId);
+							order.setOrderId(orderId);
 							gw.cancelTradeReport(order);
 						} catch (Exception e)
 						{

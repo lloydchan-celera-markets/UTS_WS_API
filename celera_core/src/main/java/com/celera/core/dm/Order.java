@@ -87,12 +87,12 @@ public class Order implements IOrder
 		this.refId = refId;
 	}
 
-	public Long getId()
+	public Long getOrderId()
 	{
 		return id;
 	}
 
-	public void setId(Long id)
+	public void setOrderId(Long id)
 	{
 		if (id != null)
 			this.id = id;

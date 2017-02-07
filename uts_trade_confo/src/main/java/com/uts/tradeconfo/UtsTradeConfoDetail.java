@@ -612,6 +612,11 @@ public class UtsTradeConfoDetail
 							firm = s.split(" - ")[0];
 
 						}
+// TODO : inconsistent PDF To: format					
+if (participant.equals("T")) {
+	participant = "Thierry";
+	firm = "Thierry";
+}
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.exit(-1);
@@ -653,12 +658,20 @@ public class UtsTradeConfoDetail
 					int pos = findNextAscii(s, k);
 					String seller = s.substring(pos);
 					
-					if (seller.indexOf(firm) >= 0) {
-						this.seller = participant;
+					try {
+						if (seller.indexOf(firm) >= 0) {
+							this.seller = participant;
 //System.out.println("==========seller1======" + participant + "," + firm);
-					}
-					else {
+						}
+						else {
 //System.out.println("==========seller2======" + seller + "," + firm);
+						}
+					} catch (Exception e) {
+						this.seller = "Thierry";
+						firm = "Thierry";
+						participant = "Thierry";
+						
+						logger.error("{} {} {}", k, pos, seller);
 					}
 				}
 //				else if (s.startsWith("BUYER ") || s.startsWith(" BUYER "))
@@ -698,17 +711,26 @@ public class UtsTradeConfoDetail
 					
 					try 
 					{
-						format.parse(tokens[1]);
+						if (tokens.length > 1) {
+							format.parse(tokens[1]);
+							this.curncy = tokens[0];
+							this.price = tokens[1];
+						}
+						else {
+							format.parse(tokens[0]);
+							this.curncy = "HKD";
+							this.price = tokens[0];
+						}
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
-						logger.error("prase price error {}", sPdf);
-						System.exit(-1);
-//						continue;
+//						e.printStackTrace();
+						logger.error("prase price error s[{}] {}", s, sPdf);
+//						System.exit(-1);
+						continue;
 					}
-					this.curncy = tokens[0];
-					this.price = tokens[1];
+
+
 				}
 //				else if (s.startsWith(" PRICE"))
 //				{
@@ -886,9 +908,11 @@ public class UtsTradeConfoDetail
 //						System.out.println(trim);
 						
 						if (s.startsWith("Hedge settlement as per exchange rules") || 
-								s.startsWith("Trade hedge with synthetic forward"))
+								s.startsWith("Trade hedge with synthetic forward") || 
+								s.startsWith("***N.B.")  
+								)
 						{}
-						else
+						else if (trim.length() > 0)
 //						else if (!s.contains(" "))
 						{
 							
@@ -983,7 +1007,7 @@ public class UtsTradeConfoDetail
 							{
 								buyQty += h.getQty(); 
 							}
-							else 
+							else if ("Sell".equals(h.getSide()))
 							{
 								sellQty += h.getQty();
 							}

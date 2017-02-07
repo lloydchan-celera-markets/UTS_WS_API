@@ -35,6 +35,9 @@ import com.celera.core.dm.ITrade;
 import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.Instrument;
 import com.celera.core.dm.TradeReport;
+import com.celera.core.oms.IOMS;
+import com.celera.core.oms.IOMSListener;
+import com.celera.core.oms.OMS;
 import com.celera.core.service.staticdata.IStaticDataListener;
 import com.celera.core.service.staticdata.IStaticDataService;
 import com.celera.core.service.staticdata.StaticDataService;
@@ -56,10 +59,6 @@ import com.celera.message.cmmf.ICmmfProcessor;
 //import com.uts.tradeconfo.UtsTradeConfoSummary;
 import com.celera.mongo.entity.ICustomizeMongoDocument;
 import com.celera.mongo.entity.TradeConfo;
-
-import come.celera.core.oms.IOMS;
-import come.celera.core.oms.IOMSListener;
-import come.celera.core.oms.OMS;
 
 public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, IStaticDataListener
 {
@@ -108,7 +107,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 	public WTService()
 	{
 		super(EApp.WEB_TRADER);
-		oms.addListener(this);
+		
 //		sds.addListener(this);
 	}
 	
@@ -309,6 +308,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 					}
 					
 					boolean succ = oms.sendBlockTradeReport(block, split);
+					
 					if (!succ) {
 						onTradeReport(block);
 					}
@@ -331,6 +331,9 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 	
 	public void init()
 	{
+		oms.init();
+		oms.addListener(this);
+		
 		taskChannel = new PipelineClient(PULL_URL, SINK_URL, this);
 		taskChannel.init();
 	}

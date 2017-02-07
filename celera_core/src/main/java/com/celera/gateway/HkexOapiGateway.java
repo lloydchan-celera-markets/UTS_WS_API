@@ -29,6 +29,7 @@ import com.celera.core.dm.IQuote;
 import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.Instrument;
 import com.celera.core.dm.Order;
+import com.celera.core.oms.OMS;
 import com.celera.core.service.staticdata.IStaticDataService;
 import com.celera.core.service.staticdata.StaticDataService;
 import com.celera.ipc.ILifeCycle;
@@ -44,13 +45,12 @@ import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.ICmmfProcessor;
 //import com.itextpdf.text.pdf.StringUtils;
 
-import come.celera.core.oms.OMS;
-
 public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcessor, IOrderGateway
 {
 	Logger logger = LoggerFactory.getLogger(HkexOapiGateway.class);
 
 	private static final int CMMF_QUERY_ADMIN_SIZE = 5;
+	private static final int CMMF_QUERY_INSTRUMENT_SIZE = 4;
 	private static final int CMMF_LOGIN_ADMIN_SIZE = 68;
 	private static final int CMMF_PASSWORD_SIZE = 32;
 	
@@ -248,7 +248,7 @@ test_Print_Bytes(msg);
 	@Override
 	public void createBlockTradeReport(IBlockTradeReport block)
 	{
-		m_tradeReportMap.put(block.getId(), block);
+		m_tradeReportMap.put(block.getOrderId(), block);
 		
 		ByteBuffer buf = ByteBuffer.allocate(1024);
 		try
@@ -359,6 +359,22 @@ CmmfParser.print(msg);
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	@Override
+	public void getAllInstrument()
+	{
+		try
+		{
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.QUERY, ECommand.UPDATE_INSTRUMENT, null);
+			for (int i=0; i<msg.length; i++) {
+				System.out.print((int)msg[i] + ",");
+			}
+			server.send(msg);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 

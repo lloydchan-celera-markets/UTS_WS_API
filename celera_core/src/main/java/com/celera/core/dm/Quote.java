@@ -72,12 +72,12 @@ public class Quote implements IQuote
 			this.instr = instr;
 	}
 
-	public Long getId()
+	public Long getOrderId()
 	{
 		return id;
 	}
 
-	public void setId(Long id)
+	public void setOrderId(Long id)
 	{
 		if (id != null)
 			this.id = id;

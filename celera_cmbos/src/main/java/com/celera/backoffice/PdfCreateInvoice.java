@@ -47,7 +47,7 @@ public class PdfCreateInvoice
 	
 	private static final String PRE_INVOICE_NUMBER = "CEL";
 	private static final String PATTERN = " - ";
-	private static int invoice_Num = 160198;
+	private static int invoice_Num = 160228;
 //	private static final String invoice_Num = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_INVOICE_NUMBER);
     private static final NumberFormat nf = new DecimalFormat("##.#");
     private static final String PREFIX_BUYER = "Buyer - ";
@@ -106,6 +106,7 @@ public class PdfCreateInvoice
 		{
 			
 			String curncy = e.getCurncy();
+			curncy = curncy.replace("KRW", "USD").replace("JPY", "USD");
 			String buyer = e.getBuyer();
 			String seller = e.getSeller();
 			String firm;
@@ -151,7 +152,7 @@ public class PdfCreateInvoice
 			TradeConfo tc = e.convert();
 			tc.setHasInvoiceCreated(true);
 			
-			DatabaseAdapter.create(tc);
+//DatabaseAdapter.create(tc);
 		}
 
 //System.exit(-1);
@@ -188,7 +189,12 @@ public class PdfCreateInvoice
 				Double hedge = 0d;
 				for (Hedge h: tc.getHedges())
 				{
-					hedge += h.getQty();
+					try {
+						hedge += h.getQty();
+					}
+					catch (Exception e1) {
+						logger.error("hedge invalid [{}]", h);
+					}
 				}
 				totalHedge += hedge;
 //				
@@ -212,7 +218,7 @@ public class PdfCreateInvoice
 				}
 				lTd.add(tradeDetail);
 				
-DatabaseAdapter.create(tradeDetail);
+//DatabaseAdapter.create(tradeDetail);
 			}
 			
 			String[] tokens = key.split("_");
@@ -268,7 +274,7 @@ if (invNumber != null)
 				
 				try {
 					InvoiceTemplate.wordDocProcessor(inv, curncy, tradeDate);
-					DatabaseAdapter.create(inv);
+DatabaseAdapter.create(inv);
 				}
 				catch (Exception ex) {
 					logger.error("", ex);
@@ -306,9 +312,9 @@ if (invNumber != null)
 			String invdate = sdf_dd_MMMM_yy.format(cal.getTime());
 			inv.setInvoice_date(invdate);
 			
-			cal.add(Calendar.MONTH, 1);
-			String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
-			inv.setDue_date(invduedate);
+//			cal.add(Calendar.MONTH, 1);
+//			String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
+			inv.setDue_date(invdate);
 //		} catch (ParseException e)
 //		{
 //			// TODO Auto-generated catch block
@@ -347,7 +353,7 @@ tempRecon.add(keyUsd);
 			{
 				// dont fxxking care recon
 logger.error("=============key============== {}", keyUsd);
-System.exit(-1);
+//System.exit(-1);
 			}
 			else {
 				if (register.getAmount().equals(totalFee)){

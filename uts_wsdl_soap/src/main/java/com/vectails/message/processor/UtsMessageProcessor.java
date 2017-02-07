@@ -40,9 +40,6 @@ import com.vectails.xml.data.Underlying;
 import com.vectails.xml.data.Underlyings;
 import com.vectails.xml.data.UtsDirectAccessResponse;
 import com.vectails.xml.data.tag.ParameterTag;
-
-import come.celera.core.oms.OMS;
-
 import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.IInstrument;
@@ -52,6 +49,7 @@ import com.celera.core.dm.IQuote;
 import com.celera.core.dm.ITrade;
 import com.celera.core.dm.Instrument;
 import com.celera.core.dm.Trade;
+import com.celera.core.oms.OMS;
 import com.uts.tools.Uts2Dm;
 
 public class UtsMessageProcessor
@@ -372,7 +370,7 @@ public class UtsMessageProcessor
 		if (quote == null)
 		{
 			quote = new com.celera.core.dm.Quote();
-			quote.setId(id);
+			quote.setOrderId(id);
 
 			// set instrument and legs
 			String sDerivTypeCode = u.getProductDerivativeTypeCode();

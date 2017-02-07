@@ -63,7 +63,7 @@ public class UtsTradeConfoSummary
 				com.celera.mongo.entity.Account acc = BOData.get(client);
 				if (acc == null)
 				{
-					logger.debug("No such client {}", client.getBytes());
+					logger.debug("No such client {}", client);
 				} else
 				{
 					InvoiceRegister ir = new InvoiceRegister();
@@ -97,6 +97,7 @@ public class UtsTradeConfoSummary
 			}
 			for (InvoiceRegister e : map.values())
 			{
+				logger.info("{}", e.getKey());
 				DatabaseAdapter.create(e);
 			}
 

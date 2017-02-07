@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,15 +20,19 @@ import javax.json.JsonObjectBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.celera.core.oms.OMS;
 import com.celera.message.cmmf.CmmfBuilder;
 import com.celera.message.cmmf.CmmfJson;
 import com.celera.message.cmmf.EApp;
 import com.celera.message.cmmf.ECommand;
 import com.celera.message.cmmf.EMessageType;
+import com.celera.mongo.entity.ICustomizeMongoDocument;
+import com.celera.mongo.repo.InvoiceRepo;
+import com.celera.mongo.repo.TradeReportRepo;
 import com.itextpdf.text.pdf.events.IndexEvents.Entry;
-
-import come.celera.core.oms.OMS;
 
 public class BlockTradeReport implements IBlockTradeReport
 {
@@ -35,12 +40,14 @@ public class BlockTradeReport implements IBlockTradeReport
 
 	private static final int CMMF_SIZE = 13;
 
+//	private String id = null;	// db object id
+	
 	private IInstrument instr = null;
 	private EOrderStatus status = null;
 	private ETradeReportType tradeReportType = null;
 	private Integer qty = null;
 	private Double price = null;
-	private Long id = null;
+	private Long ordId = null;
 	private Long refId = null;	// Web UI assigned
 	private Long groupId = null;	// Web UI assigned 
 	private String buyer = null;
@@ -48,14 +55,14 @@ public class BlockTradeReport implements IBlockTradeReport
 	private String remark = null;
 	
 	private Long inputTime = null;
-	private Long lastUpdateTime = null;
+	private Long lastModified = null;
 	
 	private Map<Long, List<ITradeReport>> map = new LinkedHashMap<Long, List<ITradeReport>>();
 
 	public BlockTradeReport()
 	{
 		this.inputTime = System.currentTimeMillis();
-		this.lastUpdateTime = System.currentTimeMillis();
+		this.lastModified = System.currentTimeMillis();
 	}
 
 	public BlockTradeReport(BlockTradeReport other) {
@@ -65,13 +72,13 @@ public class BlockTradeReport implements IBlockTradeReport
 		this.tradeReportType = other.tradeReportType;
 		this.qty = other.qty;
 		this.price = other.price;
-		this.id = other.id;
+		this.ordId = other.ordId;
 		this.refId = other.refId;
 		this.buyer = other.buyer;
 		this.seller = other.seller;
 		
 		this.inputTime = System.currentTimeMillis();
-		this.lastUpdateTime = System.currentTimeMillis();
+		this.lastModified = System.currentTimeMillis();
 	}
 	
 	public BlockTradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
@@ -83,13 +90,37 @@ public class BlockTradeReport implements IBlockTradeReport
 		this.tradeReportType = tradeReportType;
 		this.qty = qty;
 		this.price = price;
-		this.id = id;
+		this.ordId = id;
 		this.refId = refId;
 		this.buyer = buyer;
 		this.seller = seller;
 		
 		this.inputTime = System.currentTimeMillis();
-		this.lastUpdateTime = System.currentTimeMillis();
+		this.lastModified = System.currentTimeMillis();
+	}
+
+	@PersistenceConstructor
+	public BlockTradeReport(IInstrument instr, EOrderStatus status, ETradeReportType tradeReportType,
+			Integer qty, Double price, Long ordId, Long refId, Long groupId, String buyer, String seller, String remark,
+			Long inputTime, Long lastModified, Map<Long, List<ITradeReport>> map)
+	{
+		super();
+//		this.id = id;
+		this.ordId = ordId;
+		this.instr = instr;
+		this.status = status;
+		this.tradeReportType = tradeReportType;
+		this.qty = qty;
+		this.price = price;
+		this.ordId = ordId;
+		this.refId = refId;
+		this.groupId = groupId;
+		this.buyer = buyer;
+		this.seller = seller;
+		this.remark = remark;
+		this.inputTime = inputTime;
+		this.lastModified = lastModified;
+		this.map = map;
 	}
 
 	public void add(ITradeReport tr) {
@@ -114,6 +145,16 @@ public class BlockTradeReport implements IBlockTradeReport
 		return l;
 //		List<ITradeReport> list = new ArrayList<ITradeReport>((Collection<? extends ITradeReport>) map.values());
 //		return list;
+	}
+
+	public Long getInputTime()
+	{
+		return inputTime;
+	}
+
+	public void setInputTime(Long inputTime)
+	{
+		this.inputTime = inputTime;
 	}
 
 	public String getBuyer()
@@ -209,7 +250,7 @@ public class BlockTradeReport implements IBlockTradeReport
 		}
 		EOrderStatus ordStatus = EOrderStatus.get(sStatus);
 		this.status = ordStatus;
-		this.lastUpdateTime = System.currentTimeMillis();
+		this.lastModified = System.currentTimeMillis();
 	}
 //	public void setBlockStatus(EOrderStatus status, Long id)
 //	{
@@ -271,15 +312,16 @@ public class BlockTradeReport implements IBlockTradeReport
 			this.instr = instr;
 	}
 
-	public Long getId()
+	@Override
+	public Long getOrderId()
 	{
-		return id;
+		return ordId;
 	}
 
-	public void setId(Long id)
+	public void setOrderId(Long id)
 	{
 		if (id != null)
-			this.id = id;
+			this.ordId = id;
 	}
 
 	public Long getRefId()
@@ -302,14 +344,14 @@ public class BlockTradeReport implements IBlockTradeReport
 		this.logger = logger;
 	}
 
-	public Long getLastUpdateTime()
+	public Long getLastModified()
 	{
-		return lastUpdateTime;
+		return lastModified;
 	}
 
-	public void setLastUpdateTime(Long lastTime)
+	public void setLastUpdateTime(Long lastModTime)
 	{
-		this.lastUpdateTime = lastTime;
+		this.lastModified = lastModTime;
 	}
 
 	// @Override
@@ -339,8 +381,9 @@ public class BlockTradeReport implements IBlockTradeReport
 	{
 		StringBuilder sb = new StringBuilder(0);
 		sb.append("BlockTradeReport [instr=" + instr + ", orderStatus=" + status + ", tradeReportType="
-				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", id=" + id + ", refId=" + refId + ", groupId=" + groupId + 
-				", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark + ", lastUpdateTime=" + lastUpdateTime + ", map {");
+				+ tradeReportType + ", qty=" + qty + ", price=" + price + ", ordId=" + ordId + ", refId="
+				+ refId + ", groupId=" + groupId + ", buyer=" + buyer + ", seller=" + seller + ", remark=" + remark
+				+ ", lastModified=" + lastModified + ", map {");
 		for (java.util.Map.Entry<Long, List<ITradeReport>> e : map.entrySet()) {
 			long groupId = e.getKey();
 			for (ITradeReport tr : e.getValue()) {
@@ -361,7 +404,7 @@ public class BlockTradeReport implements IBlockTradeReport
 	{
 		ByteBuffer buf = ByteBuffer.allocate(1024);
 		buf.put((byte)tradeReportType.value());
-		buf.putLong(id);
+		buf.putLong(ordId);
 		List<ITradeReport> l = new ArrayList<ITradeReport>();
 		for (Map.Entry<Long, List<ITradeReport>> e: this.map.entrySet()) {
 			for (ITradeReport tr : e.getValue()) {
@@ -417,13 +460,13 @@ public class BlockTradeReport implements IBlockTradeReport
 	{
 		JsonObjectBuilder builder = Json.createObjectBuilder();
 //		builder.add("symbol", instr.getSymbol());
-		builder.add(CmmfJson.ORDER_ID, this.id);
+		builder.add(CmmfJson.ORDER_ID, this.ordId);
 		builder.add(CmmfJson.REFERENCE_ID, this.refId);
 		builder.add(CmmfJson.TRADE_REPORT_TYPE, this.tradeReportType.getName());
 		builder.add(CmmfJson.BUYER, this.buyer);
 		builder.add(CmmfJson.SELLER, this.seller);
 		builder.add(CmmfJson.QTY, this.qty);
-		builder.add(CmmfJson.LAST_UPDATE_TIME, this.lastUpdateTime);
+		builder.add(CmmfJson.LAST_UPDATE_TIME, this.lastModified);
 		builder.add(CmmfJson.INPUT_TIME, this.inputTime);
 		
 		if (this.instr instanceof IDerivative) {
@@ -778,5 +821,33 @@ public class BlockTradeReport implements IBlockTradeReport
 		System.out.println(block);
 		block.setBlockStatus(EOrderStatus.FILLED, "", 2l);
 		System.out.println(block);
+	}
+
+	@Override
+	public com.celera.mongo.entity.TradeReport toEntityObject()
+	{
+		com.celera.mongo.entity.TradeReport tr = null;
+		try {
+			String symbol = this.instr.getSymbol();
+			String status = this.status.getName();
+			String tradeReportType = this.tradeReportType.getName();
+			Date dInputTime = new Date(this.inputTime);;
+			Date dLastModified = new Date(this.lastModified);
+			List legs = this.getList();
+			
+			tr = new com.celera.mongo.entity.TradeReport("", symbol, status,
+					ESide.CROSS.getName(), tradeReportType, qty, price, ordId.toString(), refId.toString(), groupId.toString(),
+					buyer, seller, remark, dInputTime, dLastModified, legs);
+		}
+		catch (Exception e) {
+			logger.error("", e);
+		}
+		return tr;
+	}
+
+	@Override
+	public Long getLastUpdateTime()
+	{
+		return this.lastModified;
 	}
 }

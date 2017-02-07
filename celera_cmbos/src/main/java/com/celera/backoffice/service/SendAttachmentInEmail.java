@@ -284,7 +284,7 @@ public class SendAttachmentInEmail
 			BodyPart messageBodyPart = new MimeBodyPart();
 
 			String msg = "\n" +
-"I hope this email finds you well,\n\n" +  
+"Dear Sir or Madam,\n\nI hope this email finds you well,\n\n" +  
 "Please Find attached the monthly invoice, as well as single trade confirmations.\n" +  
 "Kindly make the necessary payment and let us know when we can expect it .\n\n" +
 "If you require any extra information please don’t hesitate to contact us .\n\n" +

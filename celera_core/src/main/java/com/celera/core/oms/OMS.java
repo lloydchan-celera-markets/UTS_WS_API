@@ -1,13 +1,16 @@
-package come.celera.core.oms;
+package com.celera.core.oms;
 
 import java.util.List;
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.json.JsonObject;
 
@@ -32,9 +35,11 @@ import com.celera.core.service.staticdata.IStaticDataService;
 import com.celera.core.service.staticdata.StaticDataService;
 import com.celera.gateway.IOrderGatewayListener;
 import com.celera.gateway.OrderGatewayManager;
+import com.celera.ipc.ILifeCycle;
+import com.celera.mongo.entity.IMongoDocument;
 import com.celera.gateway.IOrderGateway;
 
-public class OMS implements IOMS, IOrderGatewayListener
+public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 {
 	final static Logger logger = LoggerFactory.getLogger(OMS.class);
 
@@ -48,9 +53,26 @@ public class OMS implements IOMS, IOrderGatewayListener
 	
 	static private OMS INSTANCE = null;
 
-	private Long id = 1l;
+	private OrderLoggerServer ols = null;
+	
+	private AtomicLong id = null;
 
+	private static final Date c_start;
+	private static final Date c_end;
+	
+	static {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		c_start = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		c_end = cal.getTime();
+	}
+	
 	public OMS() {
+		ols = new OrderLoggerServer(c_start, c_end);
 	}
 	
 	static synchronized public OMS instance()
@@ -69,16 +91,57 @@ public class OMS implements IOMS, IOrderGatewayListener
 		return orders.get(id);
 	}
 
+	@Override
+	public void init()
+	{
+		ols.init();
+		long maxId = 0l;
+		List<ITradeReport> l = ols.getAllTradeReports();
+		for (ITradeReport tr : l)
+		{
+			Long id = tr.getOrderId();
+			if (id > maxId) {
+				maxId = id;
+			}
+			m_tradeReports.put(id, tr);
+			if (tr instanceof IBlockTradeReport)
+			{
+				List<ITradeReport> splits = ((IBlockTradeReport) tr).split2SingleBlock();
+				for (ITradeReport o : splits)
+				{
+					long legId = o.getOrderId();
+					m_leg2Block.put(legId, id);
+					m_tradeReports.put(legId, o);
+				}
+			}
+		}
+		maxId++;
+		this.id = new AtomicLong(maxId);
+		
+		logger.debug("set next order id {}", this.id);
+	}
+
+	@Override
+	public void start()
+	{
+	}
+
+	@Override
+	public void stop()
+	{
+		ols.stop();
+	}
+	
 	public void onOrder(IOrder o)
 	{
-		Long id = o.getId();
+		Long id = o.getOrderId();
 		orders.put(id, o);
 		logger.info("onOrder: " + o.toString());
 	}
 
 	public void onQuote(IOrder o)
 	{
-		Long id = o.getId();
+		Long id = o.getOrderId();
 		if (!orders.containsKey(id))
 		{
 			orders.put(id, o);
@@ -107,11 +170,11 @@ public class OMS implements IOMS, IOrderGatewayListener
 	{
 		boolean isSucc = true;
 		String remark = "";
-		long id = this.id++;
+		long id = this.id.getAndIncrement();
 		// TODO: simulate result for testing
 		
 //			Thread.sleep(1000);
-		order.setId(id);
+		order.setOrderId(id);
 		order.setStatus(EOrderStatus.SENT);
 
 		String symbol = order.getInstr().getSymbol();
@@ -136,6 +199,9 @@ public class OMS implements IOMS, IOrderGatewayListener
 			order.setStatus(EOrderStatus.REJECTED);
 			order.setRemark(remark);
 		}
+		
+		IMongoDocument doc = order.toEntityObject();
+		ols.create(doc);
 		
 		return isSucc;
 	}
@@ -181,7 +247,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 		List<ITradeReport> l = new ArrayList<ITradeReport>();
 		for (ITradeReport order : this.m_tradeReports.values()) {
 			if (order instanceof ITradeReport) {
-				long legId = order.getId();
+				long legId = order.getOrderId();
 				if (!m_leg2Block.containsKey(legId))	// skip leg as reported as Block
 					l.add(order);
 			}
@@ -210,7 +276,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 			return;
 		}
 		
-		Long id = tr.getId();
+		Long id = tr.getOrderId();
 		Long groupId = tr.getGroupId();
 //		EOrderStatus status = status;
 //		String remark = t.getRemark();
@@ -330,24 +396,24 @@ public class OMS implements IOMS, IOrderGatewayListener
 	@Override
 	public boolean sendBlockTradeReport(BlockTradeReport block ,Map<Long, List<ITradeReport>> map)
 	{
-		long id = this.id++;
-		block.setId(id);
+		long id = this.id.getAndIncrement();
+		block.setOrderId(id);
 		
 		if (map.keySet().size() > 1) {
 			for (Map.Entry<Long, List<ITradeReport>> e : map.entrySet()) {
 				List<ITradeReport> l = e.getValue();
 				Long groupId = e.getKey();
-				id = this.id++;
+				id = this.id.getAndIncrement();
 				if (l.size() > 1) {
 					// clone block trade report info
 					BlockTradeReport subBlock = new BlockTradeReport(block);
 //					id = this.id++;
 
-					subBlock.setId(id);
+					subBlock.setOrderId(id);
 					subBlock.setGroupId(groupId);
 					
 					for (ITradeReport tr : l) {
-						tr.setId(id);
+						tr.setOrderId(id);
 						tr.setGroupId(groupId);
 						subBlock.add(tr);
 					}
@@ -355,7 +421,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 				}
 				else {	// cross as single leg
 					ITradeReport tr = l.get(0);
-					tr.setId(id);
+					tr.setOrderId(id);
 					tr.setGroupId(groupId);
 					tr.setTradeReportType(ETradeReportType.T1_SELF_CROSS);
 					block.add(tr);	// single leg trade report
@@ -365,16 +431,21 @@ public class OMS implements IOMS, IOrderGatewayListener
 		else {
 			for (Map.Entry<Long, List<ITradeReport>> e : map.entrySet()) {
 				for (ITradeReport tr : e.getValue()) {
-					Long ordId = block.getId();
-					tr.setId(ordId);
+					Long ordId = block.getOrderId();
+					tr.setOrderId(ordId);
 					block.add(tr);
 				}
 			}
 		}
-		return sendBlockTradeReport(block);
+		boolean res = sendBlockTradeReport(block);
+		IMongoDocument doc = block.toEntityObject();
+		ols.create(doc);
+		
+		return res;
+		
 	}
 	
-	public boolean sendBlockTradeReport(IBlockTradeReport block) {
+	private boolean sendBlockTradeReport(IBlockTradeReport block) {
 		
 		logger.debug("send block {}", block);
 		
@@ -383,7 +454,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 		boolean isSucc = true;
 		String remark = "";
 		
-		long blockId = block.getId();
+		long blockId = block.getOrderId();
 		m_tradeReports.put(blockId, block);
 		
 		try
@@ -392,7 +463,7 @@ public class OMS implements IOMS, IOrderGatewayListener
 //				List<ITradeReport> splits = this.split2SingleBlock(block);
 				List<ITradeReport> splits = block.split2SingleBlock();
 				for (ITradeReport o : splits) {
-					long legId = o.getId();
+					long legId = o.getOrderId();
 					m_leg2Block.put(legId, blockId);
 					m_tradeReports.put(legId, o);
 					
@@ -511,4 +582,5 @@ public class OMS implements IOMS, IOrderGatewayListener
 		
 		oms.onTradeReport(ordId, EOrderStatus.FILLED, "");
 	}
+
 }

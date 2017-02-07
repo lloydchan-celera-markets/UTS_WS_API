@@ -116,6 +116,7 @@ public class DbCreateInvoice implements Runnable
 			
 			this.tradeDateStart = start.getTime();
 			this.tradeDateEnd = lastDayCal.getTime();
+			this.invMonth = lastDayCal.getTime();
 		} catch (ParseException e)
 		{
 			e.printStackTrace();
@@ -262,13 +263,13 @@ logger.debug(e.toString());
 			tmpParticipant = buyer == null? seller: buyer;
 			tmpKey = Invoice.key(tmpParticipant, tmpCurncy, invDate);
 //System.out.println("=============" + myKey + "," + tmpKey + "," + ++count);			
-			if (myKey.equals(tmpKey)) 
-			{ 
+//if (myKey.equals(tmpKey)) 
+//{ 
 				client2TradeConfo.add(e);
 				company = tmpParticipant.split(" - ")[0];
 				curncy = tmpCurncy;
 				tradeDate = tmpTradeDate;
-			}
+//}
 		}
 		
 		Double totalSize = 0d;
@@ -288,8 +289,6 @@ logger.debug(e.toString());
 			tradeDetail.setDate(Uts2Dm.toDateString(tc.getTradeDate()));	// same format
 			tradeDetail.setTradeId(tc.getTradeConfoId());
 			tradeDetail.setDescription(tc.getSummary());
-			tradeDetail.setDescription(tc.getSummary());
-			tradeDetail.setTradeConfoFile(tc.getSummary());
 			tradeDetail.setTradeConfoFile(tc.getFile());
 			
 			Double size = 0d;
@@ -338,26 +337,31 @@ logger.debug(e.toString());
 				logger.error("company not found: {}", company);
 			}
 
-			inv = new Invoice();
-			inv.setCompany(company);
-			inv.setSentTo(account.getEmails());
-			inv.setAddress(account.getAddress());
-			inv.setAttn(account.getAttn());
-			inv.setInvoice_number("");
-			inv.setInvoice_date(todayStr);
-			inv.setAccount_number(account.getId());
-			inv.setAmount_due(BOFormatter.displayFee(totalFee, curncy));
-			inv.setDescription("October 2016 Brokerage Fee");
-			inv.setAmount(BOFormatter.displayFee(totalFee, curncy));
-			inv.setCurrency(curncy);
-			updateInvoiceDate(this.tradeDateStart, inv);
-			
-//				inv.setTradeDetails(td);
-			inv.setSize(BOFormatter.displayNumber(totalSize));
-			inv.setHedge(BOFormatter.displayNumber(totalHedge));
-			inv.setTotal_fee(BOFormatter.displayFee(totalFee, curncy));
-			inv.setTradeDetail(lTd);
-			
+			try {
+				inv = new Invoice();
+				inv.setCompany(company);
+				inv.setSentTo(account.getEmails());
+				inv.setAddress(account.getAddress());
+				inv.setAttn(account.getAttn());
+				inv.setInvoice_number("");
+				inv.setInvoice_date(todayStr);
+				inv.setAccount_number(account.getId());
+				inv.setAmount_due(BOFormatter.displayFee(totalFee, curncy));
+				inv.setDescription("October 2016 Brokerage Fee");
+				inv.setAmount(BOFormatter.displayFee(totalFee, curncy));
+				inv.setCurrency(curncy);
+				updateInvoiceDate(this.tradeDateStart, inv);
+				
+	//				inv.setTradeDetails(td);
+				inv.setSize(BOFormatter.displayNumber(totalSize));
+				inv.setHedge(BOFormatter.displayNumber(totalHedge));
+				inv.setTotal_fee(BOFormatter.displayFee(totalFee, curncy));
+				inv.setTradeDetail(lTd);
+			}
+			catch (Exception e) {
+				logger.error("", e);
+				System.exit(-1);
+			}
 			String invNumber = createInvNumber(company, curncy, tradeDate, totalFee, inv);
 			if (invNumber != null)
 			{
@@ -372,7 +376,7 @@ logger.debug(e.toString());
 				// create word file
 				InvoiceTemplate.dbWordDocProcessor(inv, curncy, tradeDate);
 				
-				DatabaseAdapter.create(inv);
+//				DatabaseAdapter.create(inv);
 //				logger.info("save database {}", inv);	
 			}
 			catch (Exception ex) {
@@ -759,8 +763,8 @@ InvoiceTemplate.regenerateWordDocProcessor(inv);
 		dba.start();
 		dba.loadAll();
 		
-		String key = "HKD_1217_Vivienne Court Trading pty Ltd";
-		DbCreateInvoice gen = new DbCreateInvoice();
+		String key = "Vivienne Court Trading pty Ltd_HKD_0117";
+		DbCreateInvoice gen = new DbCreateInvoice(key);
 		gen.createInvoice();
 //		gen.run();
 	}

@@ -259,7 +259,6 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		}
 	}
 
-	
 	public void init()
 	{
 		taskChannel = new PipelineClient(PULL_URL, SINK_URL, this);

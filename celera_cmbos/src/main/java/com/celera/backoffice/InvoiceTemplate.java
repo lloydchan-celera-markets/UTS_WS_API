@@ -506,7 +506,7 @@ public class InvoiceTemplate
 			cal.set(Calendar.DAY_OF_MONTH, 9);
 			cal.add(Calendar.MONTH, 1);
 			// String invdate = sdf_dd_MMMM_yy.format(cal.getTime());
-			String fileMonth = sdf_mm_yy.format(cal.getTime());
+			String fileMonth = sdf_yy_mm.format(cal.getTime());
 
 //			cal.add(Calendar.MONTH, 1);
 			// String invduedate = sdf_dd_MMMM_yy.format(cal.getTime());
@@ -719,7 +719,8 @@ public class InvoiceTemplate
 			// "_TestReport_URL_Document.doc"));
 			String company = inv.getCompany();
 			company = company.replaceAll(".?\\*+.?", "");
-			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + fileMonth + ".docx";
+			String invoice_number = inv.getInvoice_number();
+			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + invoice_number + "_" + fileMonth + ".docx";
 			
 			inv.setFile(file);
 			inv.setKey(Invoice.key(company, curncy, cal.getTime()));
@@ -781,7 +782,7 @@ public class InvoiceTemplate
 			Date invDate = sdf_dd_MMMM_yy.parse(sInvDate);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(invDate);
-			String fileMonth = sdf_mm_yy.format(cal.getTime());
+			String fileMonth = sdf_yy_mm.format(cal.getTime());
 			
 
 			// trade month
@@ -994,7 +995,8 @@ public class InvoiceTemplate
 			
 			String company = inv.getCompany();
 			company = company.replaceAll(".?\\*+.?", "");
-			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + fileMonth + ".docx";
+			String invoice_number = inv.getInvoice_number();
+			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + invoice_number + "_" + fileMonth + ".docx";
 			
 			os = new FileOutputStream(file);
 			doc.write(os);
@@ -1046,7 +1048,7 @@ public class InvoiceTemplate
 			cal.set(Calendar.DAY_OF_MONTH, 9);
 			cal.add(Calendar.MONTH, 1);	// invoice month
 
-			String fileMonth = sdf_mm_yy.format(cal.getTime());
+			String fileMonth = sdf_yy_mm.format(cal.getTime());
 			
 			String mmmm_yyyy = sdf_mmmm_yyyyyy.format(tradeDate);
 			
@@ -1254,7 +1256,8 @@ public class InvoiceTemplate
 			// "_TestReport_URL_Document.doc"));
 			String company = inv.getCompany();
 			company = company.replaceAll(".?\\*+.?", "");
-			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + fileMonth + ".docx";
+			file = INVOICE_EXPORT_PATH + File.separator + company + "_" + curncy + "_" + inv.getInvoice_number() + "_"
+					+ fileMonth + ".docx";
 			
 			inv.setFile(file);
 			inv.setKey(Invoice.key(company, curncy, cal.getTime()));
@@ -1304,6 +1307,7 @@ public class InvoiceTemplate
 	
 	private static SimpleDateFormat sdf_mmm_yy = new SimpleDateFormat("MMMyy");
 	private static SimpleDateFormat sdf_mm_yy = new SimpleDateFormat("MMyy");
+	private static SimpleDateFormat sdf_yy_mm = new SimpleDateFormat("yyMM");
 	private static SimpleDateFormat sdf_mmmm_yyyyyy = new SimpleDateFormat("MMMM yyyy");
 	private static SimpleDateFormat sdf_dd_MMMM_yy = new SimpleDateFormat("dd MMMM, yyyy");
 

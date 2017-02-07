@@ -30,6 +30,7 @@ public interface IOrderGateway
 	void subscribeMarketData();
 	void unsubscribeMarketData();
 	void query(String command);
+	public void getAllInstrument();
 	
 	void startTestSOD(String password);
 	
