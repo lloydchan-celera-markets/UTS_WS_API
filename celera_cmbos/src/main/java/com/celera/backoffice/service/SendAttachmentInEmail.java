@@ -78,7 +78,7 @@ public class SendAttachmentInEmail
 			}
 		}
 		msg += 	"</table>"
-				+ "<p>If you require any extra information please don&#8217;t hesitate to contact us.</p>"
+				+ "<p>If you require any extra information, please don&#8217;t hesitate to contact us.</p>"
 				+ "<p>Thank you very much in advance.<br></p>"
 //				+ "<p style='font-size:11pt'>Guillaume Cunnington<br>"
 //				+ "<span style='color:gray'>Head of Brokerage <br>Celera Markets Limited<br>Office +852 3746 3803 Mobile +852 9089 7796"
@@ -148,9 +148,9 @@ public class SendAttachmentInEmail
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
-//		String to_2 = "invoices@celera-markets.com";
+		String to_2 = "invoices@celera-markets.com";
 //		String to_2 = "lloyd.chan@celera-markets.com,Guillaume.Cunnington@celera-markets.com";
-		String to_2 = "lloyd.chan@celera-markets.com";
+//		String to_2 = "lloyd.chan@celera-markets.com";
 
 		// Address[] to = null;
 		// try
@@ -295,110 +295,110 @@ public class SendAttachmentInEmail
 		}
 	}
 	
-	public static void sendEmail1(Invoice inv)
-//	public static void main(String[] args)
-	{
-		// Recipient's email ID needs to be mentioned.
-//		String to = "Amine.Larhrib@celera-markets.com";
-		String to = "lloyd.chan@celera-markets.com";
-
-		// Sender's email ID needs to be mentioned
-		String from = "lloyd.chan@celera-markets.com";
-
-		final String username = DEFAULT_EMAIL_SERVER_USER;// change accordingly
-		final String password = DEFAULT_EMAIL_SERVER_PWD;// change accordingly
-
-//		// Assuming you are sending email through relay.jangosmtp.net
-//		String host = "relay.jangosmtp.net";
-
-		Properties props = new Properties();
-		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".auth", "true");
-		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".starttls.enable", "true");
-		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".host", DEFAULT_EMAIL_SERVER_IP);
-		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".port", DEFAULT_EMAIL_SERVER_PORT);
-
-		// Get the Session object.
-		Session session = Session.getInstance(props, new javax.mail.Authenticator()
-		{
-			protected PasswordAuthentication getPasswordAuthentication()
-			{
-				return new PasswordAuthentication(username, password);
-			}
-		});
-
-		try
-		{
-			// Create a default MimeMessage object.
-			Message message = new MimeMessage(session);
-
-			// Set From: header field of the header.
-			message.setFrom(new InternetAddress(from));
-
-			// Set To: header field of the header.
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-
-			String company = inv.getCompany();
-			
-			// Set Subject: header field
-			message.setSubject(company + " -Due Invoices- Celera Markets limited");
-
-			// Create the message part
-			BodyPart messageBodyPart = new MimeBodyPart();
-
-			String msg = "\n" +
-"Dear Sir, Madam,\n\nI hope this email finds you well,\n\n" +  
-"Find attached monthly invoice as well as single trade confirmations and summary below\n" +  
-"Please kindly make the necessary payment and let us know expected pay date.\n\n" +
-"If you require any extra information, please don’t hesitate to contact us.\n\n" +
-"Thank you very much in advance.\n\n" +
-
-"Guillaume Cunnington\n" +
-"Head of Brokerage\nCelera Markets Limited\nOffice: +852 3746 3803 Mobile +852 9090 7796\n";
-
-			// Now set the actual message
-			messageBodyPart.setText(msg);
-
-			// Create a multipar message
-			Multipart multipart = new MimeMultipart();
-
-			// Set text message part
-			multipart.addBodyPart(messageBodyPart);
-
-			// Part two is attachment
-			messageBodyPart = new MimeBodyPart();
-			String path = inv.getFile().replaceAll(".docx", ".pdf");
-			int i = path.lastIndexOf('/');
-			String fileName = path.substring(i);
-//			String path = "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
-			DataSource source = new FileDataSource(path);
-			messageBodyPart.setDataHandler(new DataHandler(source));
-			messageBodyPart.setFileName(fileName);
-			multipart.addBodyPart(messageBodyPart);
-			
-			for (TradeDetail td : inv.getTradeDetail()) {
-				MimeBodyPart part = new MimeBodyPart();
-				path = td.getTradeConfoFile();
-				i = path.lastIndexOf('/');
-				fileName = path.substring(i);
-//				String path = "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
-				DataSource src = new FileDataSource(path);
-				part.setDataHandler(new DataHandler(src));
-				part.setFileName(fileName);
-				multipart.addBodyPart(part);
-			}
-
-			// Send the complete message parts
-			message.setContent(multipart);
-
-			// Send message
-			Transport.send(message);
-
-			logger.info("Sent email successfully");
-
-		} catch (MessagingException e)
-		{
-			logger.error("fail send email", e);
-			throw new RuntimeException(e);
-		}
-	}
+//	public static void sendEmail1(Invoice inv)
+////	public static void main(String[] args)
+//	{
+//		// Recipient's email ID needs to be mentioned.
+////		String to = "Amine.Larhrib@celera-markets.com";
+//		String to = "lloyd.chan@celera-markets.com";
+//
+//		// Sender's email ID needs to be mentioned
+//		String from = "lloyd.chan@celera-markets.com";
+//
+//		final String username = DEFAULT_EMAIL_SERVER_USER;// change accordingly
+//		final String password = DEFAULT_EMAIL_SERVER_PWD;// change accordingly
+//
+////		// Assuming you are sending email through relay.jangosmtp.net
+////		String host = "relay.jangosmtp.net";
+//
+//		Properties props = new Properties();
+//		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".auth", "true");
+//		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".starttls.enable", "true");
+//		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".host", DEFAULT_EMAIL_SERVER_IP);
+//		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".port", DEFAULT_EMAIL_SERVER_PORT);
+//
+//		// Get the Session object.
+//		Session session = Session.getInstance(props, new javax.mail.Authenticator()
+//		{
+//			protected PasswordAuthentication getPasswordAuthentication()
+//			{
+//				return new PasswordAuthentication(username, password);
+//			}
+//		});
+//
+//		try
+//		{
+//			// Create a default MimeMessage object.
+//			Message message = new MimeMessage(session);
+//
+//			// Set From: header field of the header.
+//			message.setFrom(new InternetAddress(from));
+//
+//			// Set To: header field of the header.
+//			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+//
+//			String company = inv.getCompany();
+//			
+//			// Set Subject: header field
+//			message.setSubject(company + " -Due Invoices- Celera Markets Limited");
+//
+//			// Create the message part
+//			BodyPart messageBodyPart = new MimeBodyPart();
+//
+//			String msg = "\n" +
+//"Dear Sir or Madam,\n\nI hope this email finds you well,\n\n" +  
+//"Find attached monthly invoice as well as single trade confirmations and summary below.\n" +  
+//"Please kindly make the necessary payment and let us know expected pay date.\n\n" +
+//"If you require any extra information, please don’t hesitate to contact us.\n\n" +
+//"Thank you very much in advance.\n\n" +
+//
+//"Guillaume Cunnington\n" +
+//"Head of Brokerage\nCelera Markets Limited\nOffice: +852 3746 3803 Mobile +852 9090 7796\n";
+//
+//			// Now set the actual message
+//			messageBodyPart.setText(msg);
+//
+//			// Create a multipar message
+//			Multipart multipart = new MimeMultipart();
+//
+//			// Set text message part
+//			multipart.addBodyPart(messageBodyPart);
+//
+//			// Part two is attachment
+//			messageBodyPart = new MimeBodyPart();
+//			String path = inv.getFile().replaceAll(".docx", ".pdf");
+//			int i = path.lastIndexOf('/');
+//			String fileName = path.substring(i);
+////			String path = "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
+//			DataSource source = new FileDataSource(path);
+//			messageBodyPart.setDataHandler(new DataHandler(source));
+//			messageBodyPart.setFileName(fileName);
+//			multipart.addBodyPart(messageBodyPart);
+//			
+//			for (TradeDetail td : inv.getTradeDetail()) {
+//				MimeBodyPart part = new MimeBodyPart();
+//				path = td.getTradeConfoFile();
+//				i = path.lastIndexOf('/');
+//				fileName = path.substring(i);
+////				String path = "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
+//				DataSource src = new FileDataSource(path);
+//				part.setDataHandler(new DataHandler(src));
+//				part.setFileName(fileName);
+//				multipart.addBodyPart(part);
+//			}
+//
+//			// Send the complete message parts
+//			message.setContent(multipart);
+//
+//			// Send message
+//			Transport.send(message);
+//
+//			logger.info("Sent email successfully");
+//
+//		} catch (MessagingException e)
+//		{
+//			logger.error("fail send email", e);
+//			throw new RuntimeException(e);
+//		}
+//	}
 }
