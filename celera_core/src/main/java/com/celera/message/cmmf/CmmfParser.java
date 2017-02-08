@@ -12,6 +12,8 @@ import com.celera.core.dm.EOrderStatus;
 import com.celera.core.dm.EStatus;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.Instrument;
+import com.celera.gateway.ESessionState;
+import com.celera.gateway.HkexOapiUtil;
 
 
 public class CmmfParser
@@ -129,10 +131,11 @@ public class CmmfParser
 //		buf.position(32);
 		String symbol = new String(bSymbol);
 		byte bSts = (byte)buf.get();
-		EStatus status = EStatus.get(bSts);
+		ESessionState ss = ESessionState.get(bSts);
+		EStatus status = HkexOapiUtil.toState(ss);
 //		String reason = new String(data, 12, 50);
-		logger.info("sender[{}], type[{}], cmd[{}] symbol[{}] status[{}]",
-				sender, msgType, cmd, symbol, status);
+		logger.info("sender[{}], type[{}], cmd[{}] symbol[{}] sessionstate[{}] status[{}]",
+				sender, msgType, cmd, symbol, ss, status);
 		
 		cb.onInstrumentUpdate(symbol, status);
 	}

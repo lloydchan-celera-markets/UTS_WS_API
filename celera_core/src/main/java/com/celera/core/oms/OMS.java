@@ -183,10 +183,12 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		if (gw == null) {
 			remark = "instrument[" + symbol + "] not tradable";
 			isSucc = false;
+			logger.error("Cannot find gateway to trade [{}]", symbol);
 		}
 		else if (!gw.isReady()) {
 			remark = "order gateway not ready";
 			isSucc = false;
+			logger.error("Order gateway not ready [{}]", gw.getClass().getName());
 		}
 		else {
 			gw.createTradeReport(order);
@@ -200,6 +202,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 			order.setRemark(remark);
 		}
 		
+		// TODO: test remove
 //		IMongoDocument doc = order.toEntityObject();
 //		ols.create(doc);
 		

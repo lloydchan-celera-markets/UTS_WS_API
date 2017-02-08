@@ -30,13 +30,14 @@ public class HKExCertTest
 	public static void main(String[] args)
 	{
 //		HkexOapiGateway gw = new HkexOapiGateway();
-//		OrderGatewayManager gwm = OrderGatewayManager.instance();
-//		gwm.init();
-//		gwm.start();
-		HkexOapiGateway gw = new HkexOapiGateway();
-		gw.init();
-		gw.start();
-//		IOrderGateway gw = gwm.getOrderGateway("HSI18600L7");
+		OrderGatewayManager gwm = OrderGatewayManager.instance();
+		gwm.init();
+		gwm.start();
+//		HkexOapiGateway gw = new HkexOapiGateway();
+//		gw.init();
+//		gw.start();
+		
+		IOrderGateway gw = gwm.getOrderGateway(HkexOapiGateway.class.getName());
 		
 		Map<Long, IOrder> map = new HashMap<Long, IOrder>();
 		Map<Long, ArrayList<IOrder>> blocks = new HashMap<Long, ArrayList<IOrder>>();
@@ -136,8 +137,9 @@ public class HKExCertTest
 							// EInstrumentType.EP, "European Put",
 							// null, null, null, strike, month, null, false,
 							// delta);
+							String giveup = "CTOM";
 							order = new Order(EOrderStatus.NEW, instr, EOrderType.LIMIT, orderId, null, "", price, qty,
-									ESide.get(side));
+									ESide.get(side), giveup);
 							gw.createOrder(order);
 							map.put(orderId, order);
 						} catch (Exception e)

@@ -25,7 +25,7 @@ public class TradeReport implements ITradeReport
 {
 	private static final Logger logger = LoggerFactory.getLogger(TradeReport.class);
 
-	private static final int CMMF_SIZE = 81;
+	private static final int CMMF_SIZE = 92;
 
 //	private String id = null;
 	
@@ -244,6 +244,12 @@ public class TradeReport implements ITradeReport
 		buf.put(HkexOapiUtil.rightPad(this.seller, HkexOapiUtil.SIZE_CUSTOMER_INFO).getBytes());
 		buf.put(HkexOapiUtil.rightPad(this.bGiveup, HkexOapiUtil.SIZE_GIVEUP_MEMBER).getBytes());
 		buf.put(HkexOapiUtil.rightPad(this.sGiveup, HkexOapiUtil.SIZE_GIVEUP_MEMBER).getBytes());
+		if (this.bGiveup == null && this.sGiveup == null) {
+			buf.put((byte)0x00);
+		}
+		else {
+			buf.put((byte)0x01);
+		}
 		buf.flip();
 		return buf.array();
 	}

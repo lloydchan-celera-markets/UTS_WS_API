@@ -51,8 +51,8 @@ public class SendAttachmentInEmail
 	public static String buildHtmlContent(List<Invoice> l)
 	{
 		String msg = "<div style='font-family: Calibri'>"  
-				+ "<p>Dear Sir or Madam,</p>"
-				+ "<p>I hope this email finds you well,</p>"
+				+ "<p>Dear Sir, Madam,</p>"
+				+ "<p>I hope this email finds you well.</p>"
 				+ "<p>Find attached monthly invoice as well as single trade confirmations and summary below.</p>"
 				+ "<p>Please kindly make necessary payments and let us know expected pay date.</p>"
 				+ "<table border=0 cellspacing=0 cellpadding=0 width=557 style='width:418.1pt;border-collapse:collapse'>";

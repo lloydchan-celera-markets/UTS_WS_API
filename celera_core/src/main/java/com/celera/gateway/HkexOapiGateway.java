@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ import com.celera.message.cmmf.ICmmfListener;
 import com.celera.message.cmmf.ICmmfProcessor;
 //import com.itextpdf.text.pdf.StringUtils;
 
-public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcessor, IOrderGateway
+public class HkexOapiGateway implements ICmmfListener, ICmmfProcessor, IOrderGateway
 {
 	Logger logger = LoggerFactory.getLogger(HkexOapiGateway.class);
 
@@ -67,7 +68,7 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcesso
 	
 	private IOrderGatewayListener m_oms = OMS.instance();
 	
-	private AtomicBoolean isReady = new AtomicBoolean(false);
+	private AtomicBoolean isReady = new AtomicBoolean(true);
 	
 	private Object sync = new Object();
 	
@@ -89,6 +90,7 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcesso
 	{
 		sink = new PipelineSinkCollector(SINK_URL.toString(), this);
 		server = new PipelineServer(PUSH_URL.toString(), this);
+		m_tradableInstr.add(HkexOapiGateway.class.getName());
 	}
 	
 	@Override
@@ -141,8 +143,8 @@ public class HkexOapiGateway implements ILifeCycle, ICmmfListener, ICmmfProcesso
 				break;
 			}
 			case UPDATE_INSTRUMENT: {
-test_Print_Bytes(data);			
-//				CmmfParser.parseCmmfInstrumentUpdateResponse(data, this);
+//test_Print_Bytes(data);			
+				CmmfParser.parseCmmfInstrumentUpdateResponse(data, this);
 				break;
 			}
 			default: {
@@ -206,8 +208,12 @@ test_Print_Bytes(data);
 	{
 		sink.start();
 		server.start();
-		
-		test();
+
+		sleep(3000);
+		// TODO: testing temp remove
+//		this.login("geniumtesting");
+		this.getAllInstrument();
+//		test();
 	}
 
 	
@@ -242,7 +248,7 @@ test_Print_Bytes(data);
 			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.TASK, ECommand.TRADE_REPORT, b);
 //			JsonObject json = o.json();
 //			byte b[] = json.toString().getBytes();
-test_Print_Bytes(msg);
+//test_Print_Bytes(msg);
 			server.send(msg);
 		} catch (Exception e)
 		{
@@ -267,7 +273,7 @@ test_Print_Bytes(msg);
 			int size = buf.limit();
 			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.TASK, ECommand.BLOCK_TRADE_REPORT, buf.array(), size);
 				
-test_Print_Bytes(msg);
+//test_Print_Bytes(msg);
 			server.send(msg);
 			
 		} catch (Exception e)
@@ -349,9 +355,11 @@ CmmfParser.print(msg);
 		
 //		EOrderStatus status, IInstrument instr, EOrderType type, Long id, String entity,
 //		Double price, Integer qty
-		IInstrument instr = new Derivative("HK", "HHI9800O7", EInstrumentType.EP, "European Put", null, null, null, 
+		String giveup = "";
+		IInstrument instr = new Derivative("HK", "HHI9800O7", EInstrumentType.EP, "European Put", null, null, null,
 				9800d, "O7", null, false, 0.5);
-		IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT, null, 1l, "", 439d, 100, ESide.BUY);
+		IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT, null, 1l, "", 439d, 100, ESide.BUY,
+				giveup);
 		
 		while(true)
 		{
@@ -600,7 +608,7 @@ CmmfParser.print(msg);
 	public void onInstrumentUpdate(String _symbol, EStatus status)
 	{
 		String symbol = _symbol.trim();
-		logger.info("symbol[{}] status[{}]", symbol, status.name());
+//		logger.info("symbol[{}] status[{}]", symbol, status.name());
 
 //if (!ResourceManager.IS_TESTING) {
 		addTradableInstrument(symbol);

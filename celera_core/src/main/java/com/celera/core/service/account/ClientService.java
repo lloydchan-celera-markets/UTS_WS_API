@@ -1,6 +1,6 @@
-package com.celera.core.service.account;
-
-public class ClientService
-{
-	
-}
+//package com.celera.core.service.account;
+//
+//public class ClientService
+//{
+//	
+//}

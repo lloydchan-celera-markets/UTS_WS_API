@@ -5,8 +5,9 @@ import com.celera.core.dm.IBlockTradeReport;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.IQuote;
+import com.celera.ipc.ILifeCycle;
 
-public interface IOrderGateway
+public interface IOrderGateway extends ILifeCycle
 {
 	void createOrder(IOrder o);
 	void modifyOrder(IOrder o);

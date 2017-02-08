@@ -14,13 +14,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.gateway.HkexOapiUtil;
 import com.celera.mongo.entity.TradeDetail;
 
 public class Order implements IOrder
 {
 	Logger logger = LoggerFactory.getLogger(Order.class);
 
-	private static final int CMMF_SIZE = 55;
+	private static final int CMMF_SIZE = 61;
 	
 	private EOrderStatus status = null;
 	private IInstrument instr = null;
@@ -32,6 +33,7 @@ public class Order implements IOrder
 	private Long lastUpdateTime = null;
 	private Integer qty = null;
 	private ESide side = null;
+	private String giveup = null;
 
 	public Order()
 	{
@@ -39,7 +41,7 @@ public class Order implements IOrder
 	}
 
 	public Order(EOrderStatus status, IInstrument instr, EOrderType type, Long id, Long refId, String entity,
-			Double price, Integer qty, ESide side)
+			Double price, Integer qty, ESide side, String giveup)
 	{
 		super();
 		this.status = status;
@@ -51,6 +53,7 @@ public class Order implements IOrder
 		this.price = price;
 		this.qty = qty;
 		this.side = side;
+		this.giveup = giveup;
 		
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
@@ -167,8 +170,8 @@ public class Order implements IOrder
 	public String toString()
 	{
 		return "Order [status=" + status + ", instr=" + instr + ", orderType=" + orderType + ", id=" + id + ", refId="
-				+ refId + ", entity=" + entity + ", price=" + price + ", lastTime=" + lastUpdateTime + ", qty=" + qty
-				+ ", side=" + side + "]";
+				+ refId + ", entity=" + entity + ", price=" + price + ", lastUpdateTime=" + lastUpdateTime + ", qty="
+				+ qty + ", side=" + side + ", giveup=" + giveup + "]";
 	}
 
 //	public byte[] toBytes()
@@ -213,6 +216,13 @@ public class Order implements IOrder
 //			buf.putLong(0);
 //		}
 		buf.put((byte)side.getAsInt());
+		buf.put(HkexOapiUtil.rightPad(this.giveup, HkexOapiUtil.SIZE_GIVEUP_MEMBER).getBytes());
+		if (this.giveup == null) {
+			buf.put((byte)0x00);
+		}
+		else {
+			buf.put((byte)0x01);
+		}
 		
 		buf.flip();
 		return buf.array();
