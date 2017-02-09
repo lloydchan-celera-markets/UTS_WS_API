@@ -95,9 +95,9 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 			try
 			{
 				List<Invoice> list = new ArrayList<Invoice>();
+				logger.debug("email invoice {}", param);
 				for (String id : params) {
 					Invoice inv = (Invoice) DatabaseAdapter.get(id);
-					logger.debug("email invoice {}", id);
 					list.add(inv);
 					inv.setHasSent(true);
 					DatabaseAdapter.update(inv);

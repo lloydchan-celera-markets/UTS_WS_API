@@ -1,5 +1,6 @@
 package com.celera.backoffice;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,11 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.mail.BodyPart;
+import javax.mail.internet.MimeBodyPart;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -23,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.celera.backoffice.service.SendAttachmentInEmail;
 import com.celera.core.configure.IOverrideConfig;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
@@ -41,6 +48,7 @@ import com.celera.mongo.entity.Invoice;
 import com.celera.mongo.entity.InvoiceRegister;
 import com.celera.mongo.entity.Log;
 import com.celera.mongo.entity.TradeConfo;
+import com.celera.mongo.entity.TradeDetail;
 import com.celera.mongo.repo.InvoiceRegisterRepo;
 import com.celera.mongo.repo.InvoiceRepo;
 import com.celera.mongo.repo.LogRepo;
@@ -797,7 +805,62 @@ System.out.println(all.size());
 		return o;
 	}
 	
+	@Override
+	public void onSink(byte[] data)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void calInvoiceFileSize() {
+		List<Invoice> list = getAllInvoice();
+		for (Invoice inv : list) {
+			String path = inv.getFile().replaceAll(".docx", ".pdf");
+			int i = path.lastIndexOf('/');
+			String fileName = path.substring(i);
+			// String path =
+			// "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
+			Long totalSize = 0l;
+			File f = new File(path);
+			if (f.length() == 0) {
+				System.out.println("exit " + inv.getInvoice_number() + "," + path);
+//				System.exit(-1);
+			}
+			totalSize += f.length();
+			
+			for (TradeDetail td : inv.getTradeDetail())
+			{
+				path = td.getTradeConfoFile();
+				i = path.lastIndexOf('/');
+				fileName = path.substring(i);
+				
+				f = new File(path);
+				totalSize += f.length();
+				if (f.length() == 0) {
+					System.out.println("exit " + inv.getInvoice_number() + "," + path);
+//					System.exit(-1);
+				}
+			}
+			logger.debug("invoice {} : size[{}]", inv.getInvoice_number(), totalSize);
+			
+			inv.setFileSizeInBytes(totalSize.toString());
+			DatabaseAdapter.update(inv);
+		}
+//		logger.debug("done");
+	}
+	
 	public static void main(String[] arg)
+	{
+//		byte[] b = {87, 68, 84, 85, 123, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
+		String s = "WDQGHKD1216Vivienne Court Trading Pty Ltd";
+		byte[] b = s.getBytes();
+		DatabaseAdapter dba = new DatabaseAdapter();
+		dba.start();
+		dba.loadAll();
+		dba.calInvoiceFileSize();
+	}
+	
+	public static void main3(String[] arg)
 	{
 //		byte[] b = {87, 68, 84, 85, 123, 34, 105, 100, 34, 58, 34, 53, 56, 50, 51, 101, 53, 100, 56, 51, 50, 55, 99, 54, 102, 56, 50, 51, 50, 51, 54, 102, 99, 49, 99, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 110, 117, 109, 98, 101, 114, 34, 58, 34, 67, 69, 76, 45, 116, 101, 115, 116, 34, 44, 34, 105, 110, 118, 111, 105, 99, 101, 95, 100, 97, 116, 101, 34, 58, 34, 48, 57, 32, 74, 117, 108, 121, 44, 32, 50, 48, 49, 54, 34, 44, 34, 97, 109, 111, 117, 110, 116, 34, 58, 34, 85, 83, 36, 49, 44, 57, 48, 57, 34, 44, 34, 115, 105, 122, 101, 34, 58, 34, 49, 44, 52, 48, 48, 34, 44, 34, 104, 101, 100, 103, 101, 34, 58, 34, 49, 54, 53, 34, 44, 34, 105, 115, 80, 97, 105, 100, 34, 58, 34, 102, 97, 108, 115, 101, 34, 44, 34, 104, 97, 115, 83, 101, 110, 116, 34, 58, 34, 102, 97, 108, 115, 101, 34, 125};
 		String s = "WDQGHKD1216Vivienne Court Trading Pty Ltd";
@@ -853,12 +916,5 @@ System.out.println(all.size());
 		}
 
 		// dba.stop();
-	}
-
-	@Override
-	public void onSink(byte[] data)
-	{
-		// TODO Auto-generated method stub
-		
 	}
 }
