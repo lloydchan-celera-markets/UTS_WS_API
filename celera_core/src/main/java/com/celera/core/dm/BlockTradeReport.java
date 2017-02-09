@@ -53,6 +53,7 @@ public class BlockTradeReport implements IBlockTradeReport
 	private String buyer = null;
 	private String seller = null;
 	private String remark = null;
+	private Integer giveupNum = null;
 	
 	private Long inputTime = null;
 	private Long lastModified = null;
@@ -849,5 +850,10 @@ public class BlockTradeReport implements IBlockTradeReport
 	public Long getLastUpdateTime()
 	{
 		return this.lastModified;
+	}
+	
+	@Override
+	public void setGiveupNumber(Integer giveupNum){
+		this.giveupNum = giveupNum;
 	}
 }

@@ -622,7 +622,7 @@ CmmfParser.print(msg);
 	}
 
 	@Override
-	public void onTradeReport(Long id, EOrderStatus status, String reason)
+	public void onTradeReport(Long id, EOrderStatus status, String reason, Integer giveupNum)
 	{
 //		ITradeReport tr = m_tradeReportMap.get(id);
 //		if (tr != null) {
@@ -633,7 +633,7 @@ CmmfParser.print(msg);
 //		else {
 //			logger.error("trade report id[{}] not found", id);
 //		}
-		m_oms.onTradeReport(id, status, reason);
+		m_oms.onTradeReport(id, status, reason, giveupNum);
 	}
 
 	@Override

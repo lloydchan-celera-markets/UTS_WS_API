@@ -271,7 +271,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 
 	@Override
 //	public void onTradeReport(ITradeReport t)
-	public void onTradeReport(Long _id, EOrderStatus status, String remark)
+	public void onTradeReport(Long _id, EOrderStatus status, String remark, Integer giveupNum)
 	{
 		ITradeReport tr = m_tradeReports.get(_id);
 		if (tr == null) {
@@ -309,6 +309,8 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 					}
 					block.setRemark(remark);
 				}
+				block.setGiveupNumber(giveupNum);
+				
 				for (IOMSListener l : listeners) {
 					l.onTradeReport(block);
 				}
@@ -583,7 +585,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		OMS oms = new OMS();
 		oms.sendBlockTradeReport(block, split);
 		
-		oms.onTradeReport(ordId, EOrderStatus.FILLED, "");
+		oms.onTradeReport(ordId, EOrderStatus.FILLED, "", 0);
 	}
 
 }

@@ -42,6 +42,7 @@ public class TradeReport implements ITradeReport
 	private String seller = null;
 	private String bGiveup = null;
 	private String sGiveup = null;
+	private Integer giveupNum = null;
 	
 	private String remark = null;
 	
@@ -344,6 +345,8 @@ public class TradeReport implements ITradeReport
 		this.side = side;
 	}
 
+	
+	
 	@Override
 	public com.celera.mongo.entity.TradeReport toEntityObject()
 	{
@@ -359,5 +362,11 @@ public class TradeReport implements ITradeReport
 				tradeReportType, side, qty, price, ordId.toString(), refId.toString(), groupId.toString(), buyer, seller,
 				remark, dInputTime, dLastModified, null);
 		return tr;
+	}
+
+	@Override
+	public void setGiveupNumber(Integer giveupNum)
+	{
+		this.giveupNum = giveupNum;
 	}
 }

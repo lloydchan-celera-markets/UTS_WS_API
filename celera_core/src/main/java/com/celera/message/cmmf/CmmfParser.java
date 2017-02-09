@@ -91,10 +91,11 @@ public class CmmfParser
 		Long id = buf.getLong();
 		Long tradeId = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
-		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] trade_id[{}] status[{}]",
-				sender, type, cmd, id, tradeId, status);
+		Integer giveupNum = buf.getInt();
+		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] trade_id[{}] status[{}] giveupNum[{}]",
+				sender, type, cmd, id, tradeId, status, giveupNum);
 		
-		cb.onTradeReport(id, status, "");
+		cb.onTradeReport(id, status, "", giveupNum);
 	}
 	
 	public static void parseCmmfTradeReportResponse(byte[] data, ICmmfProcessor cb)
@@ -110,10 +111,11 @@ public class CmmfParser
 //		Long refId = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
 		String reason = new String(data, 12, 50);
-		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] status[{}] reason[{}]",
-				sender, type, cmd, id, status, reason);
+		Integer giveupNum = buf.getInt();
+		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] status[{}] reason[{}] giveupNum[{}]",
+				sender, type, cmd, id, status, reason, giveupNum);
 		
-		cb.onTradeReport(id, status, reason);
+		cb.onTradeReport(id, status, reason, giveupNum);
 	}
 	
 	public static void parseCmmfInstrumentUpdateResponse(byte[] data, ICmmfProcessor cb)

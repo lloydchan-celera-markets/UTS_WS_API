@@ -27,6 +27,8 @@ public enum EOrderStatus
 	NEW("NEW", 17),
 	PARTIAL_SENT("PARTIAL_SENT", 18),
 	PARTIAL_REJECT("PARTIAL_REJECT", 19),
+	GIVE_UP("GIVE_UP", 20),
+	TAKE_UP("TAKE_UP", 21),
 	;
 	
 	private static final Map<Integer, EOrderStatus> map = new LinkedHashMap<Integer, EOrderStatus>();

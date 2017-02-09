@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.celera.backoffice.service.SendAttachmentInEmail;
+import com.celera.backoffice.service.SendByGmail;
 import com.celera.core.configure.IResourceProperties;
 import com.celera.core.configure.ResourceManager;
 import com.celera.ipc.ILifeCycle;
@@ -96,18 +97,14 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 				List<Invoice> list = new ArrayList<Invoice>();
 				for (String id : params) {
 					Invoice inv = (Invoice) DatabaseAdapter.get(id);
-//					if (!inv.getHasSent()) {
-						logger.debug("email invoice {}", id);
-						list.add(inv);
-						inv.setHasSent(true);
-						DatabaseAdapter.update(inv);
-//					}
-//					else {
-//						logger.debug("email has been sent before. Please manual send the invoice {}", inv);
-//					}
+					logger.debug("email invoice {}", id);
+					list.add(inv);
+					inv.setHasSent(true);
+//DatabaseAdapter.update(inv);
 				}
 				
 				SendAttachmentInEmail.sendEmail(list);
+//				SendByGmail.sendEmail(list);
 			} catch (Exception e)
 			{
 				logger.error("", e);

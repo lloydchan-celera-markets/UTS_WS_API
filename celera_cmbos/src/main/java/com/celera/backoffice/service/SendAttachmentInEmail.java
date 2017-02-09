@@ -3,6 +3,7 @@ package com.celera.backoffice.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,6 @@ import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -21,7 +21,6 @@ import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -148,19 +147,9 @@ public class SendAttachmentInEmail
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
-		String to_2 = "invoices@celera-markets.com";
+//		String to_2 = "invoices@celera-markets.com";
 //		String to_2 = "lloyd.chan@celera-markets.com,Guillaume.Cunnington@celera-markets.com";
-//		String to_2 = "lloyd.chan@celera-markets.com";
-
-		// Address[] to = null;
-		// try
-		// {
-		// to = new Address[]{new InternetAddress(to_1), new
-		// InternetAddress(to_2)};
-		// } catch (AddressException e)
-		// {
-		// e.printStackTrace();
-		// }
+		String to_2 = "lloyd.chan@celera-markets.com";
 
 		// Sender's email ID needs to be mentioned
 		String from = "lloyd.chan@celera-markets.com";
@@ -186,6 +175,124 @@ public class SendAttachmentInEmail
 			}
 		});
 
+//		Collections.sort(invList, new Comparator<Invoice>() {
+//		    @Override
+//		    public int compare(Invoice o1, Invoice o2) {
+//		        return o1.getInvoice_number().compareTo(o2.getInvoice_number());
+//		    }
+//		});
+		Collections.sort(invList, 
+                (o1, o2) -> o1.getInvoice_number().compareTo(o2.getInvoice_number()));
+		
+		String company = invList.get(0).getCompany();
+		String sTradeMonth = invList.get(0).getTradeDetail().get(0).getDate();
+		Date dTradeMonth = sdf_ddMMMyyyy.parse(sTradeMonth);
+		String invMonth = sdf_MMMMyyyy.format(dTradeMonth);
+		String text = buildHtmlContent(invList);
+		String invNum_List = "";
+
+		try
+		{
+			// Create a default MimeMessage object.
+			Message message = new MimeMessage(session);
+
+			// Set From: header field of the header.
+			message.setFrom(new InternetAddress(from));
+
+			// Set To: header field of the header.
+			message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to_2));
+
+			// Set Subject: header field
+			message.setSubject(company + " -" + invMonth + " Invoices- Celera Markets Limited");
+
+			// Create a multipar message
+			Multipart multipart = new MimeMultipart();
+			// Create the message part
+			BodyPart messageBody = new MimeBodyPart();
+
+			// Now set the actual message
+//				messageBodyPart.setText(text, "utf-8", "html");
+			messageBody.setContent(text, "text/html; charset=utf-8");
+			// Set text message part
+			multipart.addBodyPart(messageBody);
+			
+			for (Invoice inv : invList)
+			{
+				invNum_List += inv.getInvoice_number() + ", ";
+
+				// Part two is attachment
+				BodyPart messageBodyPart = new MimeBodyPart();
+				String path = inv.getFile().replaceAll(".docx", ".pdf");
+				int i = path.lastIndexOf('/');
+				String fileName = path.substring(i);
+				// String path =
+				// "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
+				DataSource source = new FileDataSource(path);
+				messageBodyPart.setDataHandler(new DataHandler(source));
+				messageBodyPart.setFileName(fileName);
+				multipart.addBodyPart(messageBodyPart);
+
+				for (TradeDetail td : inv.getTradeDetail())
+				{
+					MimeBodyPart part = new MimeBodyPart();
+					path = td.getTradeConfoFile();
+					i = path.lastIndexOf('/');
+					fileName = path.substring(i);
+					// String path =
+					// "/home/idbs/workspace/uts/build/UTS_WS_API/celera_cmbos/temp/invoice_template_new.pdf";
+					DataSource src = new FileDataSource(path);
+					part.setDataHandler(new DataHandler(src));
+					part.setFileName(fileName);
+					multipart.addBodyPart(part);
+				}
+			}
+			// Send the complete message parts
+			message.setContent(multipart);
+			
+			// Send message
+			Transport.send(message);
+
+			logger.info("Sent email successfully {}", invNum_List);
+
+		} catch (MessagingException ex)
+		{
+			logger.error("fail send email {}", invNum_List, ex);
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	public static void sendEmail2(List<Invoice> invList) throws ParseException
+	// public static void main(String[] args)
+	{
+		// Recipient's email ID needs to be mentioned.
+//		String to_2 = "invoices@celera-markets.com";
+//		String to_2 = "lloyd.chan@celera-markets.com,Guillaume.Cunnington@celera-markets.com";
+		String to_2 = "lloyd.chan@celera-markets.com";
+		
+		// Sender's email ID needs to be mentioned
+		String from = "lloyd.chan@celera-markets.com";
+		
+		final String username = DEFAULT_EMAIL_SERVER_USER;// change accordingly
+		final String password = DEFAULT_EMAIL_SERVER_PWD;// change accordingly
+		
+		// // Assuming you are sending email through relay.jangosmtp.net
+		// String host = "relay.jangosmtp.net";
+		
+		Properties props = new Properties();
+		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".auth", "true");
+		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".starttls.enable", "true");
+		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".host", DEFAULT_EMAIL_SERVER_IP);
+		props.put("mail." + DEFAULT_EMAIL_SERVER_PROTO + ".port", DEFAULT_EMAIL_SERVER_PORT);
+		
+		// Get the Session object.
+		Session session = Session.getInstance(props, new javax.mail.Authenticator()
+		{
+			protected PasswordAuthentication getPasswordAuthentication()
+			{
+				return new PasswordAuthentication(username, password);
+			}
+		});
+		
 		Map<String, List<Invoice>> _map = new HashMap<String, List<Invoice>>();
 		for (Invoice inv : invList)
 		{
@@ -202,7 +309,7 @@ public class SendAttachmentInEmail
 				_map.put(key, l);
 			}
 		}
-
+		
 		for (Entry<String, List<Invoice>> e : _map.entrySet())
 		{
 			List<Invoice> l = e.getValue();
@@ -212,26 +319,26 @@ public class SendAttachmentInEmail
 			String invMonth = sdf_MMMMyyyy.format(dTradeMonth);
 			String text = buildHtmlContent(l);
 			String invNum_List = "";
-
+			
 			try
 			{
 				// Create a default MimeMessage object.
 				Message message = new MimeMessage(session);
-
+				
 				// Set From: header field of the header.
 				message.setFrom(new InternetAddress(from));
-
+				
 				// Set To: header field of the header.
 				message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to_2));
-
+				
 				// Set Subject: header field
 				message.setSubject(company + " -" + invMonth + " Invoices- Celera Markets Limited");
-
+				
 				// Create a multipar message
 				Multipart multipart = new MimeMultipart();
 				// Create the message part
 				BodyPart messageBody = new MimeBodyPart();
-
+				
 				// String msg = "\n" + "I hope this email finds you well,\n\n"
 				// + "Please Find attached the monthly invoice, as well as
 				// single trade confirmations.\n"
@@ -242,7 +349,7 @@ public class SendAttachmentInEmail
 				// + "Best regards,\n" + "Amine Larhrib\n" + "Celera Markets
 				// Limited\n"
 				// + "Office: (852) 3746-3800\n" + "Cell : ( 852) 6603 4121";
-
+				
 				// Now set the actual message
 //				messageBodyPart.setText(text, "utf-8", "html");
 				messageBody.setContent(text, "text/html; charset=utf-8");
@@ -252,7 +359,7 @@ public class SendAttachmentInEmail
 				for (Invoice inv : l)
 				{
 					invNum_List += inv.getInvoice_number() + ", ";
-
+					
 					// Part two is attachment
 					BodyPart messageBodyPart = new MimeBodyPart();
 					String path = inv.getFile().replaceAll(".docx", ".pdf");
@@ -264,7 +371,7 @@ public class SendAttachmentInEmail
 					messageBodyPart.setDataHandler(new DataHandler(source));
 					messageBodyPart.setFileName(fileName);
 					multipart.addBodyPart(messageBodyPart);
-
+					
 					for (TradeDetail td : inv.getTradeDetail())
 					{
 						MimeBodyPart part = new MimeBodyPart();
@@ -284,9 +391,9 @@ public class SendAttachmentInEmail
 				
 				// Send message
 				Transport.send(message);
-
+				
 				logger.info("Sent email successfully {}", invNum_List);
-
+				
 			} catch (MessagingException ex)
 			{
 				logger.error("fail send email {}", invNum_List, ex);

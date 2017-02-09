@@ -11,6 +11,6 @@ public interface IOrderGatewayListener
 	public void onOrder(IOrder o); 
 	public void onQuote(IOrder q); 
 	public void onTrade(ITrade t); 
-	public void onTradeReport(Long id, EOrderStatus status, String reason);
+	public void onTradeReport(Long id, EOrderStatus status, String reason, Integer giveupNum);
 	public void onInstrumentUpdate(IInstrument i);
 }

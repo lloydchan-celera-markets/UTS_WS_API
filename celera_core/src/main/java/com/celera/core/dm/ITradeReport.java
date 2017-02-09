@@ -18,5 +18,7 @@ public interface ITradeReport extends IOrder
 	public Long getGroupId();
 	public void setGroupId(Long groupId);
 	
+	public void setGiveupNumber(Integer giveupNum);
+	
 	public com.celera.mongo.entity.TradeReport toEntityObject();
 }
