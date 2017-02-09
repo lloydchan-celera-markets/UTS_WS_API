@@ -100,7 +100,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 					logger.debug("email invoice {}", id);
 					list.add(inv);
 					inv.setHasSent(true);
-//DatabaseAdapter.update(inv);
+					DatabaseAdapter.update(inv);
 				}
 				
 				SendAttachmentInEmail.sendEmail(list);
