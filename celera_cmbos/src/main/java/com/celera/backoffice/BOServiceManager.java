@@ -103,7 +103,34 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 					DatabaseAdapter.update(inv);
 				}
 				
-				SendAttachmentInEmail.sendEmail(list);
+				SendAttachmentInEmail.sendEmail(list, 0, 0);
+//				SendByGmail.sendEmail(list);
+			} catch (Exception e)
+			{
+				logger.error("", e);
+			}
+			break;
+		}
+		case EMAIL_BATCH_INVOICE:
+		{
+			String param = msg.substring(ICmmfConst.HEADER_SIZE);
+			String[] params = param.split(",");
+			
+			try
+			{
+				Integer batch = Integer.valueOf(params[0]);
+				Integer total = Integer.valueOf(params[1]);
+				List<Invoice> list = new ArrayList<Invoice>();
+				logger.debug("email invoice {}", param);
+				for (int i = 2; i<params.length; i++){ 
+					String id = params[i];
+					Invoice inv = (Invoice) DatabaseAdapter.get(id);
+					list.add(inv);
+					inv.setHasSent(true);
+					DatabaseAdapter.update(inv);
+				}
+				
+				SendAttachmentInEmail.sendEmail(list, batch, total);
 //				SendByGmail.sendEmail(list);
 			} catch (Exception e)
 			{

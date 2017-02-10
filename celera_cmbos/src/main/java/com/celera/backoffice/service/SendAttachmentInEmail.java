@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.celera.mongo.entity.Invoice;
 import com.celera.mongo.entity.TradeDetail;
+import com.celera.tools.CustomStringUtil;
 
 public class SendAttachmentInEmail
 {
@@ -143,7 +144,7 @@ public class SendAttachmentInEmail
 //		return msg;
 //	}
 	
-	public static void sendEmail(List<Invoice> invList) throws ParseException
+	public static void sendEmail(List<Invoice> invList, int batch, int total) throws ParseException
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
@@ -185,12 +186,16 @@ public class SendAttachmentInEmail
                 (o1, o2) -> o1.getInvoice_number().compareTo(o2.getInvoice_number()));
 		
 		String company = invList.get(0).getCompany();
-		String sTradeMonth = invList.get(0).getTradeDetail().get(0).getDate();
-		Date dTradeMonth = sdf_ddMMMyyyy.parse(sTradeMonth);
-		String invMonth = sdf_MMMMyyyy.format(dTradeMonth);
+//		String sTradeMonth = invList.get(0).getTradeDetail().get(0).getDate();
+//		Date dTradeMonth = sdf_ddMMMyyyy.parse(sTradeMonth);
+//		String invMonth = sdf_MMMMyyyy.format(dTradeMonth);
+		String invMonth = "";
 		String text = buildHtmlContent(invList);
 		String invNum_List = "";
-
+		String sBatch = batch + "/" + total;
+		if (total == 0)
+			sBatch = "";
+			
 		try
 		{
 			// Create a default MimeMessage object.
@@ -201,9 +206,6 @@ public class SendAttachmentInEmail
 
 			// Set To: header field of the header.
 			message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to_2));
-
-			// Set Subject: header field
-			message.setSubject(company + " -" + invMonth + " Invoices- Celera Markets Limited");
 
 			// Create a multipar message
 			Multipart multipart = new MimeMultipart();
@@ -219,7 +221,10 @@ public class SendAttachmentInEmail
 			for (Invoice inv : invList)
 			{
 				invNum_List += inv.getInvoice_number() + ", ";
-
+				String sTradeMonth = inv.getTradeDetail().get(0).getDate();
+				Date dTradeMonth = sdf_ddMMMyyyy.parse(sTradeMonth);
+				invMonth += sdf_MMMMyyyy.format(dTradeMonth) + ", ";
+				
 				// Part two is attachment
 				BodyPart messageBodyPart = new MimeBodyPart();
 				String path = inv.getFile().replaceAll(".docx", ".pdf");
@@ -246,6 +251,9 @@ public class SendAttachmentInEmail
 					multipart.addBodyPart(part);
 				}
 			}
+			String sInvMonth = CustomStringUtil.replaceLastBy(invMonth.substring(0, invMonth.length() - 2), ", ", " and ");
+			// Set Subject: header field
+			message.setSubject(company + " -" + sInvMonth + " invoices- Celera Markets Limited " + sBatch);
 			// Send the complete message parts
 			message.setContent(multipart);
 			
