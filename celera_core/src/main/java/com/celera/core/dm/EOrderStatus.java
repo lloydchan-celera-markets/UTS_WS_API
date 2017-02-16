@@ -3,8 +3,6 @@ package com.celera.core.dm;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.celera.message.cmmf.ECommand;
-
 public enum EOrderStatus
 {
 	UNSENT("UNSENT", 0),

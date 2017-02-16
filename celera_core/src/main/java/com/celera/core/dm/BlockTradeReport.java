@@ -27,7 +27,7 @@ import com.celera.core.oms.OMS;
 import com.celera.message.cmmf.CmmfBuilder;
 import com.celera.message.cmmf.CmmfJson;
 import com.celera.message.cmmf.EApp;
-import com.celera.message.cmmf.ECommand;
+import com.celera.message.cmmf.EFoCommand;
 import com.celera.message.cmmf.EMessageType;
 import com.celera.mongo.entity.ICustomizeMongoDocument;
 import com.celera.mongo.repo.InvoiceRepo;

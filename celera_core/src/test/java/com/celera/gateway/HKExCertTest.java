@@ -22,7 +22,6 @@ import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.Order;
 import com.celera.core.dm.TradeReport;
 import com.celera.core.oms.OMS;
-import com.celera.message.cmmf.ECommand;
 import com.itextpdf.text.List;
 
 public class HKExCertTest

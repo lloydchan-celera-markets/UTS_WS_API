@@ -53,7 +53,7 @@ public class CmmfParser
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
-		ECommand cmd = ECommand.get((char)buf.get());
+		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
 		String reason = new String(data, 12, 50);
@@ -69,7 +69,7 @@ public class CmmfParser
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
-		ECommand cmd = ECommand.get((char)buf.get());
+		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
 		String reason = new String(data, 12, 50);
@@ -87,7 +87,7 @@ public class CmmfParser
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
-		ECommand cmd = ECommand.get((char)buf.get());
+		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
 		Long tradeId = buf.getLong();
 		Long lPrice = buf.getLong();
@@ -111,7 +111,7 @@ public class CmmfParser
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
-		ECommand cmd = ECommand.get((char)buf.get());
+		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
 //		Long refId = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
@@ -131,7 +131,7 @@ public class CmmfParser
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
 		EMessageType msgType = EMessageType.get((char)buf.get());
-		ECommand cmd = ECommand.get((char)buf.get());
+		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		
 		byte[] bSymbol = new byte[32];
 		buf.get(bSymbol, 0, 32);
@@ -155,7 +155,7 @@ public class CmmfParser
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
 		EMessageType msgType = EMessageType.get((char)buf.get());
-		ECommand cmd = ECommand.get((char)buf.get());
+		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		
 		byte[] bSymbol = new byte[32];
 		buf.get(bSymbol, 0, 32);
@@ -188,7 +188,7 @@ public class CmmfParser
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
-		ECommand cmd = ECommand.get((char)buf.get());
+		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		EOGAdmin action = EOGAdmin.get((char)buf.get());
 		byte result = buf.get();
 //		String reason = new String(data, 12, 50);

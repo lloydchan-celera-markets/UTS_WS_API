@@ -17,7 +17,7 @@ import com.celera.ipc.PipelineClient;
 import com.celera.ipc.URL;
 import com.celera.message.cmmf.CmmfApp;
 import com.celera.message.cmmf.EApp;
-import com.celera.message.cmmf.ECommand;
+import com.celera.message.cmmf.EBoCommand;
 import com.celera.message.cmmf.ICmmfConst;
 import com.celera.mongo.entity.IMongoDocument;
 import com.celera.mongo.entity.Invoice;
@@ -84,7 +84,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 		String msg = new String(data);
 		logger.debug("{}", msg);
 		
-		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
+		EBoCommand cmd = EBoCommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
 		switch (cmd)
 		{
 		case EMAIL_INVOICE:

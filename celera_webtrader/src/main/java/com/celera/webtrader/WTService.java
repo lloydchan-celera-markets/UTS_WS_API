@@ -52,7 +52,7 @@ import com.celera.message.cmmf.CmmfApp;
 import com.celera.message.cmmf.CmmfJson;
 import com.celera.message.cmmf.EAdminCommand;
 import com.celera.message.cmmf.EApp;
-import com.celera.message.cmmf.ECommand;
+import com.celera.message.cmmf.EFoCommand;
 import com.celera.message.cmmf.EMessageType;
 import com.celera.message.cmmf.ICmmfConst;
 import com.celera.message.cmmf.ICmmfProcessor;
@@ -116,7 +116,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 		String msg = new String(data);
 		logger.debug("onQuery {}", msg);
 		
-		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
+		EFoCommand cmd = EFoCommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
 		switch (cmd)
 		{
 		case UPDATE_INSTRUMENT: {
@@ -190,7 +190,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 		String msg = new String(data);
 		logger.debug("onTask {}", msg);
 		
-		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
+		EFoCommand cmd = EFoCommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
 		switch (cmd)
 		{
 		case TRADE_REPORT:
@@ -387,7 +387,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 		ansBuilder.add("sender", EApp.OMS.toString());
 		ansBuilder.add("receiver", EApp.WEB_TRADER.toString());
 		ansBuilder.add("message_type", type.toString());
-		ansBuilder.add("command", ECommand.TRADE_REPORT.toString());
+		ansBuilder.add("command", EFoCommand.TRADE_REPORT.toString());
 		ansBuilder.add("tradeReport", o.json());
 		return ansBuilder.build().toString();
 	}
@@ -398,7 +398,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 		ansBuilder.add(CmmfJson.SENDER, EApp.OMS.toString());
 		ansBuilder.add(CmmfJson.RECEIVER, EApp.WEB_TRADER.toString());
 		ansBuilder.add(CmmfJson.MESSAGE_TYPE, type.toString());
-		ansBuilder.add(CmmfJson.COMMAND, ECommand.UPDATE_INSTRUMENT.toString());
+		ansBuilder.add(CmmfJson.COMMAND, EFoCommand.UPDATE_INSTRUMENT.toString());
 		
 		int count = 0;
 		JsonArrayBuilder instruments = Json.createArrayBuilder();
@@ -419,7 +419,7 @@ public class WTService extends CmmfApp implements ILifeCycle, IOMSListener, ISta
 //		ansBuilder.add(CmmfJson.SENDER, EApp.OMS.toString());
 //		ansBuilder.add(CmmfJson.RECEIVER, EApp.WEB_TRADER.toString());
 //		ansBuilder.add(CmmfJson.MESSAGE_TYPE, type.toString());
-//		ansBuilder.add(CmmfJson.COMMAND, ECommand.UPDATE_INSTRUMENT.toString());
+//		ansBuilder.add(CmmfJson.COMMAND, EFoCommand.UPDATE_INSTRUMENT.toString());
 //		
 //		ansBuilder.add(CmmfJson.INSTRUMENT, i.json());
 //		return ansBuilder.build().toString();

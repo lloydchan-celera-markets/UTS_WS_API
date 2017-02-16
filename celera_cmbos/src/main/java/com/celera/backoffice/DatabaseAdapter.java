@@ -38,7 +38,7 @@ import com.celera.ipc.ILifeCycle;
 import com.celera.ipc.RrServer;
 import com.celera.message.cmmf.CmmfApp;
 import com.celera.message.cmmf.EApp;
-import com.celera.message.cmmf.ECommand;
+import com.celera.message.cmmf.EBoCommand;
 import com.celera.message.cmmf.ICmmfConst;
 import com.celera.mongo.MongoDbAdapter;
 import com.celera.mongo.entity.BOData;
@@ -413,7 +413,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 		logger.debug("{}", new String(data));
 		
 		// ECommand sender = ECommand.get((char)data[1]);
-		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
+		EBoCommand cmd = EBoCommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
 		String msg = null;
 		switch (cmd)
 		{
@@ -524,7 +524,7 @@ public class DatabaseAdapter extends CmmfApp implements IOverrideConfig
 	@Override
 	public void onTask(byte[] data)
 	{
-		ECommand cmd = ECommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
+		EBoCommand cmd = EBoCommand.get((char) data[ICmmfConst.HEADER_COMMAND_POS]);
 		String msg = null;
 		String start = null;
 		String end = null;

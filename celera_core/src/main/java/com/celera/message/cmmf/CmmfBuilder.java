@@ -3,7 +3,7 @@ package com.celera.message.cmmf;
 public class CmmfBuilder
 {
 
-	public static byte[] buildMessage(EApp sender, EMessageType type, ECommand cmd, byte[] body)
+	public static byte[] buildMessage(EApp sender, EMessageType type, EFoCommand cmd, byte[] body)
 	{
 		if (body == null) {
 			byte[] combine = null;
@@ -25,7 +25,7 @@ public class CmmfBuilder
 		}
 	}
 
-	public static byte[] buildMessage(EApp sender, EMessageType type, ECommand cmd, byte[] body, int size)
+	public static byte[] buildMessage(EApp sender, EMessageType type, EFoCommand cmd, byte[] body, int size)
 	{
 		int cap = size + 3;
 		byte[] combine = new byte[cap];
@@ -36,7 +36,7 @@ public class CmmfBuilder
 		return combine;
 	}
 	
-	public static byte[] buildJson(EApp sender, EMessageType type, ECommand cmd, byte[] body, int size) {
+	public static byte[] buildJson(EApp sender, EMessageType type, EFoCommand cmd, byte[] body, int size) {
 		return null;
 	}
 }
