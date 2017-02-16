@@ -149,18 +149,26 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		logger.info("onQuote: " + o.toString());
 	}
 
-	public void onTrade(ITrade o)
+	public void onTrade(ITrade t)
 	{
-		Long id = o.getId();
-		ITrade t = trades.put(id, o);
-		if (t != null)
+		Long id = t.getTradeId();
+		ITrade old = trades.put(id, t);
+		if (old != null)
 		{
-			logger.info("onTrade update: " + o.toString());
+			logger.info("onTrade update: " + t.toString());
 		}
 		else
 		{
-			logger.info("onTrade new: " + o.toString());
+			logger.info("onTrade new: " + t.toString());
 		}
+
+		// check if trade report
+		ITradeReport tr = m_tradeReports.get(id);
+		if (tr == null) {
+			return;
+		}
+		
+		onTradeReport(id, t.getStatus(), "", t.getGiveupId());
 	}
 	
 	public void sendOrder(IOrder order){}

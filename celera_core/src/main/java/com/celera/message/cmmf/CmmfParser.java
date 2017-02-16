@@ -74,9 +74,9 @@ public class CmmfParser
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
 		String reason = new String(data, 12, 50);
 		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
-				sender, type, cmd, id, status, reason);
+				sender, type, cmd, id, status, reason.trim());
 		
-//		cb.onTradeReport(id, status, reason);
+//		cb.onOrder(id, status, reason);
 	}
 	
 	public static void parseCmmfTradeResponse(byte[] data, ICmmfProcessor cb)
@@ -90,12 +90,17 @@ public class CmmfParser
 		ECommand cmd = ECommand.get((char)buf.get());
 		Long id = buf.getLong();
 		Long tradeId = buf.getLong();
+		Long lPrice = buf.getLong();
+		Long qty = buf.getLong();
+		double price = (double) lPrice / (double) IInstrument.CMMF_PRICE_FACTOR;
+		
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
 		Integer giveupNum = buf.getInt();
 		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] trade_id[{}] status[{}] giveupNum[{}]",
 				sender, type, cmd, id, tradeId, status, giveupNum);
 		
-		cb.onTradeReport(id, status, "", giveupNum);
+		cb.onTrade(id, tradeId, price, (int) (long) qty, status, giveupNum);
+//		cb.onTrade(id, status, "", giveupNum);
 	}
 	
 	public static void parseCmmfTradeReportResponse(byte[] data, ICmmfProcessor cb)
@@ -140,6 +145,29 @@ public class CmmfParser
 				sender, msgType, cmd, symbol, ss, status);
 		
 		cb.onInstrumentUpdate(symbol, status);
+	}
+
+	public static void parseCmmfLastPriceResponse(byte[] data, ICmmfProcessor cb)
+	{
+		ByteBuffer buf = ByteBuffer.allocate(data.length);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		buf.put(data);
+		buf.flip();
+		EApp sender = EApp.get((char)buf.get());
+		EMessageType msgType = EMessageType.get((char)buf.get());
+		ECommand cmd = ECommand.get((char)buf.get());
+		
+		byte[] bSymbol = new byte[32];
+		buf.get(bSymbol, 0, 32);
+//		buf.position(32);
+		String symbol = new String(bSymbol);
+		symbol = symbol.trim();
+		Long lPrice = buf.getLong();
+		double price = (double) lPrice / (double) IInstrument.CMMF_PRICE_FACTOR;
+		logger.info("sender[{}], type[{}], cmd[{}] symbol[{}] price[{}]",
+				sender, msgType, cmd, symbol, lPrice);
+		
+		cb.onLastPrice(symbol, price);
 	}
 	
 	public static void print(byte[] data) 

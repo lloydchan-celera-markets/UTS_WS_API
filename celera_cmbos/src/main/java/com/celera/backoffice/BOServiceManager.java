@@ -215,7 +215,7 @@ public class BOServiceManager extends CmmfApp implements ILifeCycle
 
 				logger.info("update invoice - {}", inv);
 				
-				DatabaseAdapter.update(inv);
+//				DatabaseAdapter.update(inv);
 			} catch (ClassCastException e)
 			{
 				logger.error("Not invoice object - {}", o, e);

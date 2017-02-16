@@ -1,12 +1,14 @@
 package com.celera.gateway;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,9 +29,13 @@ import com.celera.core.dm.IBlockTradeReport;
 import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.IQuote;
+import com.celera.core.dm.ITrade;
 import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.Instrument;
 import com.celera.core.dm.Order;
+import com.celera.core.dm.Trade;
+import com.celera.core.mds.IMarketDataService;
+import com.celera.core.mds.MarketDataService;
 import com.celera.core.oms.OMS;
 import com.celera.core.service.staticdata.IStaticDataService;
 import com.celera.core.service.staticdata.StaticDataService;
@@ -64,13 +70,15 @@ public class HkexOapiGateway implements ICmmfListener, ICmmfProcessor, IOrderGat
 	private AtomicBoolean isWaitAdminResp = new AtomicBoolean(false);
 
 	private Set<String> m_tradableInstr = new HashSet<String>();
-	private Map<Long, ITradeReport> m_tradeReportMap = new HashMap<Long, ITradeReport>();
+	private Map<Long, ITradeReport> m_tradeReportMap = new ConcurrentHashMap<Long, ITradeReport>();
+	private Map<Long, ITrade> m_tradeMap = new ConcurrentHashMap<Long, ITrade>();
 	
 	private IOrderGatewayListener m_oms = OMS.instance();
 	
 	private AtomicBoolean isReady = new AtomicBoolean(true);
 	
 	private Object sync = new Object();
+	private final IMarketDataService m_mds = new MarketDataService();
 	
 	static
 	{
@@ -145,6 +153,11 @@ public class HkexOapiGateway implements ICmmfListener, ICmmfProcessor, IOrderGat
 			case UPDATE_INSTRUMENT: {
 //test_Print_Bytes(data);			
 				CmmfParser.parseCmmfInstrumentUpdateResponse(data, this);
+				break;
+			}
+			case LAST_PRICE: {
+//test_Print_Bytes(data);			
+				CmmfParser.parseCmmfLastPriceResponse(data, this);
 				break;
 			}
 			default: {
@@ -565,10 +578,10 @@ CmmfParser.print(msg);
 			buf.put(padCmd.getBytes());
 			buf.flip();
 			byte b[] = buf.array();
-			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.ADMIN, ECommand.ORDER_REQUEST, b);
-			for (int i=0; i<msg.length; i++) {
-				System.out.print((int)msg[i] + ",");
-			}
+			byte[] msg = CmmfBuilder.buildMessage(EApp.OMS, EMessageType.QUERY, ECommand.OG_QUERY, b);
+//			for (int i=0; i<msg.length; i++) {
+//				System.out.print((int)msg[i] + ",");
+//			}
 			server.send(msg);
 		} catch (Exception e)
 		{
@@ -636,6 +649,13 @@ CmmfParser.print(msg);
 		m_oms.onTradeReport(id, status, reason, giveupNum);
 	}
 
+	@Override
+	public void onTrade(Long ordId, Long tradeId, double price, int qty, EOrderStatus status, Integer giveupNum)
+	{
+		ITrade t = new Trade(tradeId, ordId, price,  qty, status, "", giveupNum);
+		m_oms.onTrade(t);
+	}
+	
 	@Override
 	public void startTestSOD(String password)
 	{
@@ -737,5 +757,11 @@ CmmfParser.print(msg);
 			+ "HSI17200C7,HSI18400U7,HHI8400C7,HSI19000U7,HSI21000F9,HHI7600U7,HSI21600R7,HHI7500A7,HSI18600N7,HSI16000X7,HHI7800N7,HHI10600L7,HSI16600C7";
 for (String s : testSymbol.split(","))
 	this.addTradableInstrument(s);
+	}
+
+	@Override
+	public void onLastPrice(String symbol, double price)
+	{
+		m_mds.onLastPrice(symbol,  price);
 	}
 }

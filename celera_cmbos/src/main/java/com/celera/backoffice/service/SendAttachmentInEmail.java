@@ -148,9 +148,9 @@ public class SendAttachmentInEmail
 	// public static void main(String[] args)
 	{
 		// Recipient's email ID needs to be mentioned.
-//		String to_2 = "invoices@celera-markets.com";
+		String to_2 = "invoices@celera-markets.com";
 //		String to_2 = "lloyd.chan@celera-markets.com,Guillaume.Cunnington@celera-markets.com";
-		String to_2 = "lloyd.chan@celera-markets.com";
+//		String to_2 = "lloyd.chan@celera-markets.com";
 
 		// Sender's email ID needs to be mentioned
 		String from = "lloyd.chan@celera-markets.com";
@@ -193,7 +193,7 @@ public class SendAttachmentInEmail
 		String text = buildHtmlContent(invList);
 		String invNum_List = "";
 		String sBatch = batch + "/" + total;
-		if (total == 0)
+		if (total < 2)
 			sBatch = "";
 			
 		try
@@ -223,7 +223,9 @@ public class SendAttachmentInEmail
 				invNum_List += inv.getInvoice_number() + ", ";
 				String sTradeMonth = inv.getTradeDetail().get(0).getDate();
 				Date dTradeMonth = sdf_ddMMMyyyy.parse(sTradeMonth);
-				invMonth += sdf_MMMMyyyy.format(dTradeMonth) + ", ";
+				String sInvMonth = sdf_MMMMyyyy.format(dTradeMonth);
+				if (invMonth.indexOf(sInvMonth) < 0)
+					invMonth += sdf_MMMMyyyy.format(dTradeMonth) + ", ";
 				
 				// Part two is attachment
 				BodyPart messageBodyPart = new MimeBodyPart();

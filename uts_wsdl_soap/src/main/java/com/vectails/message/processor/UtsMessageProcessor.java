@@ -355,7 +355,6 @@ public class UtsMessageProcessor
 		trade.setOrderId(Uts2Dm.toLong(id));
 		trade.setPrice(Uts2Dm.toDouble(price));
 		trade.setQty(Uts2Dm.toInt(size));
-		trade.setTime(Uts2Dm.toLocalDate(time));
 		trade.setComment(comment);
 
 		OMS.instance().onTrade(trade);

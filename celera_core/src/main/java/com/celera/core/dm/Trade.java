@@ -10,20 +10,33 @@ public class Trade implements ITrade
 	private Long orderId = null;
 	private Double price = null;
 	private Integer qty = null;
-	private LocalDate time = null;
 	private String comment = null;
+	private EOrderStatus status = null;
+	private Integer giveupId = null;
 	private Long lastUpdateTime = null;
 
 	public Trade() {
 		lastUpdateTime = System.currentTimeMillis(); 
 	}
 	
-	public Long getId()
+	public Trade(Long id, Long orderId, Double price, Integer qty, EOrderStatus status, String comment, Integer giveupId)
+	{
+		super();
+		this.id = id;
+		this.orderId = orderId;
+		this.price = price;
+		this.qty = qty;
+		this.comment = comment;
+		this.giveupId = giveupId;
+		lastUpdateTime = System.currentTimeMillis(); 
+	}
+
+	public Long getTradeId()
 	{
 		return id;
 	}
 
-	public void setId(Long id)
+	public void setTradeId(Long id)
 	{
 		this.id = id;
 	}
@@ -58,16 +71,6 @@ public class Trade implements ITrade
 		this.qty = qty;
 	}
 
-	public LocalDate getTime()
-	{
-		return time;
-	}
-
-	public void setTime(LocalDate time)
-	{
-		this.time = time;
-	}
-
 	public String getComment()
 	{
 		return comment;
@@ -81,8 +84,9 @@ public class Trade implements ITrade
 	@Override
 	public String toString()
 	{
-		return "Trade [id=" + id + ", orderId=" + orderId + ", price=" + price + ", qty=" + qty + ", time=" + time
-				+ ", comment=" + comment + "]";
+		return "Trade [id=" + id + ", orderId=" + orderId + ", price=" + price + ", qty=" + qty + ", comment=" + comment
+				+ ", giveupId=" + giveupId
+				+ ", lastUpdateTime=" + lastUpdateTime + "]";
 	}
 
 	@Override
@@ -103,4 +107,26 @@ public class Trade implements ITrade
 	{
 		lastUpdateTime = time;		
 	}
+
+	public Integer getGiveupId()
+	{
+		return giveupId;
+	}
+
+	public void setGiveupId(Integer giveupId)
+	{
+		this.giveupId = giveupId;
+	}
+
+	public EOrderStatus getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(EOrderStatus status)
+	{
+		this.status = status;
+	}
+	
+	
 }

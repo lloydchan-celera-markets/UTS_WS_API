@@ -83,4 +83,10 @@ public class OrderLoggerServer extends AbstractDatabaseAdapter implements IOrder
 		}
 		return l;
 	}
+	
+	@Override
+	@SuppressWarnings("unused")
+	public void create(IMongoDocument doc){
+		
+	}
 }

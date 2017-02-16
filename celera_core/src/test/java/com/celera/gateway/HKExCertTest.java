@@ -128,6 +128,12 @@ public class HKExCertTest
 							Integer qty = Integer.parseInt(tokens[4]);
 							String side = tokens[5].toUpperCase();
 							Double strike = Double.parseDouble(tokens[6]);
+							String giveup = null;
+							try {
+								giveup = tokens[7].toUpperCase();
+							}
+							catch (Exception e) {
+							}
 							// String month = tokens[7].toUpperCase();
 							// Double delta = Double.parseDouble(tokens[8]);
 
@@ -137,8 +143,8 @@ public class HKExCertTest
 							// EInstrumentType.EP, "European Put",
 							// null, null, null, strike, month, null, false,
 							// delta);
-							String giveup = "CTOM";
-							order = new Order(EOrderStatus.NEW, instr, EOrderType.LIMIT, orderId, null, "", price, qty,
+//							String giveup = "CTOM";
+							order = new Order(EOrderStatus.NEW, instr, EOrderType.LIMIT, orderId, new Date().getTime(), "", price, qty,
 									ESide.get(side), giveup);
 							gw.createOrder(order);
 							map.put(orderId, order);
