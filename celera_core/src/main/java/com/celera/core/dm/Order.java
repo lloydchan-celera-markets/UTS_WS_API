@@ -21,7 +21,7 @@ public class Order implements IOrder
 {
 	Logger logger = LoggerFactory.getLogger(Order.class);
 
-	private static final int CMMF_SIZE = 65;
+	private static final int CMMF_SIZE = 66;
 	
 	private EOrderStatus status = null;
 	private IInstrument instr = null;
@@ -34,14 +34,15 @@ public class Order implements IOrder
 	private Integer qty = null;
 	private ESide side = null;
 	private String giveup = null;
-
+	private ESessionState state = null;
+	
 	public Order()
 	{
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	public Order(EOrderStatus status, IInstrument instr, EOrderType type, Long id, Long refId, String entity,
-			Double price, Integer qty, ESide side, String giveup)
+			Double price, Integer qty, ESide side, String giveup, ESessionState state)
 	{
 		super();
 		this.status = status;
@@ -54,6 +55,7 @@ public class Order implements IOrder
 		this.qty = qty;
 		this.side = side;
 		this.giveup = giveup;
+		this.state = state;
 		
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
@@ -223,7 +225,7 @@ public class Order implements IOrder
 		else {
 			buf.put((byte)0x01);
 		}
-		
+		buf.put(state.value());
 		buf.flip();
 		return buf.array();
 	}

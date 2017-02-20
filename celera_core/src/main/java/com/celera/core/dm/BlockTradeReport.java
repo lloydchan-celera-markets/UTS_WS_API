@@ -539,9 +539,17 @@ public class BlockTradeReport implements IBlockTradeReport
 			{
 				List<ITradeReport> l = e.getValue();
 				if (l.size() > 1) {
-					logger.error("incorrect block trade split {}", this);
+					BlockTradeReport block = new BlockTradeReport(this);
+					block.setGroupId(l.get(0).getGroupId());
+					for (ITradeReport tr : l) {
+						block.add(tr);
+					}
+					logger.debug("create split block trade {}", block);
 				}
-				splits.add(l.get(0));
+				else {
+					splits.add(l.get(0));
+					logger.debug("split trade report into single leg {}", l.get(0));
+				}
 			}
 		}
 		else {

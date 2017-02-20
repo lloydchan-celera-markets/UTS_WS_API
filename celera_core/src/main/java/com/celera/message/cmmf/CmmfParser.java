@@ -20,6 +20,8 @@ public class CmmfParser
 {
 	static final Logger logger = LoggerFactory.getLogger(CmmfParser.class);
 	
+	static final int SIZEOF_REASON = 150;
+	
 //	private static Map dba = new HashMap<String, ICmmfListener>();
 	
 	
@@ -56,7 +58,8 @@ public class CmmfParser
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
-		String reason = new String(data, 12, 50);
+		String reason = new String(data, 12, SIZEOF_REASON);
+		reason = reason.trim();
 		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
 				sender, type, cmd, id, status, reason);
 	}
@@ -72,9 +75,10 @@ public class CmmfParser
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
-		String reason = new String(data, 12, 50);
+		String reason = new String(data, 12, SIZEOF_REASON);
+		reason = reason.trim();
 		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
-				sender, type, cmd, id, status, reason.trim());
+				sender, type, cmd, id, status, reason);
 		
 //		cb.onOrder(id, status, reason);
 	}
@@ -91,8 +95,8 @@ public class CmmfParser
 		Long id = buf.getLong();
 		Long tradeId = buf.getLong();
 		Long lPrice = buf.getLong();
-		Long qty = buf.getLong();
 		double price = (double) lPrice / (double) IInstrument.CMMF_PRICE_FACTOR;
+		Long qty = buf.getLong();
 		
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
 		Integer giveupNum = buf.getInt();
@@ -115,12 +119,16 @@ public class CmmfParser
 		Long id = buf.getLong();
 //		Long refId = buf.getLong();
 		EOrderStatus status = EOrderStatus.get((int)buf.get());
-		String reason = new String(data, 12, 50);
-		Integer giveupNum = buf.getInt();
-		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] status[{}] reason[{}] giveupNum[{}]",
-				sender, type, cmd, id, status, reason, giveupNum);
-		
-		cb.onTradeReport(id, status, reason, giveupNum);
+		int pos = buf.position();
+		String reason = new String(data, 12, SIZEOF_REASON);
+		buf.position(pos + SIZEOF_REASON);
+		reason = reason.trim();
+//		Integer giveupNum = buf.getInt();
+//		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] status[{}] giveupNum[{}] reason[{}]",
+//				sender, type, cmd, id, status, giveupNum, reason);
+		logger.info("sender[{}], type[{}], cmd[{}] order_id[{}] status[{}] reason[{}]",
+				sender, type, cmd, id, status, reason);
+		cb.onTradeReport(id, status, reason/*, giveupNum*/);
 	}
 	
 	public static void parseCmmfInstrumentUpdateResponse(byte[] data, ICmmfProcessor cb)
@@ -140,7 +148,7 @@ public class CmmfParser
 		byte bSts = (byte)buf.get();
 		ESessionState ss = ESessionState.get(bSts);
 		EStatus status = HkexOapiUtil.toState(ss);
-//		String reason = new String(data, 12, 50);
+//		String reason = new String(data, 12, SIZEOF_REASON);
 		logger.info("sender[{}], type[{}], cmd[{}] symbol[{}] sessionstate[{}] status[{}]",
 				sender, msgType, cmd, symbol, ss, status);
 		
@@ -191,7 +199,7 @@ public class CmmfParser
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		EOGAdmin action = EOGAdmin.get((char)buf.get());
 		byte result = buf.get();
-//		String reason = new String(data, 12, 50);
+//		String reason = new String(data, 12, SIZEOF_REASON);
 //		logger.info("sender[{}], type[{}], cmd[{}] action[{}] result[{}] reason[{}]",
 //				sender, type, cmd, action, result, reason);
 		logger.info("sender[{}], type[{}], cmd[{}] action[{}] result[{}]",

@@ -133,6 +133,8 @@ public class HKExCertTest
 							}
 							catch (Exception e) {
 							}
+							Byte bState = Byte.parseByte(tokens[8]);
+							com.celera.core.dm.ESessionState state = com.celera.core.dm.ESessionState.get(bState);
 							// String month = tokens[7].toUpperCase();
 							// Double delta = Double.parseDouble(tokens[8]);
 
@@ -144,7 +146,7 @@ public class HKExCertTest
 							// delta);
 //							String giveup = "CTOM";
 							order = new Order(EOrderStatus.NEW, instr, EOrderType.LIMIT, orderId, new Date().getTime(), "", price, qty,
-									ESide.get(side), giveup);
+									ESide.get(side), giveup, state);
 							gw.createOrder(order);
 							map.put(orderId, order);
 						} catch (Exception e)
@@ -239,10 +241,10 @@ public class HKExCertTest
 							
 							String legSymbol = null;
 							Map<Long, java.util.List<ITradeReport>> split = new HashMap<Long, java.util.List<ITradeReport>>();
-							ArrayList<ITradeReport> l = new ArrayList<ITradeReport>();
 							
  							for (int i=0; i<numLegs; i++) {
  								legSymbol = tokens[pos++];
+ 								groupId = Long.parseLong(tokens[pos++]);
  								legPrice = Double.parseDouble(tokens[pos++]);
  								legQty = Integer.parseInt(tokens[pos++]);
 								EInstrumentType legTrType = EInstrumentType.bySymbol(legSymbol);
@@ -252,9 +254,14 @@ public class HKExCertTest
 										ETradeReportType.T2_COMBO_CROSS, ESide.CROSS, legQty, legPrice, null, refId,
 										"HKCEL", "HKCEL");
 								tr.setGroupId(groupId);
+								
+								ArrayList<ITradeReport> l = (ArrayList<ITradeReport>) split.get(groupId);
+								if (l == null) {
+									l = new ArrayList<ITradeReport>();
+									split.put(groupId, l);
+								}
 								l.add(tr);
 							}
- 							split.put(groupId, l);
  							
 // 							IOrderGateway gw1 = og.getOrderGateway(legSymbol);
 //							gw.createBlockTradeReport(block);

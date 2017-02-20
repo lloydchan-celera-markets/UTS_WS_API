@@ -23,6 +23,7 @@ import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.EOGAdmin;
 import com.celera.core.dm.EOrderStatus;
 import com.celera.core.dm.EOrderType;
+import com.celera.core.dm.ESessionState;
 import com.celera.core.dm.ESide;
 import com.celera.core.dm.EStatus;
 import com.celera.core.dm.IBlockTradeReport;
@@ -122,47 +123,51 @@ public class HkexOapiGateway implements ICmmfListener, ICmmfProcessor, IOrderGat
 	public void onResponse(byte[] data)
 	{
 		synchronized (sync) {
-			EFoCommand cmd = EFoCommand.get((char)data[2]);
-			switch (cmd) {
-			case ORDER_REQUEST: 
-			{
-				CmmfParser.parseCmmfOrderResponse(data, this);
-				break;
-			}
-			case TRADE_REPORT: 
-			case BLOCK_TRADE_REPORT: 
-			{
-				CmmfParser.parseCmmfTradeReportResponse(data, this);
-				break;
-			}
-			case TRADE: 
-			{
-				CmmfParser.parseCmmfTradeResponse(data, this);
-				break;
-			}
-			case SOD: {
-				logger.info("SOD");
-				isReady.set(true);
-				break;
-			}
-			case ADMIN_REQUEST: {
-				boolean result = CmmfParser.parseCmmfOgAdminResponse(data);
-				isWaitAdminResp.set(false);
-				break;
-			}
-			case UPDATE_INSTRUMENT: {
-//test_Print_Bytes(data);			
-				CmmfParser.parseCmmfInstrumentUpdateResponse(data, this);
-				break;
-			}
-			case LAST_PRICE: {
-//test_Print_Bytes(data);			
-				CmmfParser.parseCmmfLastPriceResponse(data, this);
-				break;
-			}
-			default: {
-				break;
-			}
+			try {
+				EFoCommand cmd = EFoCommand.get((char)data[2]);
+				switch (cmd) {
+				case ORDER_REQUEST: 
+				{
+					CmmfParser.parseCmmfOrderResponse(data, this);
+					break;
+				}
+				case TRADE_REPORT: 
+				case BLOCK_TRADE_REPORT: 
+				{
+					CmmfParser.parseCmmfTradeReportResponse(data, this);
+					break;
+				}
+				case TRADE: 
+				{
+					CmmfParser.parseCmmfTradeResponse(data, this);
+					break;
+				}
+				case SOD: {
+					logger.info("SOD");
+					isReady.set(true);
+					break;
+				}
+				case ADMIN_REQUEST: {
+					boolean result = CmmfParser.parseCmmfOgAdminResponse(data);
+					isWaitAdminResp.set(false);
+					break;
+				}
+				case UPDATE_INSTRUMENT: {
+	//test_Print_Bytes(data);			
+					CmmfParser.parseCmmfInstrumentUpdateResponse(data, this);
+					break;
+				}
+				case LAST_PRICE: {
+	//test_Print_Bytes(data);			
+					CmmfParser.parseCmmfLastPriceResponse(data, this);
+					break;
+				}
+				default: {
+					break;
+				}
+				}
+			} catch (Exception e) {
+				logger.error("{}", e);
 			}
 		}
 	}
@@ -372,7 +377,7 @@ CmmfParser.print(msg);
 		IInstrument instr = new Derivative("HK", "HHI9800O7", EInstrumentType.EP, "European Put", null, null, null,
 				9800d, "O7", null, false, 0.5);
 		IOrder order = new Order(EOrderStatus.SENT, instr, EOrderType.LIMIT, null, 1l, "", 439d, 100, ESide.BUY,
-				giveup);
+				giveup, ESessionState.T);
 		
 		while(true)
 		{
@@ -635,7 +640,7 @@ CmmfParser.print(msg);
 	}
 
 	@Override
-	public void onTradeReport(Long id, EOrderStatus status, String reason, Integer giveupNum)
+	public void onTradeReport(Long id, EOrderStatus status, String reason/*, Integer giveupNum*/)
 	{
 //		ITradeReport tr = m_tradeReportMap.get(id);
 //		if (tr != null) {
@@ -646,7 +651,7 @@ CmmfParser.print(msg);
 //		else {
 //			logger.error("trade report id[{}] not found", id);
 //		}
-		m_oms.onTradeReport(id, status, reason, giveupNum);
+		m_oms.onTradeReport(id, status, reason, -1);
 	}
 
 	@Override

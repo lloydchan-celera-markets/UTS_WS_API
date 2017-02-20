@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.cxf.samples</groupId>
+	<artifactId>celera_trader</artifactId>
+	<version>3.1.7</version>
+	<packaging>jar</packaging>
+	<name>celera_trader</name>
+	<description>cert test
+use JFace , SWT
+substitute WT Angular js module</description>
+
+	<parent>
+		<groupId>org.apache.cxf.samples</groupId>
+		<artifactId>cxf-samples</artifactId>
+		<version>3.1.7</version>
+	</parent>
+
+	<!-- https://mvnrepository.com/artifact/org.eclipse/jface -->
+	<dependencies>
+<!-- 		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jface</artifactId>
+			<version>3.3.0-I20070606-0010</version>
+		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.eclipse.jface/org.eclipse.jface.databinding -->
+<!-- 
+<dependency>
+    <groupId>swt</groupId>
+    <artifactId>runtime</artifactId>
+    <version>3.0.1</version>
+</dependency>
+<dependency>
+    <groupId>swt</groupId>
+    <artifactId>osgi</artifactId>
+    <version>3.0.1</version>
+</dependency>
+ -->
+
+		<dependency>
+			<groupId>org.apache.cxf.samples</groupId>
+			<artifactId>celera_core</artifactId>
+			<version>3.1.7</version>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
+
+
+</project>

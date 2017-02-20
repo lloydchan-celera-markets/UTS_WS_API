@@ -171,7 +171,39 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		onTradeReport(id, t.getStatus(), "", t.getGiveupId());
 	}
 	
-	public void sendOrder(IOrder order){}
+	public void sendOrder(IOrder order){
+		boolean isSucc = true;
+//		String remark = "";
+		
+		long id = this.id.getAndIncrement();
+		order.setOrderId(id);
+		order.setStatus(EOrderStatus.SENT);
+
+		String symbol = order.getInstr().getSymbol();
+		IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
+
+		if (gw == null) {
+//			remark = "instrument[" + symbol + "] not tradable";
+//			isSucc = false;
+			logger.error("Cannot find gateway to trade [{}]", symbol);
+		}
+		else if (!gw.isReady()) {
+//			remark = "order gateway not ready";
+//			isSucc = false;
+			logger.error("Order gateway not ready [{}]", gw.getClass().getName());
+		}
+		else {
+			gw.createOrder(order);
+		}
+		
+		orders.put(id, order);
+		
+		if (!isSucc)
+		{
+			order.setStatus(EOrderStatus.REJECTED);
+		}
+	}
+	
 	public void updateOrder(IOrder order){}
 
 	public boolean sendTradeReport(ITradeReport order)
@@ -317,7 +349,8 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 					}
 					block.setRemark(remark);
 				}
-				block.setGiveupNumber(giveupNum);
+				if (giveupNum > 0)
+					block.setGiveupNumber(giveupNum);
 				
 				for (IOMSListener l : listeners) {
 					l.onTradeReport(block);
