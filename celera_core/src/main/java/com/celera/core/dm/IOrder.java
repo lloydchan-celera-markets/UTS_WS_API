@@ -23,8 +23,18 @@ public interface IOrder
 	public void setPrice(Double p);
 	public Double getPrice();
 	
+	public String getRemark();
+	public void setRemark(String remark);
+	
 	public Long getLastUpdateTime();
 	
 	public byte[] toCmmf() throws IOException;
+	
+	public void update(Double price, Integer qty, String giveup, ESessionState state);
+	
+	public IOrder clone();
+	
+	public void addTrade(ITrade trade);
+	
 	public JsonObject json();
 }

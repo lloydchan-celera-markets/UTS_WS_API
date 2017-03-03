@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import com.celera.core.dm.BlockTradeReport;
 import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
-import com.celera.core.dm.EOGAdmin;
+import com.celera.core.dm.EAdminAction;
 import com.celera.core.dm.EOrderStatus;
 import com.celera.core.dm.EOrderType;
 import com.celera.core.dm.ESide;
@@ -23,6 +23,8 @@ import com.celera.core.dm.Order;
 import com.celera.core.dm.TradeReport;
 import com.celera.core.oms.OMS;
 import com.itextpdf.text.List;
+
+import com.celera.message.cmmf.ICmmfAdminService;
 
 public class HKExCertTest
 {
@@ -76,22 +78,22 @@ public class HKExCertTest
 					}
 					case "LOGIN": // 1) HI,geniumtesting
 					{
-						gw.login(tokens[1]);
+						((ICmmfAdminService)gw).login(tokens[1]);
 						break;
 					}
 					case "SOD":
 					{ // 2) HS
-						gw.SOD();
+						((ICmmfAdminService)gw).SOD();
 						break;
 					}
 					case "SUBSCRIBE":
 					{ // 3) HM
-						gw.subscribeMarketData();
+						((ICmmfAdminService)gw).subscribeMarketData();
 						break;
 					}
 					case "LOGOUT": // 4) HO
 					{ // optional) Logout
-						gw.logout();
+						((ICmmfAdminService)gw).logout();
 						break;
 					}
 					case "CLOSE": // 4) HO
@@ -103,18 +105,18 @@ public class HKExCertTest
 					{ // optional) Logout
 						String password = tokens[1];
 						String newPassword = tokens[2];
-						gw.changePassword(password, newPassword);
+						((ICmmfAdminService)gw).changePassword(password, newPassword);
 						break;
 					}
 					case "GET_INSTRUMENT": // get all instrument from hkex oapi
 					{
-						gw.getAllInstrument();
+						((ICmmfAdminService)gw).getAllInstrument();
 						break;
 					}
 					case "QUERY": // 5) HC,password,newPassword
 					{ // optional) Logout
 						String command = tokens[1];
-						gw.query(command);
+						((ICmmfAdminService)gw).query(command, "");
 						break;
 					}
 					case "ON":

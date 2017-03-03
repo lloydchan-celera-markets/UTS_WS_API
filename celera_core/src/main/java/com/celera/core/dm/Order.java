@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -35,6 +37,9 @@ public class Order implements IOrder
 	private ESide side = null;
 	private String giveup = null;
 	private ESessionState state = null;
+	private String remark = null;
+	
+	private List<ITrade> trades = new ArrayList<ITrade>();
 	
 	public Order()
 	{
@@ -58,6 +63,28 @@ public class Order implements IOrder
 		this.state = state;
 		
 		this.lastUpdateTime = System.currentTimeMillis();
+	}
+
+	@Override
+	public Order clone() {
+		Order clone = new Order(this.status, this.instr, this.orderType, this.id, this.refId, this.entity, this.price,
+				this.qty, this.side, this.giveup, this.state);
+		return clone;
+	}
+	
+	@Override
+	public void addTrade(ITrade trade) {
+		this.trades.add(trade);
+	}
+	
+	public String getRemark()
+	{
+		return remark;
+	}
+
+	public void setRemark(String remark)
+	{
+		this.remark = remark;
 	}
 
 	public EOrderStatus getStatus()
@@ -173,7 +200,7 @@ public class Order implements IOrder
 	{
 		return "Order [status=" + status + ", instr=" + instr + ", orderType=" + orderType + ", id=" + id + ", refId="
 				+ refId + ", entity=" + entity + ", price=" + price + ", lastUpdateTime=" + lastUpdateTime + ", qty="
-				+ qty + ", side=" + side + ", giveup=" + giveup + "]";
+				+ qty + ", side=" + side + ", giveup=" + giveup + ", remark=" + remark +  "]";
 	}
 
 //	public byte[] toBytes()
@@ -266,6 +293,19 @@ public class Order implements IOrder
 		logger.debug("Order JSON {}", empJsonObject);
 
 		return empJsonObject;
+	}
+
+	@Override
+	public void update(Double price, Integer qty, String giveup, ESessionState state)
+	{
+		if (price != null)
+			this.price = price;
+		if (qty != null)
+			this.qty = qty;
+		if (giveup != null)
+			this.giveup = giveup;
+		if (state != null)
+			this.state = state;		
 	}
 	
 //	public void readObject(ObjectInputStream iss) throws IOException

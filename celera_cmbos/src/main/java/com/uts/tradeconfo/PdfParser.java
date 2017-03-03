@@ -75,29 +75,54 @@ public class PdfParser {
 		InputStream is = new FileInputStream(file);
 		PdfReader reader = new PdfReader(is);
 
-		for (int page = 1; page <= 1; page++)
+		String sPdf = "";
+		for (int page = 1; page <= reader.getNumberOfPages(); page++)
 		{
 			try 
 			{
 				byte[] b = PdfTextExtractor.getTextFromPage(reader, page, new MyTextExtractionStrategy())
 						.getBytes(CHARSET_UTF8);
-				// byte[] b1 = reader.getPageContent(0);
-				// for (int i =0; i<b.length; i++) {
-				// System.out.print(b[i] + ",");
-				// }
-	
-				String sPdf = new String(b);
-				// System.out.println(sPdf);
-				UtsTradeConfoDetail t = new UtsTradeConfoDetail();
-				t.parsePdf(sPdf);
-				t.setFile(file.getAbsolutePath());
-				_list.add(t);
+				String temp = new String(b);
+				sPdf += temp;
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
+//			try 
+//			{
+//				byte[] b = PdfTextExtractor.getTextFromPage(reader, page, new MyTextExtractionStrategy())
+//						.getBytes(CHARSET_UTF8);
+//				// byte[] b1 = reader.getPageContent(0);
+//				// for (int i =0; i<b.length; i++) {
+//				// System.out.print(b[i] + ",");
+//				// }
+//				
+//				String sPdf = new String(b);
+//				// System.out.println(sPdf);
+//				UtsTradeConfoDetail t = new UtsTradeConfoDetail();
+//				t.parsePdf(sPdf);
+//				t.setFile(file.getAbsolutePath());
+//				_list.add(t);
+//			}
+//			catch (Exception e)
+//			{
+//				e.printStackTrace();
+//			}
 		}
+		
+		try 
+		{
+			UtsTradeConfoDetail t = new UtsTradeConfoDetail();
+			t.parsePdf(sPdf);
+			t.setFile(file.getAbsolutePath());
+			_list.add(t);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 	
 //	public static void main(String[] arg)

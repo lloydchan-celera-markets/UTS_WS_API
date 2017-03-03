@@ -369,4 +369,20 @@ public class TradeReport implements ITradeReport
 	{
 		this.giveupNum = giveupNum;
 	}
+
+	@Override
+	public void update(Double price, Integer qty, String giveup, ESessionState state)
+	{
+	}
+	
+	@Override
+	public IOrder clone() {
+		ITradeReport clone = new TradeReport(this.instr, this.status, this.tradeReportType, this.side, 
+				this.qty, this.price, this.ordId, this.refId, this.buyer, this.seller);
+		return clone;
+	}
+	
+	@Override
+	public void addTrade(ITrade trade) {
+	}
 }

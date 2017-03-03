@@ -18,10 +18,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.celera.core.configure.IResourceProperties;
+import com.celera.core.configure.ResourceManager;
 import com.celera.core.dm.BlockTradeReport;
 import com.celera.core.dm.Derivative;
 import com.celera.core.dm.EInstrumentType;
 import com.celera.core.dm.EOrderStatus;
+import com.celera.core.dm.ESessionState;
 import com.celera.core.dm.ESide;
 import com.celera.core.dm.ETradeReportType;
 import com.celera.core.dm.IBlockTradeReport;
@@ -30,6 +33,8 @@ import com.celera.core.dm.IOrder;
 import com.celera.core.dm.ITrade;
 import com.celera.core.dm.ITradeReport;
 import com.celera.core.dm.TradeReport;
+import com.celera.core.mds.IMarketDataService;
+import com.celera.core.mds.MarketDataService;
 import com.celera.core.service.staticdata.IStaticDataListener;
 import com.celera.core.service.staticdata.IStaticDataService;
 import com.celera.core.service.staticdata.StaticDataService;
@@ -60,6 +65,11 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 	private static final Date c_start;
 	private static final Date c_end;
 	
+	private static final Double m_priceLimitAbs;
+	private static final Integer m_qtyLimit;
+
+	private final IMarketDataService m_mds = MarketDataService.instance();
+	
 	static {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -69,6 +79,11 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		c_start = cal.getTime();
 		cal.add(Calendar.DATE, 1);
 		c_end = cal.getTime();
+		
+		Double priceLimitPercent = Double.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_COMMON_LIMIT_PRICE_PERCENT));
+		m_priceLimitAbs = priceLimitPercent * 0.01;
+		m_qtyLimit = Integer.valueOf(ResourceManager.getProperties(IResourceProperties.PROP_COMMON_LIMIT_QTY));
+		logger.info("start[{}] end[{}] price limit[{}%] qty limit[{}]", c_start, c_end, priceLimitPercent, m_qtyLimit);
 	}
 	
 	public OMS() {
@@ -132,11 +147,28 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		ols.stop();
 	}
 	
-	public void onOrder(IOrder o)
+	public void onCoreOrder(IOrder o)
 	{
 		Long id = o.getOrderId();
-		orders.put(id, o);
-		logger.info("onOrder: " + o.toString());
+		
+		IOrder old = orders.get(id);
+		if (old != null) {
+			EOrderStatus status = o.getStatus();
+			if (status == EOrderStatus.AMEND) {
+				old.update(o.getPrice(), o.getQty(), null, null);
+			}
+			old.setStatus(o.getStatus());
+			old.setRemark(o.getRemark());
+		}
+		else {
+			orders.put(id,  o);
+			old = o;
+		}
+		logger.info("{}", old.toString());
+		
+		for (IOMSListener l : listeners) {
+			l.onOrder(old);
+		}
 	}
 
 	public void onQuote(IOrder o)
@@ -149,7 +181,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		logger.info("onQuote: " + o.toString());
 	}
 
-	public void onTrade(ITrade t)
+	public void onCoreTrade(ITrade t)
 	{
 		Long id = t.getTradeId();
 		ITrade old = trades.put(id, t);
@@ -162,84 +194,241 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 			logger.info("onTrade new: " + t.toString());
 		}
 
+		Long ordId = t.getOrderId();
+		IOrder order = orders.get(ordId);
+		
 		// check if trade report
 		ITradeReport tr = m_tradeReports.get(id);
 		if (tr == null) {
 			return;
 		}
 		
-		onTradeReport(id, t.getStatus(), "", t.getGiveupId());
+		onCoreTradeReport(id, t.getStatus(), "", t.getGiveupId());
 	}
 	
 	public void sendOrder(IOrder order){
 		boolean isSucc = true;
-//		String remark = "";
+		String rej = null;
 		
+		// must filled order ID
 		long id = this.id.getAndIncrement();
 		order.setOrderId(id);
-		order.setStatus(EOrderStatus.SENT);
-
-		String symbol = order.getInstr().getSymbol();
-		IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
-
-		if (gw == null) {
-//			remark = "instrument[" + symbol + "] not tradable";
-//			isSucc = false;
-			logger.error("Cannot find gateway to trade [{}]", symbol);
-		}
-		else if (!gw.isReady()) {
-//			remark = "order gateway not ready";
-//			isSucc = false;
-			logger.error("Order gateway not ready [{}]", gw.getClass().getName());
-		}
-		else {
-			gw.createOrder(order);
-		}
-		
 		orders.put(id, order);
 		
-		if (!isSucc)
+		Integer qty = order.getQty();
+		Double price = order.getPrice();
+		
+		String symbol = order.getInstr().getSymbol();
+		
+		rej = validate(symbol, price, qty);
+		if ( rej == null) {
+			IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
+	
+			if (gw == null) {
+				rej = "no gateway can trade instrument[" + symbol + "]";
+				isSucc = false;
+			}
+			else if (!gw.isReady()) {
+				rej = "order gateway[" + gw.getClass().getName() + "] not ready";
+				isSucc = false;
+			}
+			else {
+				order.setStatus(EOrderStatus.SENT);
+				gw.createOrder(order);
+			}
+		}
+		else {
+			isSucc = false;
+		}
+		
+		if (!isSucc) 
 		{
 			order.setStatus(EOrderStatus.REJECTED);
+			order.setRemark(rej);
+			this.onCoreOrder(order);
+			logger.error("{}", rej);
 		}
 	}
 	
-	public void updateOrder(IOrder order){}
+	public boolean amendOrder(Long id, Double price, Integer qty, String giveup, ESessionState state)
+	{
+		boolean isSucc = true;
+		String rej = null;
+		IOrder myOrder = orders.get(id);
 
+		if (myOrder == null) {
+			rej = "order[" + id + "] not found ";
+			myOrder = m_tradeReports.get(id);
+			if (myOrder != null) {
+				rej = "cannot amend trade report[" + id + "]. please cancel and add new";
+				this.onCoreTradeReport(myOrder.getOrderId(), EOrderStatus.AMEND_REJECTED, rej, null);
+				return false;
+			}
+			isSucc = false;
+		} 
+		else {
+			String symbol = myOrder.getInstr().getSymbol();
+			rej = validate(symbol, price, qty);
+			if ( rej == null) {
+				IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
+				if (gw == null) {
+					rej = "not gateway can trade instrument[" + symbol + "]";
+					isSucc = false;
+				}
+				else if (!gw.isReady()) {
+					rej = "order gateway[" + gw.getClass().getName() + "] not ready";
+					isSucc = false;
+				}
+				else {
+					myOrder.setStatus(EOrderStatus.PENDING_AMEND);
+					IOrder clone = myOrder.clone();
+					clone.update(price, qty, giveup, state);
+					gw.modifyOrder(clone);
+				}
+			}
+			else {
+				isSucc = false;
+			}
+		}
+		
+		if (!isSucc) {
+			myOrder.setStatus(EOrderStatus.AMEND_REJECTED);
+			myOrder.setRemark(rej);
+			this.onCoreOrder(myOrder);
+			logger.error("{}", rej);
+		}
+		return isSucc;
+	}
+
+	public boolean cancelOrder(Long id)
+	{
+		boolean isSucc = true;
+		String rej = null;
+		IOrder myOrder = orders.get(id);
+		if (myOrder == null) {
+			rej = "order[" + id + "] not found ";
+			myOrder = m_tradeReports.get(id);
+			if (myOrder != null) {
+				return cancelTradeReport(id);
+			}
+			isSucc = false;
+		} 
+		else {
+			String symbol = myOrder.getInstr().getSymbol();
+			IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
+			
+			if (gw == null) {
+				rej = "instrument[" + symbol + "] not tradable";
+				isSucc = false;
+				logger.error("Cannot find gateway to trade [{}]", symbol);
+			}
+			else if (!gw.isReady()) {
+				rej = "order gateway not ready";
+				isSucc = false;
+				logger.error("Order gateway not ready [{}]", gw.getClass().getName());
+			}
+			else {
+				myOrder.setStatus(EOrderStatus.PENDING_CANCEL);
+				gw.cancelOrder(myOrder);
+			}
+		}
+		
+		if (!isSucc) {
+			myOrder.setStatus(EOrderStatus.CANCEL_REJECTED);
+			myOrder.setRemark(rej);
+			this.onCoreOrder(myOrder);
+		}
+		return isSucc;
+	}
+	
+	public boolean cancelTradeReport(Long id)
+	{
+		boolean isSucc = true;
+		String rej = null;
+		ITradeReport myOrder = m_tradeReports.get(id);
+		if (myOrder == null) {
+			rej = "cannot find trade report[" + id + "]";
+			isSucc = false;
+		} 
+		else if (myOrder.getTradeReportType() != ETradeReportType.T4_INTERBANK_CROSS) {
+			rej = "only allow cancel T4";
+			isSucc = false;
+		}
+		else {
+			String symbol;
+			if (myOrder instanceof IBlockTradeReport) {
+				symbol = ((BlockTradeReport) myOrder).getFirstLegSymbol();
+			}
+			else {
+				symbol = myOrder.getInstr().getSymbol();
+			}
+			IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
+			
+			if (gw == null) {
+				rej = "instrument[" + symbol + "] not tradable";
+				isSucc = false;
+				logger.error("Cannot find gateway to trade [{}]", symbol);
+			}
+			else if (!gw.isReady()) {
+				rej = "order gateway not ready";
+				isSucc = false;
+				logger.error("Order gateway not ready [{}]", gw.getClass().getName());
+			}
+			else {
+				if (myOrder instanceof IBlockTradeReport) {
+					((IBlockTradeReport)myOrder).setBlockStatus(EOrderStatus.PENDING_CANCEL, "", myOrder.getOrderId());
+				}
+				else {
+					myOrder.setStatus(EOrderStatus.PENDING_CANCEL);
+				}
+				gw.cancelTradeReport(myOrder);
+			}
+		}
+		
+		if (!isSucc) {
+			this.onCoreTradeReport(myOrder.getOrderId(), EOrderStatus.CANCEL_REJECTED, rej, null);
+		}
+		return isSucc;
+	}
+	
 	public boolean sendTradeReport(ITradeReport order)
 	{
 		boolean isSucc = true;
-		String remark = "";
+		String rej = null;
 		long id = this.id.getAndIncrement();
-		// TODO: simulate result for testing
-		
-//			Thread.sleep(1000);
+		m_tradeReports.put(id, order);
 		order.setOrderId(id);
-		order.setStatus(EOrderStatus.SENT);
 
+		Integer qty = order.getQty();
+		Double price = order.getPrice();
 		String symbol = order.getInstr().getSymbol();
-		IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
-
-		if (gw == null) {
-			remark = "instrument[" + symbol + "] not tradable";
-			isSucc = false;
-			logger.error("Cannot find gateway to trade [{}]", symbol);
-		}
-		else if (!gw.isReady()) {
-			remark = "order gateway not ready";
-			isSucc = false;
-			logger.error("Order gateway not ready [{}]", gw.getClass().getName());
+		
+		rej = validate(symbol, price, qty);
+		if ( rej == null) {
+			IOrderGateway gw = OrderGatewayManager.instance().getOrderGateway(symbol);
+	
+			if (gw == null) {
+				rej = "no gateway can trade instrument[" + symbol + "]";
+				isSucc = false;
+			}
+			else if (!gw.isReady()) {
+				rej = "order gateway[" + gw.getClass().getName() + "] not ready";
+				isSucc = false;
+			}
+			else { 
+				order.setStatus(EOrderStatus.SENT);
+				gw.createTradeReport(order);
+			}
 		}
 		else {
-			gw.createTradeReport(order);
+			isSucc = false;
 		}
 		
-		m_tradeReports.put(id, order);
-		
-		if (!isSucc)
-		{
+		if (!isSucc) {
 			order.setStatus(EOrderStatus.REJECTED);
-			order.setRemark(remark);
+			order.setRemark(rej);
+			this.onCoreTradeReport(order.getOrderId(), EOrderStatus.REJECTED, rej, null);
+			logger.error("{}", rej);
 		}
 		
 		// TODO: test remove
@@ -311,7 +500,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 
 	@Override
 //	public void onTradeReport(ITradeReport t)
-	public void onTradeReport(Long _id, EOrderStatus status, String remark, Integer giveupNum)
+	public void onCoreTradeReport(Long _id, EOrderStatus status, String remark, Integer giveupNum)
 	{
 		ITradeReport tr = m_tradeReports.get(_id);
 		if (tr == null) {
@@ -349,7 +538,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 					}
 					block.setRemark(remark);
 				}
-				if (giveupNum > 0)
+				if (giveupNum != null && giveupNum > 0)
 					block.setGiveupNumber(giveupNum);
 				
 				for (IOMSListener l : listeners) {
@@ -525,11 +714,11 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 					gw = OrderGatewayManager.instance().getOrderGateway(symbol);
 					if (gw == null || !gw.isReady()) {
 						if (gw == null) { 
-							remark = "instrument[" + symbol + "] not tradable";
+							remark = "no gateway can trade instrument[" + symbol + "]";
 //							o.setRemark("instrument[" + symbol + "] not tradable");
 						}
 						else {
-							remark = "order gateway not open";
+							remark = "order gateway[" + gw.getClass().getName() + "] not ready";
 //							o.setRemark("order gateway not open");
 						}
 						if (o instanceof IBlockTradeReport) {
@@ -540,6 +729,8 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 							o.setRemark(remark);
 						}
 						isSucc = false;
+						this.onCoreTradeReport(legId, EOrderStatus.REJECTED, remark, null);
+						logger.error("{}", remark);
 					}
 					else {
 						if (o instanceof IBlockTradeReport) {
@@ -584,6 +775,33 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		}
 	}
 	
+	private String checkPrice(String symbol, Double price) {
+		Double last = m_mds.getLastPrice(symbol);
+		if (last != null) {
+			Double low = last * (1 - m_priceLimitAbs); 
+			Double high = last * (1 + m_priceLimitAbs);
+			if (price < low || price > high)
+				return "price out of range [" + low + "," + high + "]";
+		}
+		return null;
+	}
+	
+	private String checkQty(Integer qty) {
+		if (m_qtyLimit < qty)
+			return "breach quantity threshold " + m_qtyLimit;
+		return null;
+	}
+	
+	public String validate(String symbol, Double price, Integer qty) {
+		String rej = checkQty(qty);
+		if ( rej != null ) {
+			return rej;
+		}
+		
+		rej = checkPrice(symbol, price);
+		return rej;
+	}
+	
 	public static void main(String[] args) {
 //		String temp = "BlockTradeReport [instr=Instrument [market=HK, symbol=HSI22000L7, type=null, name=null, ISIN=null, BLOOMBERG_CODE=null, RIC=null, status=CLOSE, lastUpdate=2017-01-23]Derivative [strike=null, expiry=MAR17, price=null, isPriceInPercent=false, Legs[]] , status=UNSENT, tradeReportType=T2_COMBO_CROSS, qty=100, price=null, id=2, refId=1485142437272, buyer=HKCEL, seller=HKTOM, remark=OG not ready                                      , lastUpdateTime=1485142466385, map={1=[TradeReport [instr=Instrument [market=HK, symbol=HSI22000L7, type=CALL, name=HSI Call, ISIN=, BLOOMBERG_CODE=, RIC=, status=CLOSE, lastUpdate=2017-01-23]Derivative [strike=22000.0, expiry=DEC17, price=20.0, isPriceInPercent=false, Legs[]] , status=REJECTED, tradeReportType=T2_COMBO_CROSS, side=CROSS, price=20.0, qty=100, id=1, refId=1485142437272, buyer=HKCEL, seller=HKTOM, remark=null, lastUpdateTime=1485142437287], TradeReport [instr=Instrument [market=HK, symbol=HSI24000L7, type=CALL, name=HSI Call, ISIN=, BLOOMBERG_CODE=, RIC=, status=CLOSE, lastUpdate=2017-01-23]Derivative [strike=24000.0, expiry=DEC17, price=8.0, isPriceInPercent=false, Legs[]] , status=REJECTED, tradeReportType=T2_COMBO_CROSS, side=CROSS, price=8.0, qty=125, id=1, refId=1485142437272, buyer=HKTOM, seller=HKCEL, remark=null, lastUpdateTime=1485142437287], TradeReport [instr=Instrument [market=HK, symbol=HSIH7, type=FUTURE, name=HSI Future, ISIN=, BLOOMBERG_CODE=, RIC=, status=CLOSE, lastUpdate=2017-01-23]Derivative [strike=null, expiry=MAR17, price=22825.0, isPriceInPercent=false, Legs[]] , status=REJECTED, tradeReportType=T2_COMBO_CROSS, side=CROSS, price=22825.0, qty=10, id=1, refId=1485142437272, buyer=HKTOM, seller=HKCEL, remark=null, lastUpdateTime=1485142439801]]}]";
 //		JSONObject jsonbject = new JSONObject(temp);
@@ -626,7 +844,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		OMS oms = new OMS();
 		oms.sendBlockTradeReport(block, split);
 		
-		oms.onTradeReport(ordId, EOrderStatus.FILLED, "", 0);
+		oms.onCoreTradeReport(ordId, EOrderStatus.FILLED, "", 0);
 	}
 
 }

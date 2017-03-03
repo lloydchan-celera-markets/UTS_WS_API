@@ -1,8 +1,6 @@
 package com.celera.gateway;
 
-import com.celera.core.dm.BlockTradeReport;
 import com.celera.core.dm.IBlockTradeReport;
-import com.celera.core.dm.IInstrument;
 import com.celera.core.dm.IOrder;
 import com.celera.core.dm.IQuote;
 import com.celera.ipc.ILifeCycle;
@@ -24,15 +22,6 @@ public interface IOrderGateway extends ILifeCycle
 	 * @param newPassword
 	 * newPassword == null -> login , newPassword != null -> change password
 	 */
-	void login(String password);
-	void changePassword(String oldPwd, String newPwd);
-	void logout();
-	void SOD();
-	void subscribeMarketData();
-	void unsubscribeMarketData();
-	void query(String command);
-	public void getAllInstrument();
-	
 	void startTestSOD(String password);
 	
 //	void onInstrumentUpdate(IInstrument i);

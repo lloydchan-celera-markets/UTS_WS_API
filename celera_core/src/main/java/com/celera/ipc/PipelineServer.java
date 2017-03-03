@@ -96,7 +96,7 @@ public class PipelineServer extends AbstractCmmfService implements ILifeCycle, I
 //				push.send(result, 0);
 			}
 
-			push.send(b, 0);
+			push.send(b, ZMQ.NOBLOCK);
 			
 //			try
 //			{

@@ -47,7 +47,7 @@ public class PdfCreateInvoice
 	
 	private static final String PRE_INVOICE_NUMBER = "CEL";
 	private static final String PATTERN = " - ";
-	private static int invoice_Num = 160228;
+	private static int invoice_Num = 160264;	// invoice start number
 //	private static final String invoice_Num = ResourceManager.getProperties(IResourceProperties.PROP_CMBOS_INVOICE_NUMBER);
     private static final NumberFormat nf = new DecimalFormat("##.#");
     private static final String PREFIX_BUYER = "Buyer - ";
@@ -137,13 +137,24 @@ public class PdfCreateInvoice
 				System.exit(-1);
 			} 
 //			key = Invoice.key(firm, curncy, dTradeDate);
-			key = firm + "_" + curncy + "_" + sdf_mmm_yy.format(dTradeDate);
-			if (key.toUpperCase().endsWith("OCT16")) {
-				logger.debug("{}", e);
+//			key = firm + "_" + curncy + "_" + sdf_mmm_yy.format(dTradeDate);
+			
+			Account account = BOData.get(firm);
+			if (account == null) {
+				logger.error("company not found: {}", firm);
+				System.exit(-1);
+//System.out.println(key);
+//				continue;
 			}
+			key = account.getId() + "_" + curncy + "_" + sdf_mmm_yy.format(dTradeDate);
+			
+//if (key.toUpperCase().endsWith("OCT16")) {
+//	logger.debug("{}", e);
+//}
 			List temp = (List) client2TradeConfo.get(key);
 			if (temp == null)
 			{
+//System.out.println("=============" + key + "====================");				
 				temp = new ArrayList<UtsTradeConfoDetail>();
 				client2TradeConfo.put(key, temp);
 			}
@@ -152,7 +163,7 @@ public class PdfCreateInvoice
 			TradeConfo tc = e.convert();
 			tc.setHasInvoiceCreated(true);
 			
-//DatabaseAdapter.create(tc);
+DatabaseAdapter.create(tc);
 		}
 
 //System.exit(-1);
@@ -222,7 +233,7 @@ public class PdfCreateInvoice
 			}
 			
 			String[] tokens = key.split("_");
-			String company = tokens[0];
+			String id = tokens[0];
 			String curncy = tokens[1];
 			String mmmyy = tokens[2];
 			
@@ -233,9 +244,9 @@ public class PdfCreateInvoice
 //			td.setTotal_fee(BOFormatter.displayFee(totalFee, curncy));
 //DatabaseAdapter.save(td);
 			
-			Account account = BOData.get(company);
+			Account account = BOData.getId(id);
 			if (account == null) {
-				logger.error("company not found: {}", company);
+				logger.error("id not found: {}", id);
 				System.exit(-1);
 //System.out.println(key);
 //				continue;
@@ -243,7 +254,7 @@ public class PdfCreateInvoice
 			
 			try {
 				Invoice inv = new Invoice();
-				inv.setCompany(company);
+				inv.setCompany(account.getCompany());
 				inv.setSentTo(account.getEmails());
 				inv.setAddress(account.getAddress());
 				inv.setAttn(account.getAttn());

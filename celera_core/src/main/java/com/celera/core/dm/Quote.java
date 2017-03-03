@@ -1,6 +1,5 @@
 package com.celera.core.dm;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,8 @@ public class Quote implements IQuote
 	private Double askPrice = null;
 	private Long askTime = null;
 	private Long askQty = null;
+	
+	private String remark = null;
 	
 	private List<Addressee> addressees = new ArrayList<Addressee>();
 	
@@ -43,6 +44,16 @@ public class Quote implements IQuote
 		this.askPrice = askPrice;
 		this.askTime = askTime;
 		this.askQty = askQty;
+	}
+
+	public String getRemark()
+	{
+		return remark;
+	}
+
+	public void setRemark(String remark)
+	{
+		this.remark = remark;
 	}
 
 	public void setAddressees(List<Addressee> list)
@@ -253,5 +264,23 @@ public class Quote implements IQuote
 	public Long getLastUpdateTime()
 	{
 		return this.bidTime.compareTo(this.askTime) > 0 ? this.bidTime : this.askTime;
+	}
+
+	@Override
+	public void update(Double price, Integer qty, String giveup, ESessionState state)
+	{
+		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	public IOrder clone() {
+		return null;
+	}
+
+	@Override
+	public void addTrade(ITrade trade)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

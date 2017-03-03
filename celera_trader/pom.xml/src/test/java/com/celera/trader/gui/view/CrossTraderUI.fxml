@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <center>
+      <ScrollPane prefHeight="300.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+        <content>
+          <AnchorPane>
+               <children>
+                  <FlowPane prefHeight="300.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <HBox spacing="5.0">
+                           <children>
+                              <ComboBox prefWidth="150.0" />
+                              <TextField text="geniumtesting" />
+                              <Button mnemonicParsing="false" text="Admin" />
+                           </children>
+                           <FlowPane.margin>
+                              <Insets left="10.0" top="10.0" />
+                           </FlowPane.margin>
+                        </HBox>
+                     </children>
+                  </FlowPane>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </center>
+</BorderPane>

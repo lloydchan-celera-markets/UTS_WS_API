@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.celera.core.dm.EInstrumentType;
-import com.celera.core.dm.EOGAdmin;
+import com.celera.core.dm.EAdminAction;
 import com.celera.core.dm.EOrderStatus;
 import com.celera.core.dm.EStatus;
 import com.celera.core.dm.IInstrument;
@@ -54,6 +54,7 @@ public class CmmfParser
 		buf.put(data);
 		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
+		EApp recv = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
@@ -64,13 +65,11 @@ public class CmmfParser
 				sender, type, cmd, id, status, reason);
 	}
 	
-	public static void parseCmmfOrderResponse(byte[] data, ICmmfProcessor cb)
+	public static void parseCmmfOrderResponse(ByteBuffer buf, ICmmfProcessor cb)
 	{
-		ByteBuffer buf = ByteBuffer.allocate(data.length);
-		buf.order(ByteOrder.LITTLE_ENDIAN);
-		buf.put(data);
-		buf.flip();
+		byte data[] = buf.array();
 		EApp sender = EApp.get((char)buf.get());
+		EApp recv = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
@@ -80,16 +79,13 @@ public class CmmfParser
 		logger.info("sender[{}], type[{}], cmd[{}] id[{}] status[{}] reason[{}]",
 				sender, type, cmd, id, status, reason);
 		
-//		cb.onOrder(id, status, reason);
+		cb.onOrder(id, status, reason);
 	}
 	
-	public static void parseCmmfTradeResponse(byte[] data, ICmmfProcessor cb)
+	public static void parseCmmfTradeResponse(ByteBuffer buf, ICmmfProcessor cb)
 	{
-		ByteBuffer buf = ByteBuffer.allocate(data.length);
-		buf.order(ByteOrder.LITTLE_ENDIAN);
-		buf.put(data);
-		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
+		EApp recv = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
@@ -107,13 +103,12 @@ public class CmmfParser
 //		cb.onTrade(id, status, "", giveupNum);
 	}
 	
-	public static void parseCmmfTradeReportResponse(byte[] data, ICmmfProcessor cb)
+	public static void parseCmmfTradeReportResponse(ByteBuffer buf, ICmmfProcessor cb)
 	{
-		ByteBuffer buf = ByteBuffer.allocate(data.length);
-		buf.order(ByteOrder.LITTLE_ENDIAN);
-		buf.put(data);
-		buf.flip();
+		byte data[] = buf.array();
+		
 		EApp sender = EApp.get((char)buf.get());
+		EApp recv = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		Long id = buf.getLong();
@@ -131,13 +126,10 @@ public class CmmfParser
 		cb.onTradeReport(id, status, reason/*, giveupNum*/);
 	}
 	
-	public static void parseCmmfInstrumentUpdateResponse(byte[] data, ICmmfProcessor cb)
+	public static void parseCmmfInstrumentUpdateResponse(ByteBuffer buf, ICmmfProcessor cb)
 	{
-		ByteBuffer buf = ByteBuffer.allocate(data.length);
-		buf.order(ByteOrder.LITTLE_ENDIAN);
-		buf.put(data);
-		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
+		EApp recv = EApp.get((char)buf.get());
 		EMessageType msgType = EMessageType.get((char)buf.get());
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		
@@ -155,13 +147,10 @@ public class CmmfParser
 		cb.onInstrumentUpdate(symbol, status);
 	}
 
-	public static void parseCmmfLastPriceResponse(byte[] data, ICmmfProcessor cb)
+	public static void parseCmmfLastPriceResponse(ByteBuffer buf, ICmmfProcessor cb)
 	{
-		ByteBuffer buf = ByteBuffer.allocate(data.length);
-		buf.order(ByteOrder.LITTLE_ENDIAN);
-		buf.put(data);
-		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
+		EApp recv = EApp.get((char)buf.get());
 		EMessageType msgType = EMessageType.get((char)buf.get());
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
 		
@@ -186,18 +175,13 @@ public class CmmfParser
 		System.out.println("");
 	}
 	
-	public static boolean parseCmmfOgAdminResponse(byte[] data)
+	public static boolean parseCmmfOgAdminResponse(ByteBuffer buf)
 	{
-		print(data);
-		
-		ByteBuffer buf = ByteBuffer.allocate(data.length);
-		buf.order(ByteOrder.LITTLE_ENDIAN);
-		buf.put(data);
-		buf.flip();
 		EApp sender = EApp.get((char)buf.get());
+		EApp recv = EApp.get((char)buf.get());
 		EMessageType type = EMessageType.get((char)buf.get());
 		EFoCommand cmd = EFoCommand.get((char)buf.get());
-		EOGAdmin action = EOGAdmin.get((char)buf.get());
+		EAdminAction action = EAdminAction.get((char)buf.get());
 		byte result = buf.get();
 //		String reason = new String(data, 12, SIZEOF_REASON);
 //		logger.info("sender[{}], type[{}], cmd[{}] action[{}] result[{}] reason[{}]",

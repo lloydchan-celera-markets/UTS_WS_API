@@ -70,7 +70,7 @@ public abstract class EmailServiceImpl
 //			if (isPolling.compareAndSet(false, true)) 
 //			{
 				List<IMongoDocument> list = serv.getAllFromInbox();
-				writeDb(list);
+//				writeDb(list);
 //				isPolling.compareAndSet(true, false);
 //			}
 //			else

@@ -357,7 +357,7 @@ public class UtsMessageProcessor
 		trade.setQty(Uts2Dm.toInt(size));
 		trade.setComment(comment);
 
-		OMS.instance().onTrade(trade);
+		OMS.instance().onCoreTrade(trade);
 	}
 
 	public void doQuote(Quote u)

@@ -532,6 +532,13 @@ public class BlockTradeReport implements IBlockTradeReport
 		return this.map.keySet().size() > 1;
 	}
 	
+	public String getFirstLegSymbol() {
+		for (Map.Entry<Long, List<ITradeReport>> e : this.map.entrySet()) {
+			return e.getValue().get(0).getInstr().getSymbol();
+		}
+		return null;
+	}
+	
 	public List<ITradeReport> split2SingleBlock() {
 		List<ITradeReport> splits = new ArrayList<ITradeReport>();
 		if (hasSplit()) {
@@ -864,4 +871,22 @@ public class BlockTradeReport implements IBlockTradeReport
 	public void setGiveupNumber(Integer giveupNum){
 		this.giveupNum = giveupNum;
 	}
+
+	@Override
+	public void update(Double price, Integer qty, String giveup, ESessionState state)
+	{
+		// not supported
+	}
+	
+	@Override
+	public IOrder clone() {
+		return null;
+	}
+
+	@Override
+	public void addTrade(ITrade trade)
+	{
+		// TODO Auto-generated method stub
+		
+	};
 }

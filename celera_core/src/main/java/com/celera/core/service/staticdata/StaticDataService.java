@@ -68,8 +68,8 @@ public class StaticDataService implements IStaticDataService
 		logger.info("update instr {}", instr);
 		
 		// TODO ? 1) update or replace 2) only HHI, HSI
-//		String symbol0_3 = instr.getSymbol().substring(0, 3);
-//		if (tradableSymbol.contains(symbol0_3))
+		String symbol0_3 = instr.getSymbol().substring(0, 3);
+		if (tradableSymbol.contains(symbol0_3))
 				map.put(instr.getSymbol(), instr);
 	}
 	

@@ -32,26 +32,26 @@ public abstract class CmmfApp implements ICmmfListener
 		return uniqueID;
 	}
 	
-	@Override
-	public byte[] onMessage(byte[] data)
-	{
-		logger.debug("onMessage {}", new String (data));
-		
-		EMessageType type = EMessageType.get((char) data[ICmmfConst.HEADER_MESSAGE_TYPE_POS]);
-		byte[] b = null;
-		
-		switch (type)
-		{
-		case ADMIN:
-			onAdmin(data);
-			break;
-		case QUERY:
-			b = onQuery(data);
-			break;
-		case TASK:
-			onTask(data);
-			break;
-		}
-		return b;
-	}
+//	@Override
+//	public byte[] onMessage(byte[] data)
+//	{
+//		logger.debug("onMessage {}", new String (data));
+//		
+//		EMessageType type = EMessageType.get((char) data[ICmmfConst.HEADER_MESSAGE_TYPE_POS]);
+//		byte[] b = null;
+//		
+//		switch (type)
+//		{
+//		case ADMIN:
+//			onAdmin(data);
+//			break;
+//		case QUERY:
+//			b = onQuery(data);
+//			break;
+//		case TASK:
+//			onTask(data);
+//			break;
+//		}
+//		return b;
+//	}
 }

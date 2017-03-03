@@ -64,6 +64,9 @@ public interface IResourceProperties
 	public static final String PROP_HKEX_GATEWAY_CHL_SINK_PROT = "hkexgw.channel.sink.protocol";
 	public static final String PROP_HKEX_GATEWAY_CHL_SINK_IP = "hkexgw.channel.sink.ip";
 	public static final String PROP_HKEX_GATEWAY_CHL_SINK_PORT = "hkexgw.channel.sink.port";
+	
+	public static final String PROP_COMMON_LIMIT_PRICE_PERCENT = "common.limit.price.percent";
+	public static final String PROP_COMMON_LIMIT_QTY = "common.limit.qty";
 
 	public static final String PROP_HKEX_GATEWAY_TESTING = "hkexgw.channel.testing";
 	

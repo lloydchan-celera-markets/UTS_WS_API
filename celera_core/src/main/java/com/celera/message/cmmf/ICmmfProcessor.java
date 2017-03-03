@@ -5,7 +5,7 @@ import com.celera.core.dm.EStatus;
 
 public interface ICmmfProcessor
 {
-//	public void onOrder(Long id, EOrderStatus status, String reason, Integer giveupNum);
+	public void onOrder(Long id, EOrderStatus status, String reason);
 	public void onInstrumentUpdate(String symbol, EStatus status);
 //	public void onTradeReport(Long id, EOrderStatus status, String reason, Integer giveupNum);
 	public void onTradeReport(Long id, EOrderStatus status, String reason);
