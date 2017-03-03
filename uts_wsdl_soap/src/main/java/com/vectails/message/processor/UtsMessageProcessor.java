@@ -296,7 +296,7 @@ public class UtsMessageProcessor
 
 			LocalDate lastUpdate = Uts2Dm.toLocalDate(lastUpdTime);
 			EInstrumentType type = Uts2Dm.toInstrumentType(code);
-aa
+
 			return new Derivative(IMarket.HK, code, type, name, null, null, null, null, null, null,
 					isPriceInPercent, null);
 //			return new Derivative(IMarket.HK, code, type, name, null, null, null, lastUpdate, null, null, null,
