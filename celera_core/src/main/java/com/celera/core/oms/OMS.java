@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.json.JsonObject;
@@ -61,7 +62,8 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 	private OrderLoggerServer ols = null;
 	
 	private AtomicLong id = null;
-
+	private AtomicBoolean isInit = new AtomicBoolean(false);
+	
 	private static final Date c_start;
 	private static final Date c_end;
 	
@@ -109,6 +111,9 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 	@Override
 	public void init()
 	{
+		if (this.isInit.get()) 
+			return;
+		
 		ols.init();
 		long maxId = 0l;
 		List<ITradeReport> l = ols.getAllTradeReports();
@@ -132,6 +137,7 @@ public class OMS implements IOMS, IOrderGatewayListener, ILifeCycle
 		}
 		maxId++;
 		this.id = new AtomicLong(maxId);
+		this.isInit.compareAndSet(false, true);
 		
 		logger.debug("set next order id {}", this.id);
 	}

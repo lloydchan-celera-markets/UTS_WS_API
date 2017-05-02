@@ -21,4 +21,6 @@ public interface ITradeReport extends IOrder
 	public void setGiveupNumber(Integer giveupNum);
 	
 	public com.celera.mongo.entity.TradeReport toEntityObject();
+	
+	public void setFile(String file);
 }

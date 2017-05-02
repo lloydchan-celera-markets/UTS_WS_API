@@ -49,6 +49,7 @@ public class TradeReport implements ITradeReport
 	private Long inputTime = null;
 	private Long lastUpdateTime = null;
 	
+	private String file = null;
 
 	public TradeReport()
 	{
@@ -384,5 +385,10 @@ public class TradeReport implements ITradeReport
 	
 	@Override
 	public void addTrade(ITrade trade) {
+	}
+
+	@Override
+	public void setFile(String file) {
+		this.file = file;
 	}
 }

@@ -58,6 +58,8 @@ public class BlockTradeReport implements IBlockTradeReport
 	private Long inputTime = null;
 	private Long lastModified = null;
 	
+	private String file = null;
+	
 	private Map<Long, List<ITradeReport>> map = new LinkedHashMap<Long, List<ITradeReport>>();
 
 	public BlockTradeReport()
@@ -888,5 +890,10 @@ public class BlockTradeReport implements IBlockTradeReport
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setFile(String file) {
+		this.file = file;
 	};
 }
